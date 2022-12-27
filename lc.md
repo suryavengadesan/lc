@@ -27,7 +27,7 @@ Output: [0,1]
 
 Follow-up: Can you come up with an algorithm that is less than O(n2) time complexity?
 
-## Iteration Hashmap (2-pass Optimal)
+## Iteration Hashmap (2-pass Suboptimal)
 
 Note: target = element1 + element2
 
@@ -39,6 +39,22 @@ Make sure the current index doesn't equal the index in hashmap.
 
 Space: O(n)
 Time: O(n)
+
+```
+def solution(nums, target):
+    pairs = {}
+    for index in range(len(nums)):
+        num = nums[index]
+        pair = target - num
+        pairs[pair] = index
+
+    for index in range(len(nums)):
+        num = nums[index]
+        if num in pairs and index != pairs[num]:
+            return [index, pairs[num]]
+
+    return 
+```
 
 ## Iteration Hashmap (1-pass Optimal)
 
@@ -56,22 +72,6 @@ def solution(nums, target):
         if num in pairs:
             return [index, pairs[num]]
         pairs[pair] = index
-
-    return 
-    
-def solution(nums, target):
-    pairs = {}
-    for index in range(len(nums)):
-        num = nums[index]
-        pair = target - num
-        pairs[pair] = index
-
-    for index in range(len(nums)):
-        num = nums[index]
-        if num in pairs and index != pairs[num]:
-            return [index, pairs[num]]
-
-    return 
 ```
 
 # 2. Add Two Numbers
@@ -3090,38 +3090,40 @@ Output: false
 
 Follow up: Could you use search pruning to make your solution faster with a larger board?
 
+## Backtrack + DFS 
 
+Iterate through each index of the input board. Perform DFS at each index, splicing the input word through every level of the recursive search. Modify board in place with '#', instead of using a visited data structure. 
+
+
+Time: O(N * 3^L) s.t. N is cells in board
+Space: O(L) s.t. L is length of word
 
 ```
-def solution(board, word):
-    def search(self, loc, board, word, visited, reached):
-        if reached:
-            return
-        if word == '':
-            reached[True] = True
-            return 
-        visited[loc] = True
-        for i, j in [(1, 0), (0, -1), (0, 1), (-1, 0)]:
-            newloc = (loc[0]+i, loc[1]+j)
-            if (loc[0] + i >= 0) and (loc[0] + i < len(board)) and (loc[1] + j >= 0) and (loc[1] + j < len(board[0])):
-                if (loc[0] + i, loc[1] + j) not in visited:
-                    if board[loc[0] + i][loc[1] + j] == word[0]:
-                        self.search((loc[0] + i, loc[1] + j), board, word[1:], visited.copy(), reached)   
+def exist(self, board: List[List[str]], word: str) -> bool:
+    def search(i, j, word):
+        if word[0] == board[i][j]:
+            if len(word) == 1: 
+                return True 
+            board[i][j] = "#"
+            neighbors = {(-1, 0), (1, 0), (0, 1), (0, -1)}
+            for n in neighbors:
+                di = n[0]
+                dj = n[1]
+                if i + di >= 0 and i + di < len(board): 
+                    if j + dj >= 0 and j + dj < len(board[0]):
+                        if board[i + di][j + dj] != "#": 
+                            if search(i + di, j + dj, word[1:]) == True: 
+                                return True 
+            board[i][j] = word[0]
+        return False 
+        
 
-    reached = {}
     for i in range(len(board)):
-        for j in range(len(board[0])):
-            if reached:
-                return True
-            if board[i][j] == word[0]:
-                visited = {}
-                loc = (i, j)
-                search(loc, board, word[1:], visited, reached)
-                if reached:
-                    return True
-    return False
+        for j in range(len(board[0])): 
+            if search(i, j, word) == True: 
+                return True 
     
-    
+    return False 
 ```
 
 # 88. Merge Sorted Array
@@ -5969,78 +5971,24 @@ Input: head = []
 Output: []
 
 
-## Iteration (Mutating the List)
-
-Add back pointers as your iterate towards the end of the list. Once you reach the end of the list, specify it as the new head.
-
-Then iterare backwards using the back pointers, while setting the forward pointers to the back pointers. Remove the existing back pointer each time.
-
-Return the the headpointer.
-
-Space: O(1)
-Time: O(n)
-
-## Iteration (Store Separate List)
-
-Perform the same set of steps as the approach above. However, store the back pointers in a separate array. 
-
-Space: O(n)
-Time: O(n)
-
 ## Iteration (In-place modification)
 
-Initalize the previous Node to None. 
+Initalize the previous Node to None. Iterate through the list, by storing the next pointer into a temp value. Then set next pointer to the previous node. Update the previous node to the current  node. Finally update the date to the tmp value. 
 
-Iterate through the list, while storing the next node and previous node. Set the current node's pointer to the previous node. Set the previou node to the current node. Set the curr node to the next node. Repeat until there is no next node. 
+This keeps going until the head is None, which means that the previous node contains the valid head of the new reversed list. 
 
-Return the current node if there is no nextNode. 
-
-```
-if not head:
-    return None
-    
-previousNode = None
-currNode = head
-nextNode = head.next
-
-while nextNode:
-    nextNode = currNode.next
-    currNode.next = previousNode
-    previousNode = currNode
-    if nextNode:
-        currNode = nextNode
-
-return currNode
-```
-
+Time: O(n)
+Space: O(1)
 
 ```
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-
-def solution(head):
-    if not head:
-        return None
-        
-    previousNode = None
-    currNode = head
-    nextNode = head.next
-
-    while nextNode:
-        nextNode = currNode.next
-        currNode.next = previousNode
-        previousNode = currNode
-        if nextNode:
-            currNode = nextNode
-
-    return currNode
-
-def main():
-    test = [1, 2, 3, 4, 5]
-    ans = solution(test)
+def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    prev = None
+    while head: #and head.next:
+        tmp = head.next
+        head.next = prev
+        prev = head
+        head = tmp
+    return prev #head
 ```
 
 # 207. Course Schedule
