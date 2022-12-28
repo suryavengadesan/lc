@@ -13681,12 +13681,13 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
 
 - Variants + Problems: 
 	- 2d DP
-		- 62. Unique Paths
+		- 62) Unique Paths
 	- 1d DP 
-		- [322]. Coin Change 
-		- 198. House Robber
-        - 91. Decode Ways 
-        - 2361. Minimum Cost Using Train Line 
+		- 322) Coin Change 
+		- 198) House Robber
+        - 91) Decode Ways 
+        - 2361) Minimum Cost Using Train Line 
+
 
 ```
 def dynamicProgramming(array):
