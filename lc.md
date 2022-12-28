@@ -9051,12 +9051,19 @@ Follow up:
     It is very easy to come up with a solution with a runtime of O(n log n). Can you do it in linear time O(n) and possibly in a single pass?
     Can you do it without using any built-in function (i.e., like __builtin_popcount in C++)?
 
-
-
-
-
 ```
-
+def countBits(self, n: int) -> List[int]:
+        dp = [0 for _ in range(n + 1)]
+        index = 0
+        powerOfTwo = 1
+        while powerOfTwo <= n: 
+            while index < powerOfTwo and index + powerOfTwo <= n:
+                dp[index + powerOfTwo] = dp[index] + 1
+                index += 1
+            index = 0
+            powerOfTwo *= 2
+            
+        return dp
 ```
 
 # 339. Nested List Weight Sum
@@ -10262,6 +10269,7 @@ For each letter of the alphabet, perform the sliding window search.
 
 Set the left and right pointer to 0. 
 If right pointer equals the target letter, increment right pointer by 1. If right pointer doesn't equal to target letter and if right pointer - left pointer < k + letterCount, increment right pointer and decrement k. If k is equal to 0, increment left pointer. If k is equal to 0 and if left pointer points to target letter, don't increment k. If k is equal to 0 and if left pointer doesn't point to target letter, incremement k by 1. Return max distance so far, right - left.
+
 
 ```
 def slidingWindow(s, letter, k):
