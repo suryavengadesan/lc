@@ -13737,7 +13737,7 @@ Data Structures
 
 Never consume coffee ever again before a test. 
 
-Goal
+Goal  
 	Break up the problems into patterns + variants to increase recall
 	Learn how to study well
 	Document your learning so that it’s easy to pick up where you left off 
