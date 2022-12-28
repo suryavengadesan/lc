@@ -13576,14 +13576,14 @@ Variants + Problems
 
 # Stack
 
-Problems + Variants:
+- Problems + Variants:
 	- Regular Stack 
 		- idk? 
 	- Monotonic Stack
 		- Next Greater Element I
 		- Buildings with Ocean View
 
-MonoStack = Stack + Staggered and Conditional Removing and Adding 
+- MonoStack = Stack + Staggered and Conditional Removing and Adding 
 	- hence the elements within the stack are always increasing? 	
 	Types: 
 		- Increasing MS
@@ -13619,8 +13619,8 @@ https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss
 
 When you can find a recursive relationship within the problem
 
-Step 1: Find the base case
-Step 2: Find the recurrence relationship
+- Step 1: Find the base case
+- Step 2: Find the recurrence relationship
 
 Note: this step can require a lot of edgecases that need to be thoroughly though through (e.g. see 91. decode ways)
 
@@ -13737,96 +13737,92 @@ Data Structures
 
 Never consume coffee ever again before a test. 
 
-Goal  
-	Break up the problems into patterns + variants to increase recall  
-	Learn how to study well  
-	Document your learning so that it’s easy to pick up where you left off  
-	Find the best practices for interview prep by talking to people who succeeded  
-	Improve my study abilities over 5-6 months (part of life long journey)  
+- Goal  
+	- Break up the problems into patterns + variants to increase recall  
+	- Learn how to study well  
+	- Document your learning so that it’s easy to pick up where you left off  
+	- Find the best practices for interview prep by talking to people who succeeded  
+	- Improve my study abilities over 5-6 months (part of life long journey)  
 
-Interview  
-	How to Quickly Run Through Test Case  
-	Write code in a way that you can easily read it  
-	Take time to organize code into ordered chunks before reading it  
-	Identify if solution is complex or simple before hand  
-	How to Pick Right Test Case  
+- Interview  
+	- How to Quickly Run Through Test Case  
+	- Write code in a way that you can easily read it  
+	- Take time to organize code into ordered chunks before reading it  
+	- Identify if solution is complex or simple before hand  
+	- How to Pick Right Test Case  
 
-Mock Interview  
-	-Ask if he can optimize it  
-	-Ask runtime and space complexity  
-	-Follow him solving it  
-	-Ask if he can walk through an example  
+- Mock Interview  
+	- Ask if he can optimize it  
+	- Ask runtime and space complexity  
+	- Follow him solving it  
+	- Ask if he can walk through an example  
 
-Steps  
-	Step 1: Identify the pattern (practice patterns)  
-	Step 2: Apply the pattern (you cannot proceed after this step)  
-	Step 3: Prove the solution in plain english, before attempting it (memorize proofs)  
-	Step 4: Implement the solution (memorize templates)  
+- Steps  
+	- Step 1: Identify the pattern (practice patterns)  
+	- Step 2: Apply the pattern (you cannot proceed after this step)  
+	- Step 3: Prove the solution in plain english, before attempting it (memorize proofs)  
+	- Step 4: Implement the solution (memorize templates)  
 
-Advanced techniques  
+- Advanced techniques  
 
-Analogies  
-	The difference between an okay musician and a good muscian is the fundamentals and theory  
+- Analogies  
+	- The difference between an okay musician and a good muscian is the fundamentals and theory  
 
-How to get unstuck  
-	Review previous solved DP problems  
+- How to get unstuck  
+	- Review previous solved DP problems  
 
-How to review  
-	If you can't explain the solutions in plain english to a non computer science student, you won't remember the concept yourself.  
+- How to review  
+	- If you can't explain the solutions in plain english to a non computer science student, you won't remember the concept yourself.  
 
-Daily Prep  
+- Daily Prep  
 
-Schedule  
-	Day A : Do 3 practice onsites  
-	Day B : Reflect on the previous day's practice offsites  
+- Schedule  
+	- Day A : Do 3 practice onsites  
+	- Day B : Reflect on the previous day's practice offsites  
 
-Questions to self  
-	What do you want to improve on?  
+- Questions to self  
+	- What do you want to improve on?  
 
-Hours per day  
-	8 hrs per day  
+- Hours per day  
+	- 8 hrs per day  
 
-Meta Learning  
-	Stages of Learning  
+- Meta Learning  
+	- Stages of Learning  
 
-How to Practice LC Properly  
-	Set a 2 minute timer after each failed test case  
-	Go through at least one example before compiling  
-	Insert comments in code in the final pass  
+- How to Practice LC Properly  
+	- Set a 2 minute timer after each failed test case  
+	- Go through at least one example before compiling  
+	- Insert comments in code in the final pass  
 
-Strategy  
-	pick a lc question, then create a txt file with the number  
-	start a timer for 20 minutes, and write down as much of an answer as you can 
-	separate scratch work from final code solution
-
-Big Picture [Interview Prep]  
-	Do a mock interview of each pattern  
-	Wave at the beginning and the end  
-	Say I’ve been exploring the city and reading  
+- Learning Strategy  
+	- pick a lc question, then create a txt file with the number  
+	- start a timer for 20 minutes, and write down as much of an answer as you can 
+	- separate scratch work from final code solution
 
 
-Not all problems are made the same  
-	For example both Word Break II and Remove Invalid Parentheses are both classic BackTracking problems – One causes a world of pain – the other doesn’t (hint: Remove Invalid Parentheses == RIP)
+- Not all problems are made the same  
+	- For example both Word Break II and Remove Invalid Parentheses are both classic BackTracking problems
+    – One causes a world of pain 
+    – the other doesn’t (hint: Remove Invalid Parentheses == RIP)
 	Some problems can be solved with one pattern + variant, and solved optimally with a different pattern + variant
 		Subarray Sum Equals K
 		Solved with 2 Pointer/DP by checking all subarrays
 		Solved with 1 Pointer and Hashmap by considering mod arithmetic
 
-How to integrate with anki
-	Tag problems as solved and unsolved efficiently. 
-	Copy the question and attempted solution to a google sheet, then download and import them into anki
-	Match problems in anki with excel sheet, to quickly determine is a question is found or not found 
+- How to integrate with anki
+	- Tag problems as solved and unsolved efficiently. 
+	- Copy the question and attempted solution to a google sheet, then download and import them into anki
+	- Match problems in anki with excel sheet, to quickly determine is a question is found or not found 
 
-Time Practice
-Approach 1: User timer
-
-Approach 2: User stopwatch 
-	- lap when finishing each problem
+- Timed Practice
+    - Approach 1: Use timer
+    - Approach 2: Use stopwatch 
+	    - lap when finishing each problem
 
 
 Types of Tests
 
-OA 
+- OA 
 	- Code Signal
 		- measures speed, cleanliness, correctness 
 			- https://codesignal.com/resource/general-coding-assessment-framework/ 
@@ -13841,14 +13837,15 @@ OA
 		- tests correctness, engineering, and logical thinking
 
 
-Phone Screen 
+- Phone Screen 
 	- Coder Pad 
 
-Onsite 
+- Onsite 
 	- Coder Pad 
 
 # Templates 
 
+```
 from sys import prefix
 
 
@@ -13997,3 +13994,4 @@ def main():
 if __name__ == '__main__':
     main()
 
+```
