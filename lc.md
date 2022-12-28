@@ -7681,22 +7681,16 @@ for word in words:
     letters += word
 
 letters = Counter(letters)
-#print(letters)
 
 for letter in letters:
     letters[letter] = []
-#print(letters)
 
 prev = ""
 for word in words: 
-    #print(letters)
     compare(prev, word)
     prev = word
-    #print(invalid)
     if invalid: 
         return ""
-
-#print(letters)
 
 noTopo = False
 ordering = ""
@@ -7704,7 +7698,6 @@ ordering = ""
 def search(letter):
     nonlocal ordering
     nonlocal noTopo
-    #print(letter)
     if visited[letter] == 1:
         noTopo = True
         return 
@@ -7723,7 +7716,6 @@ for letter in letters:
 
 for letter in letters: 
     search(letter)
-    #print(noTopo)
     if noTopo:
         return ""
 
@@ -9051,19 +9043,32 @@ Follow up:
     It is very easy to come up with a solution with a runtime of O(n log n). Can you do it in linear time O(n) and possibly in a single pass?
     Can you do it without using any built-in function (i.e., like __builtin_popcount in C++)?
 
+## Dynamic Programming
+
+Keep a dp table initialized to 0 for n+1 elements. For each power of two less than n, we populate the table accordingly.
+
+For all values less than the power of two, set the value to 0. 
+
+
+
+- n = 8 
+    - [0, 0, 0, 0, 0, 0, 0, 0] Start
+    - [0, 1, 0, 0, 0, 0, 0, 0] Power of Two = 1
+    - [0, 1, 1, 2, 0, 0, 0, 0] Power of Two = 2
+    - Power of Two = 4 
+
 ```
 def countBits(self, n: int) -> List[int]:
         dp = [0 for _ in range(n + 1)]
         index = 0
         powerOfTwo = 1
         while powerOfTwo <= n: 
-            while index < powerOfTwo and index + powerOfTwo <= n:
-                dp[index + powerOfTwo] = dp[index] + 1
-                index += 1
-            index = 0
-            powerOfTwo *= 2
-            
-        return dp
+            while index < powerOfTwo and index + powerOfTwo <= n: 
+                dp[index + powerOfTwo] = dp[index] + 1 
+                index += 1 
+            index = 0 
+            powerOfTwo *= 2 
+        return dp 
 ```
 
 # 339. Nested List Weight Sum
@@ -13422,10 +13427,10 @@ def distinctAverages(nums) -> int:
 
 # DFS (Depth First Search)
 
-When you need to traverse a tree, searching for a specific heuristic
+When you need to traverse a tree or graph, searching for a specific heuristic
 
-Variants + Problems
-	- Search 
+- Variants + Problems
+	- Tree Search
 		- Pre Order
 		- In Order
 		- Post Order
@@ -13438,18 +13443,31 @@ When you need to search a graph-life data structure in level order
 	- Level Order Traversal
 	- Use a Queue
 
-Variants + Problems
-	- Search 
-		- Number of Islands 
+- Variants + Problems
+	- General Search 
+		- 200. Number of Islands 
 	- Djikstra's Algorithm
-		- Network Delay Time 
+		- 743. Network Delay Time 
+    - Topological Sort
 
 
 # Topological Sort
 	- Start with nodes with 0 indegree
 
-Variants + Problems
-	- Course Schedule 
+- DFS Version [Less Intuitive but Concise Code]
+    - Keep track of visited table with values 0, 1, 2
+    - Iterate through the visited table 
+    - If node not visited yet (e.g. visited[i] == 0), perform dfs
+
+
+- BFS Version [More Intuitive but Lengthy Code]
+    - Add all nodes with 0 indegree to queue
+    - Perform BFS using this intialized queue
+
+
+- Variants + Problems
+	- 207. Course Schedule 
+    - 269. Alien Dictionary
 
 
 # Iterative Tree Traversal (Used when recursion stack grows too long)
@@ -13638,12 +13656,21 @@ Types of recurrence relations
 	- Type 2: Using lists of integers for counters
 Bottom up versus top down
 
-Variants + Problems: 
+- Variants + Problems: 
 	- 2d DP
 		- 62. Unique Paths
 	- 1d DP 
-		- Coin Change 
-		- House Robber 
+		- 322. Coin Change 
+		- 198. House Robber 
+```
+def dynamicProgramming(array):
+    dp = [0 for _ in range(len(array))]
+    for index in range(len(array)):
+        curr = array[index]
+        if condition(curr):
+            dp[index] = dp[index - 1]
+    return dp[-1]
+```
 
 Reddit Answer
 The 2 most important things for dp are state variables and the recurrent relationship. Doing it from recursion (top-down) is more intuitive. Usually, when I am stuck on the state variables, I would try to solve it from top down first. It is a lot easier to figuring out the state variables by doing top-down.
@@ -13865,14 +13892,6 @@ def prefixSum(array):
         currSum += curr
         prefixSum[index] = currSum
     return prefixSum
-
-def dynamicProgramming(array):
-    dp = [0 for _ in range(len(array))]
-    for index in range(len(array)):
-        curr = array[index]
-        if condition(curr):
-            dp[index] = dp[index - 1]
-    return dp[-1]
 
 
 def slidingWindow(array):
