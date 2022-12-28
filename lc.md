@@ -13410,3 +13410,596 @@ def distinctAverages(nums) -> int:
     return len(s)
 ```
 
+# Notes
+-------------------------------------------------------------------------------------------------------
+DFS (Depth First Search)
+
+When you need to traverse a tree, searching for a specific heuristic
+
+Variants + Problems
+	- Search 
+		- Pre Order
+		- In Order
+		- Post Order
+	- Connected Components 
+		- 547. Number of Provinces
+-------------------------------------------------------------------------------------------------------
+BFS (Breadth First Search)
+
+When you need to search a graph-life data structure in level order
+	- Level Order Traversal
+	- Use a Queue
+
+Variants + Problems
+	- Search 
+		- Number of Islands 
+	- Djikstra's Algorithm
+		- Network Delay Time 
+
+-------------------------------------------------------------------------------------------------------
+Topological Sort
+	- Start with nodes with 0 indegree
+
+Variants + Problems
+	- Course Schedule 
+
+-------------------------------------------------------------------------------------------------------
+Iterative Tree Traversal (Used when recursion stack grows too long)
+	- Morris
+	- Parent Traversal (Linked List)
+	- Node Stack (e.g. Flatten BT)
+
+-------------------------------------------------------------------------------------------------------
+Backtrack
+	
+Keep track of visited data structure to prune search 
+Template
+Def Backtrack():
+
+- Variants + Problems 
+	- Stack + String
+		- 79. Word Break 
+		- 140. Work Break II
+		- 301. Remove Invalid Parentheses 
+	- Stack + Array
+		- 78. Subsets
+
+-------------------------------------------------------------------------------------------------------
+Djikstra's Algorithm 
+
+	- BFS + Priority Queue 
+	- Find shortest path to all remaining nodes
+
+Problems
+	- 743. Network Delay Time 
+
+-------------------------------------------------------------------------------------------------------
+Binary Search
+	
+Step 1: Find the left and right pointers
+Step 2: Set the center pointer
+Step 3: Move left or right pointer to center, based on specific conditions
+
+Common Issues + Errors with Execution 
+	- Infinite loop
+		- if mid set incorrectly gets rounded down incorrectly 
+			- mid = ((r - l) // 2) + 1
+			- mid = ((r - 2) //2) 
+		- if left pointer increments incorrectly
+		- if right pointer decrements incorrectly 
+		- if left pointer == right pointer, but left pointer never < right pointer 
+		
+
+Implementation:
+def binarySearch():
+	l = 0
+	r = len(arr) - 1
+	while l < r: 
+		mid = (l + r) // 2
+		curr = arr[mid]
+		if mid == target: 
+			return mid 
+		elif mid < target: 
+			l = mid 
+		else:
+			r = mid 
+	return l 
+
+Choosing mid: 
+	Think about if you are finding upper bound or lower bound
+		- If l = mid + 1 (left moved) then use mid = (l + r)//2
+			- r = mid
+		- If r = mid - 1 (right moved)  then use mid = (l + r + 1)//2
+			- l = mid
+
+Variants + Problems:
+- Search of Separate Search Space
+	- Cutting Ribbons
+- Search based on Specific Condition
+	- Find K Closest Elements (x - arr[mid] > arr[mid + k] - x)
+	- Find Peak Element (arr[mid] > arr[mid + 1])
+- Search based on Search Space
+	- Random Pick with Weight
+
+References:
+https://jonisalonen.com/2016/get-binary-search-right-the-first-time/ 
+https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb 
+	- Choosing next range’s L and R
+
+-------------------------------------------------------------------------------------------------------
+Two Pointer
+
+When you need to traverse a list in a specified order from both sides, or one side 
+
+Template
+Def twoPointer(l, r):
+	While l < r: 
+		#Do something to move left and right pointer
+		If stopping condition: 
+			Return False
+	Return True
+
+Variants + Problems 
+- Start and End of Array
+	- Trapping Rain Water
+	- Valid Palindrome II
+- Sliding Window
+	- Max Consecutive Ones III
+	- Fruits in Basket
+	- 424. Longest Repeating Character Replacement
+		- 26 different sliding windows for each letter
+- Start of Two Different Arrays
+	- Add String
+
+Pending Theory Questions
+Difference between while r < len(s) and for i in range(0, len(s))? 
+
+References
+https://leetcode.com/problems/fruit-into-baskets/solutions/170740/java-c-python-sliding-window-for-k-elements/?orderBy=most_votes 
+
+-------------------------------------------------------------------------------------------------------
+One Pointer
+
+When you need to traverse a list in a specified order
+
+Variants + Problems 
+- Math Logic
+	- Angle Between Hands of Clock
+- Simulation (Matrix)
+	- Toeplitz Matrix
+	- Diagonal Traversal
+- Hashmap Trick
+	- Prefix Sum
+	- Continuous Subarray Sum (Keep defaultdict(int))
+- Stacks 
+- Sets
+- Lists 
+
+-------------------------------------------------------------------------------------------------------
+Stack
+
+Problems + Variants:
+	- Regular Stack 
+		- idk? 
+	- Monotonic Stack
+		- Next Greater Element I
+		- Buildings with Ocean View
+
+MonoStack = Stack + Staggered and Conditional Removing and Adding 
+	- hence the elements within the stack are always increasing? 	
+	Types: 
+		- Increasing MS
+		- Decreasing MS 
+
+References:
+https://leetcode.com/problems/sum-of-subarray-minimums/discuss/178876/stack-solution-with-very-detailed-explanation-step-by-step
+https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack 
+
+-------------------------------------------------------------------------------------------------------
+Intervals
+
+Variants + Problems: 
+- One Pointer
+	- Template 1
+		Def Iterate():
+		For n in range(nums):
+		Do something with n
+		Modify a tracker
+		Return tracker 
+	- Template 2
+		Def Iterate()
+		While not stopping condition:
+		Modify nums
+		Modify tracker
+		Return tracker
+
+Implementation
+https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
+
+-------------------------------------------------------------------------------------------------------
+Dynamic Programming
+
+When you can find a recursive relationship within the problem
+
+Step 1: Find the base case
+Step 2: Find the recurrence relationship
+
+Note: this step can require a lot of edgecases that need to be thoroughly though through (e.g. see 91. decode ways)
+
+Advanced techniques
+Types of recurrence relations
+	- Type 1: Using just integer counters
+	- Type 2: Using lists of integers for counters
+Bottom up versus top down
+
+Variants + Problems: 
+	- 2d DP
+		- 62. Unique Paths
+	- 1d DP 
+		- Coin Change 
+		- House Robber 
+
+Reddit Answer
+The 2 most important things for dp are state variables and the recurrent relationship. Doing it from recursion (top-down) is more intuitive. Usually, when I am stuck on the state variables, I would try to solve it from top down first. It is a lot easier to figuring out the state variables by doing top-down.
+The second part is the recurrence relationship. There are essentially like 5 types of recurrent relationships, 0/1 knapsack, fibonacci, unbounded knapsack, longest common substring, Kadane's algo. 0/1 knapsack is referred to the classic thief's knapsack problem. Fibonacci is like the house robber. Unbounded knapsack is like coin change. Longest common substring is referred to the classic longest common substring, which could be expanded to answer the longest common subsequence. Kadane's algo is like best time to buy and sell stocks.
+The lists isn't complete or exhaustive but for interviews, covering the 5 basic cases should be good enough
+
+-------------------------------------------------------------------------------------------------------
+Graph Traversal
+
+Problems 
+	- Accounts Merge
+	- Making a Large Island
+
+-------------------------------------------------------------------------------------------------------
+String Logic
+
+Variants + Problems
+- DFA 
+	- Valid Number
+	- String to Integer (atoi)
+
+-------------------------------------------------------------------------------------------------------
+Sorting 
+
+Variants + Problems
+	- Bucket Sort (Used when working with frequencies)
+	- Cycle Sort (While loop until arr[i] != arr[arr[i]])
+	- Counting Sort
+	- Bubble Sort
+	- Quick Sort
+
+References 
+https://en.wikipedia.org/wiki/Bucket_sort 
+https://en.wikipedia.org/wiki/Cycle_sort 
+
+-------------------------------------------------------------------------------------------------------
+Quick Select
+	- Implementation:
+		- Select
+		- Moves pivot until reaches k
+		- Calls partition to find next pivot value
+		- Partition
+
+Variants + Problems:
+- Lumoto’s Partition
+	- K Closest Points to Origin
+	- Top K Frequent Elements
+- Hoare’s Partition 
+	- Random Pivot or Middle Pivot
+
+References:
+Sorting Visualized: https://www.youtube.com/watch?v=MZaf_9IZCrc 
+Lomuto Implementation: https://en.wikipedia.org/wiki/Quickselect#Algorithm 
+
+-------------------------------------------------------------------------------------------------------
+Union Find
+
+Properties
+Used to find minimum path
+
+Varians + Problems: 
+	- Path Compression
+
+-------------------------------------------------------------------------------------------------------
+Kahn’s Algo
+
+DFS (Tri Color)
+Morris Search [No Recursion Stack]
+Q: When can we use this? 
+
+-------------------------------------------------------------------------------------------------------
+Design, Language, DS 
+OOP/OOD
+
+Abstract Classes and Methods
+https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d 
+Python Tricks
+Lambda Statements
+
+Java Tricks
+Tree Map
+https://www.geeksforgeeks.org/treemap-in-java/ 
+Definitions
+Pattern
+A repeating abstraction found in interview problems
+Examples
+Algorithms
+Two Pointer, Backtracking
+Variants
+
+Data Structures
+	Queue
+	Heap
+	Linked List
+	Tree
+	Graph
+	Disjoint Union Set
+	Monotonic Stack, Doubly Linked List
+	Combo
+
+-------------------------------------------------------------------------------------------------------
+Prep, Learning, Strategy, Originization, Schedule, Etc. 
+
+Never consume coffee ever again before a test. 
+
+Goal
+	Break up the problems into patterns + variants to increase recall
+	Learn how to study well
+	Document your learning so that it’s easy to pick up where you left off 
+	Find the best practices for interview prep by talking to people who succeeded 
+	Improve my study abilities over 5-6 months (part of life long journey)
+
+Interview 
+	How to Quickly Run Through Test Case
+	Write code in a way that you can easily read it
+	Take time to organize code into ordered chunks before reading it
+	Identify if solution is complex or simple before hand
+	How to Pick Right Test Case
+
+Mock Interview
+	-Ask if he can optimize it
+	-Ask runtime and space complexity
+	-Follow him solving it
+	-Ask if he can walk through an example
+
+Steps
+	Step 1: Identify the pattern (practice patterns)
+	Step 2: Apply the pattern (you cannot proceed after this step)
+	Step 3: Prove the solution in plain english, before attempting it (memorize proofs)
+	Step 4: Implement the solution (memorize templates)
+
+Advanced techniques
+
+Analogies
+	The difference between an okay musician and a good muscian is the fundamentals and theory 
+
+How to get unstuck
+	Review previous solved DP problems
+
+How to review
+	If you can't explain the solutions in plain english to a non computer science student, you won't remember the concept yourself. 
+
+Daily Prep
+
+Schedule
+	Day A : Do 3 practice onsites
+	Day B : Reflect on the previous day's practice offsites 
+
+Questions to self
+	What do you want to improve on? 
+
+Hours per day 
+	8 hrs per day
+
+Meta Learning
+	Stages of Learning
+
+How to Practice LC Properly
+	Set a 2 minute timer after each failed test case
+	Go through at least one example before compiling 
+	Insert comments in code in the final pass
+
+Strategy
+	pick a lc question, then create a txt file with the number
+	start a timer for 20 minutes, and write down as much of an answer as you can
+	separate scratch work from final code solution
+
+Big Picture [Interview Prep]
+	Do a mock interview of each pattern
+	Wave at the beginning and the end
+	Say I’ve been exploring the city and reading 
+
+
+Not all problems are made the same
+	For example both Word Break II and Remove Invalid Parentheses are both classic BackTracking problems – One causes a world of pain – the other doesn’t (hint: Remove Invalid Parentheses == RIP)
+	Some problems can be solved with one pattern + variant, and solved optimally with a different pattern + variant
+		Subarray Sum Equals K
+		Solved with 2 Pointer/DP by checking all subarrays
+		Solved with 1 Pointer and Hashmap by considering mod arithmetic
+
+How to integrate with anki
+	Tag problems as solved and unsolved efficiently. 
+	Copy the question and attempted solution to a google sheet, then download and import them into anki
+	Match problems in anki with excel sheet, to quickly determine is a question is found or not found 
+
+Time Practice
+Approach 1: User timer
+
+Approach 2: User stopwatch 
+	- lap when finishing each problem
+
+
+Types of Tests
+
+OA 
+	- Code Signal
+		- measures speed, cleanliness, correctness 
+			- https://codesignal.com/resource/general-coding-assessment-framework/ 
+	- Coder Pad
+		- measures Correctness, Speed, Cleanliness and Brevity 
+			- https://coderpad.io/test-cases/ 
+	- Hacker Rank [Public Test Cases]
+		- tests correctness, and engineering
+	- Hacker Rank [Hidden Test Cases]
+		- tests unit testing and logical thinking 
+	- Codility [Public & Hidden Test Cases]
+		- tests correctness, engineering, and logical thinking
+
+
+Phone Screen 
+	- Coder Pad 
+
+Onsite 
+	- Coder Pad 
+
+-------------------------------------------------------------------------------------------------------
+
+from sys import prefix
+
+
+def prefixSum(array):
+    prefixSum = [0 for _ in range(len(array))]
+    currSum = 0
+    for index in range(len(array)):
+        curr = array[index]
+        currSum += curr
+        prefixSum[index] = currSum
+    return prefixSum
+
+def dynamicProgramming(array):
+    dp = [0 for _ in range(len(array))]
+    for index in range(len(array)):
+        curr = array[index]
+        if condition(curr):
+            dp[index] = dp[index - 1]
+    return dp[-1]
+
+
+def slidingWindow(array):
+    value = 0 
+    length = 0
+    minOrMax = 0
+    for right in range(len(array)):  
+        value += array[right]
+        length += 1
+        while condition(value):
+            value -= array[left]
+            left += 1
+            length -=1 
+        minOrMax = min(max(length))
+    return minOrMax
+
+def backtrack(grid):
+    return 
+
+def condition(x):
+    return True
+
+def bfs(root):
+    queue = [root]
+    while queue: 
+        nextNode = queue.popleft()
+        queue.append(nextNode.left)
+        queue.append(nextNode.right)
+
+def dfs(root):
+    if not root: 
+        return
+    else:
+        for child in root.children: 
+            if condition(child): 
+                dfs(child)
+
+def dfsBinaryTree(root):
+    if not root: 
+        return
+    else: 
+        print('preorder: parent -> leftchild -> rightchild')
+        dfsBinaryTree(root.left)
+        print('inorder: leftchild -> parent -> rightchild')
+        dfsBinaryTree(root.right)
+        print('postorder: leftchild -> rightchild -> parent')
+
+stack = []
+def dfsIterative(root):
+    stack.append(root)
+    while stack:
+        newNode = stack.pop()
+        stack.append(newNode.left)
+        stack.append(newNode.right)
+
+vertices = 10
+visited = [0 for node in range(vertices)]
+cycle = False
+def topoHelper(root):
+    if not root: 
+        return
+    else:
+        for child in root.children:
+            if visited[child] == 1: 
+                cycle = True
+            if visited[child] == 0:
+                visited[child] = 1
+                topoHelper(child)
+
+def topo(vertices):
+    for vertex in vertices:
+        if visited[vertex] == 0: 
+            topoHelper(vertex)
+
+def buildAdjacencyList(edges):
+    graph = {}
+    for edge in edges:
+        start = edge[0]
+        end = edge[1]
+        if start not in graph: 
+            graph[start] = [end]
+        else:
+            graph[start].append(end)
+    
+sortedArray = []
+def binarysearch(left, right):
+    while left < right:
+        mid = (left + right)//2
+        if sortedArray[mid] < sortedArray[right]:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return sortedArray[left]
+
+def binaryAddition(a, b):
+    sum = (a ^ b)
+    carry = (a & b) << 1
+
+    while b: 
+        sum = (a ^ b)
+        carry = (a & b) << 1
+        a = sum
+        b = carry
+
+    return a 
+
+def binarySubtraction(a, b):
+    diff = (a ^ b)
+    borrow = (~a & b) << 1
+
+    while b: 
+        diff = (a ^ b)
+        borrow = (~a & b) << 1
+        a = diff
+        b = borrow
+
+    return a
+
+def binaryCounting():
+    return 
+
+def main():
+    n = 10
+    grid = [[0 for i in range(len(n))] for j in range(len(n))]
+    backtrack(grid)
+
+if __name__ == '__main__':
+    main()
+
