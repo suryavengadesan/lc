@@ -39,15 +39,17 @@ Iterative Tree Traversal (Used when recursion stack grows too long)
 -------------------------------------------------------------------------------------------------------
 Backtrack
 	
+Keep track of visited data structure to prune search 
 Template
 Def Backtrack():
 
 - Variants + Problems 
 	- Stack + String
-		- Work Break II
-		- Remove Invalid Parentheses 
+		- 79. Word Break 
+		- 140. Work Break II
+		- 301. Remove Invalid Parentheses 
 	- Stack + Array
-		- Subsets
+		- 78. Subsets
 
 -------------------------------------------------------------------------------------------------------
 Djikstra's Algorithm 
@@ -56,7 +58,7 @@ Djikstra's Algorithm
 	- Find shortest path to all remaining nodes
 
 Problems
-	- Network Delay Time 
+	- 743. Network Delay Time 
 
 -------------------------------------------------------------------------------------------------------
 Binary Search
@@ -131,6 +133,7 @@ Variants + Problems
 - Sliding Window
 	- Max Consecutive Ones III
 	- Fruits in Basket
+	- 424. Longest Repeating Character Replacement
 - Start of Two Different Arrays
 	- Add String
 
@@ -215,13 +218,14 @@ Types of recurrence relations
 	- Type 2: Using lists of integers for counters
 Bottom up versus top down
 
+Variants + Problems: 
+	- 2d DP
+		- 62. Unique Paths 
+
 Reddit Answer
 The 2 most important things for dp are state variables and the recurrent relationship. Doing it from recursion (top-down) is more intuitive. Usually, when I am stuck on the state variables, I would try to solve it from top down first. It is a lot easier to figuring out the state variables by doing top-down.
 The second part is the recurrence relationship. There are essentially like 5 types of recurrent relationships, 0/1 knapsack, fibonacci, unbounded knapsack, longest common substring, Kadane's algo. 0/1 knapsack is referred to the classic thief's knapsack problem. Fibonacci is like the house robber. Unbounded knapsack is like coin change. Longest common substring is referred to the classic longest common substring, which could be expanded to answer the longest common subsequence. Kadane's algo is like best time to buy and sell stocks.
 The lists isn't complete or exhaustive but for interviews, covering the 5 basic cases should be good enough
-
-References
-https://www.reddit.com/r/leetcode/comments/v14q6y/comment/iakfr83/?utm_source=share&utm_medium=web2x&context=3 
 
 -------------------------------------------------------------------------------------------------------
 Graph Traversal
@@ -602,3 +606,4 @@ Youtube Walkthroughs (William Fiset): https://www.youtube.com/@WilliamFiset-vide
 Youtube Walkthroughs (Neetcode): https://www.youtube.com/c/NeetCode?app=desktop
 Guided Site (Neetcode): https://neetcode.io/
 William Lin Solves 150 problems in 12 hrs: https://m.youtube.com/watch?v=dZ_6MS14Mg4 
+Reddit DP: https://www.reddit.com/r/leetcode/comments/v14q6y/comment/iakfr83/?utm_source=share&utm_medium=web2x&context=3 

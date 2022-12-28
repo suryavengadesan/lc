@@ -196,82 +196,39 @@ Repeat until current index is the last index of the input string.
 Space: O(n)
 Time: O(n^2)
 
-## Sliding Window (Suboptimal)
+## Two Pointer - Sliding Window (Suboptimal)
 
 Keep a hashmap that keeps track of the total count of the characters in the current substring. The moment any character count is greater than 1, then move the left index and decrement left character from hashmap until all counts in the hashmap are <= 1. 
 
 Time: O(2n)
 Space: O(min(m, n)) s.t. m is size of alphabet
 
-## Sliding Window/Two Pointer Optimized (Optimal)
+## Two Pointer - Sliding Window (Optimal)
 
-Keep track of a start index that we will change according to the substring's repeated letters.
+Keep a hashmap that contains the index of the last occurance of each letter. When right pointer points to a duplicate, set left pointer to the max of the current left index and the hashmap's previous occurence index + 1. Compute the maxLength after each iteration of moving the right pointer. 
 
-If the current element is in the hashmap of previously seen letters, and the corresponding hashmap index is greater than the start index, set the new start index to the hashmap index + 1. If the hashmap index is less than the current start index, the element from the hashmap. Then set the current letter to the current index within the hashmap. 
-
-Then replace the hash map index with the curr element index. Also set substring length to current index - start index. Keep track of the maximum substring length so far, and return the value after the start index is the length of the word. 
+This ensures that the distance between the right pointer and left pointer reflects all valid intervals without duplicates. 
 
 Time: O(n)
 Space: O(min(n, m)) s.t. m = len(alphabet)
 
 ```
-letterIndices = {}
-startIndex = 0
-maxLength = 0
-for index in range(len(s)):
-    currLetter = s[index]
-    if currLetter not in letterIndices:
-        letterIndices[currLetter] = index
-    else:
-        if letterIndices[currLetter] >= startIndex:
-            startIndex = letterIndices[currLetter] + 1
-        else:
-            letterIndices.pop(currLetter)
-        letterIndices[currLetter] = index
-    substringLength = index - startIndex + 1
-    maxLength = max(maxLength, substringLength)
-return maxLength
-```
-
-
-
-```
-from math import inf
-
-def solution(s):
-    letterIndices = {}
-    startIndex = 0
+def lengthOfLongestSubstring(self, s: str) -> int:
+    import math 
+    l = 0
+    r = 0
+    hashmap = {}
     maxLength = 0
-    for index in range(len(s)):
-        currLetter = s[index]
-        if currLetter not in letterIndices:
-            letterIndices[currLetter] = index
-        else:
-            if letterIndices[currLetter] >= startIndex:
-                startIndex = letterIndices[currLetter] + 1
-            else:
-                letterIndices.pop(currLetter)
-            letterIndices[currLetter] = index
-        substringLength = index - startIndex + 1
-        maxLength = max(maxLength, substringLength)
-    return maxLength
-
-def main():
-    test = "pwwkew"
-    ans = solution(test)
-    print(ans)
-
-    test = "abcabcbb"
-    ans = solution(test)
-    print(ans)
-
-    test = "aab"
-    ans = solution(test)
-    print(ans)
-
-if __name__ == '__main__':
-    main()
-
+    for i in range(len(s)):
+        rLetter = s[r]
+        if rLetter in hashmap: 
+            l = max(l, hashmap[rLetter] + 1)
+            hashmap[rLetter] = r
+        else: 
+            hashmap[rLetter] = r 
+        maxLength = max(maxLength, r - l + 1)
+        r += 1
+    return int(maxLength)
 ```
 
 # 4. Median of Two Sorted Arrays
@@ -5983,12 +5940,12 @@ Space: O(1)
 ```
 def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
     prev = None
-    while head: #and head.next:
+    while head:
         tmp = head.next
         head.next = prev
         prev = head
         head = tmp
-    return prev #head
+    return prev
 ```
 
 # 207. Course Schedule
@@ -10345,67 +10302,6 @@ return maxWindow
 
 Time: O(n) = O(c * n) s.t. c = len(alphabet)
 Space: O(1)
-
-```
-def solution(s, k):
-    def slidingWindow(s, letter, k):
-        left = 0
-        right = 0
-        maxWindow = 0
-        letterCount  = 0
-        windowSize = k
-        while right < len(s):
-            if s[right] == letter:
-                letterCount += 1
-            if s[right] != letter and right - left < windowSize + letterCount:
-                k -= 1
-            right += 1
-
-            if k < 0 or right - left > windowSize + letterCount:
-                if s[left] != letter:
-                    k += 1
-                if s[left] == letter:
-                    letterCount -= 1
-                left += 1
-            
-            window = right - left
-            maxWindow = max(window, maxWindow)
-
-        return maxWindow
-
-    alphabet = set()
-    for letter in s:
-        alphabet.add(letter)
-
-    maxWindow = 0
-    for letter in alphabet:
-        window = slidingWindow(s, letter, k)
-        maxWindow = max(window, maxWindow)
-    return maxWindow
-
-
-def main():
-    test1 = "AABABBA"
-    test2 = 1
-    ans = solution(test1, test2)
-    print(ans)
-
-    test1 = "ABAB"
-    test2 = 2
-    ans = solution(test1, test2)
-    print(ans)
-
-    test1 = "AAAA"
-    test2 = 0
-    ans = solution(test1, test2)
-    print(ans)
-
-
-    
-
-if __name__ == '__main__':
-    main()
-```
 
 # 426. Convert Binary Search Tree to Sorted Doubly Linked List
 Medium
