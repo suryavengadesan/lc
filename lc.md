@@ -13411,8 +13411,8 @@ def distinctAverages(nums) -> int:
 ```
 
 # Notes
--------------------------------------------------------------------------------------------------------
-DFS (Depth First Search)
+
+# DFS (Depth First Search)
 
 When you need to traverse a tree, searching for a specific heuristic
 
@@ -13423,8 +13423,8 @@ Variants + Problems
 		- Post Order
 	- Connected Components 
 		- 547. Number of Provinces
--------------------------------------------------------------------------------------------------------
-BFS (Breadth First Search)
+
+# BFS (Breadth First Search)
 
 When you need to search a graph-life data structure in level order
 	- Level Order Traversal
@@ -13436,21 +13436,21 @@ Variants + Problems
 	- Djikstra's Algorithm
 		- Network Delay Time 
 
--------------------------------------------------------------------------------------------------------
-Topological Sort
+
+# Topological Sort
 	- Start with nodes with 0 indegree
 
 Variants + Problems
 	- Course Schedule 
 
--------------------------------------------------------------------------------------------------------
-Iterative Tree Traversal (Used when recursion stack grows too long)
+
+# Iterative Tree Traversal (Used when recursion stack grows too long)
 	- Morris
 	- Parent Traversal (Linked List)
 	- Node Stack (e.g. Flatten BT)
 
--------------------------------------------------------------------------------------------------------
-Backtrack
+
+# Backtrack
 	
 Keep track of visited data structure to prune search 
 Template
@@ -13464,8 +13464,8 @@ Def Backtrack():
 	- Stack + Array
 		- 78. Subsets
 
--------------------------------------------------------------------------------------------------------
-Djikstra's Algorithm 
+
+# Djikstra's Algorithm 
 
 	- BFS + Priority Queue 
 	- Find shortest path to all remaining nodes
@@ -13473,8 +13473,7 @@ Djikstra's Algorithm
 Problems
 	- 743. Network Delay Time 
 
--------------------------------------------------------------------------------------------------------
-Binary Search
+# Binary Search
 	
 Step 1: Find the left and right pointers
 Step 2: Set the center pointer
@@ -13526,8 +13525,8 @@ https://jonisalonen.com/2016/get-binary-search-right-the-first-time/
 https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb 
 	- Choosing next range’s L and R
 
--------------------------------------------------------------------------------------------------------
-Two Pointer
+
+# Two Pointer
 
 When you need to traverse a list in a specified order from both sides, or one side 
 
@@ -13557,8 +13556,8 @@ Difference between while r < len(s) and for i in range(0, len(s))?
 References
 https://leetcode.com/problems/fruit-into-baskets/solutions/170740/java-c-python-sliding-window-for-k-elements/?orderBy=most_votes 
 
--------------------------------------------------------------------------------------------------------
-One Pointer
+
+# One Pointer
 
 When you need to traverse a list in a specified order
 
@@ -13575,8 +13574,7 @@ Variants + Problems
 - Sets
 - Lists 
 
--------------------------------------------------------------------------------------------------------
-Stack
+# Stack
 
 Problems + Variants:
 	- Regular Stack 
@@ -13595,8 +13593,8 @@ References:
 https://leetcode.com/problems/sum-of-subarray-minimums/discuss/178876/stack-solution-with-very-detailed-explanation-step-by-step
 https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack 
 
--------------------------------------------------------------------------------------------------------
-Intervals
+
+# Intervals
 
 Variants + Problems: 
 - One Pointer
@@ -13616,8 +13614,8 @@ Variants + Problems:
 Implementation
 https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
 
--------------------------------------------------------------------------------------------------------
-Dynamic Programming
+
+# Dynamic Programming
 
 When you can find a recursive relationship within the problem
 
@@ -13644,23 +13642,21 @@ The 2 most important things for dp are state variables and the recurrent relatio
 The second part is the recurrence relationship. There are essentially like 5 types of recurrent relationships, 0/1 knapsack, fibonacci, unbounded knapsack, longest common substring, Kadane's algo. 0/1 knapsack is referred to the classic thief's knapsack problem. Fibonacci is like the house robber. Unbounded knapsack is like coin change. Longest common substring is referred to the classic longest common substring, which could be expanded to answer the longest common subsequence. Kadane's algo is like best time to buy and sell stocks.
 The lists isn't complete or exhaustive but for interviews, covering the 5 basic cases should be good enough
 
--------------------------------------------------------------------------------------------------------
-Graph Traversal
+
+# Graph Traversal
 
 Problems 
 	- Accounts Merge
 	- Making a Large Island
 
--------------------------------------------------------------------------------------------------------
-String Logic
+# String Logic
 
 Variants + Problems
 - DFA 
 	- Valid Number
 	- String to Integer (atoi)
 
--------------------------------------------------------------------------------------------------------
-Sorting 
+# Sorting 
 
 Variants + Problems
 	- Bucket Sort (Used when working with frequencies)
@@ -13673,8 +13669,7 @@ References
 https://en.wikipedia.org/wiki/Bucket_sort 
 https://en.wikipedia.org/wiki/Cycle_sort 
 
--------------------------------------------------------------------------------------------------------
-Quick Select
+# Quick Select
 	- Implementation:
 		- Select
 		- Moves pivot until reaches k
@@ -13692,8 +13687,7 @@ References:
 Sorting Visualized: https://www.youtube.com/watch?v=MZaf_9IZCrc 
 Lomuto Implementation: https://en.wikipedia.org/wiki/Quickselect#Algorithm 
 
--------------------------------------------------------------------------------------------------------
-Union Find
+# Union Find
 
 Properties
 Used to find minimum path
@@ -13701,15 +13695,16 @@ Used to find minimum path
 Varians + Problems: 
 	- Path Compression
 
--------------------------------------------------------------------------------------------------------
-Kahn’s Algo
+
+# Kahn’s Algo
 
 DFS (Tri Color)
 Morris Search [No Recursion Stack]
 Q: When can we use this? 
 
--------------------------------------------------------------------------------------------------------
-Design, Language, DS 
+
+# Design, Language, DS 
+
 OOP/OOD
 
 Abstract Classes and Methods
@@ -13738,8 +13733,7 @@ Data Structures
 	Monotonic Stack, Doubly Linked List
 	Combo
 
--------------------------------------------------------------------------------------------------------
-Prep, Learning, Strategy, Originization, Schedule, Etc. 
+# Prep, Learning, Strategy, Originization, Schedule, Etc. 
 
 Never consume coffee ever again before a test. 
 
@@ -13853,7 +13847,7 @@ Phone Screen
 Onsite 
 	- Coder Pad 
 
--------------------------------------------------------------------------------------------------------
+# Templates 
 
 from sys import prefix
 
