@@ -10421,28 +10421,45 @@ Explanation: You don't need to remove any of the intervals since they're already
 
 Calculate the number of overlaps for each interval. Store the values in a heap. Remove the intervals with most to least over laps until the intervals are not longer overlapping. 
 
-## Greedy (optimal)
+## Greedy - Sort by Start Time (Suboptimal)
+
+sort intervals by value at first index 
+
+remove the value with the longer next index 
+
+final interavals no. minus starting interval no. is min removals
+
+```
+def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+    n = len(intervals)
+    intervals.sort()
+
+    stack = []
+    for i in range(len(intervals)):
+        curr = intervals[i]
+        if not stack:
+            stack.append(curr)
+        else:
+            if curr[0] < stack[-1][1]:
+                if curr[1] < stack[-1][1]: 
+                    stack.pop()
+                    stack.append(curr)
+            else: 
+                stack.append(curr)
+    
+    m = len(stack)
+    return n - m
+```
+
+## Greedy - Sort by End Time (Optimal)
 
 Sort the array by end times. Iterate over each interval, and if the current interval start time overlaps the previous interval end time, the add to total count, else update the previous interval end time to the current end time. 
 
 This works because 
 
 ```
-end = -inf
-removals = 0
-intervals = sorted(intervals, key = lambda x: x[1])
-
-for interval in intervals: 
-    if interval[0] >= end: 
-        end = interval[1]
-    else:
-        removals += 1
-return removals
-```
-
-```
 from math import inf
-def solution(intervals):
+def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
     end = -inf
     removals = 0
     intervals = sorted(intervals, key = lambda x: x[1])
@@ -13622,20 +13639,23 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
 
 # Intervals
 
-Variants + Problems: 
-- One Pointer
-	- Template 1
-		Def Iterate():
-		For n in range(nums):
-		Do something with n
-		Modify a tracker
-		Return tracker 
-	- Template 2
-		Def Iterate()
-		While not stopping condition:
-		Modify nums
-		Modify tracker
-		Return tracker
+- Variants + Problems: 
+    - One Pointer
+        - 435. Non-overlapping Intervals
+
+
+- Template 1
+    Def Iterate():
+    For n in range(nums):
+    Do something with n
+    Modify a tracker
+    Return tracker 
+- Template 2
+    Def Iterate()
+    While not stopping condition:
+    Modify nums
+    Modify tracker
+    Return tracker
 
 Implementation
 https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
@@ -13662,6 +13682,7 @@ Bottom up versus top down
 	- 1d DP 
 		- 322. Coin Change 
 		- 198. House Robber 
+
 ```
 def dynamicProgramming(array):
     dp = [0 for _ in range(len(array))]
@@ -13680,16 +13701,16 @@ The lists isn't complete or exhaustive but for interviews, covering the 5 basic 
 
 # Graph Traversal
 
-Problems 
+- Variants + Problems 
 	- Accounts Merge
 	- Making a Large Island
 
 # String Logic
 
-Variants + Problems
-- DFA 
-	- Valid Number
-	- String to Integer (atoi)
+- Variants + Problems
+    - DFA 
+        - Valid Number
+        - String to Integer (atoi)
 
 # Sorting 
 
@@ -13705,18 +13726,18 @@ https://en.wikipedia.org/wiki/Bucket_sort
 https://en.wikipedia.org/wiki/Cycle_sort 
 
 # Quick Select
-	- Implementation:
-		- Select
-		- Moves pivot until reaches k
-		- Calls partition to find next pivot value
-		- Partition
+- Implementation:
+    - Select
+    - Moves pivot until reaches k
+    - Calls partition to find next pivot value
+    - Partition
 
-Variants + Problems:
-- Lumoto’s Partition
-	- K Closest Points to Origin
-	- Top K Frequent Elements
-- Hoare’s Partition 
-	- Random Pivot or Middle Pivot
+- Variants + Problems:
+    - Lumoto’s Partition
+        - K Closest Points to Origin
+        - Top K Frequent Elements
+    - Hoare’s Partition 
+        - Random Pivot or Middle Pivot
 
 References:
 Sorting Visualized: https://www.youtube.com/watch?v=MZaf_9IZCrc 
@@ -13727,7 +13748,7 @@ Lomuto Implementation: https://en.wikipedia.org/wiki/Quickselect#Algorithm
 Properties
 Used to find minimum path
 
-Varians + Problems: 
+- Variants + Problems: 
 	- Path Compression
 
 
@@ -13737,6 +13758,8 @@ DFS (Tri Color)
 Morris Search [No Recursion Stack]
 Q: When can we use this? 
 
+# Kadane's Algo 
+
 
 # Design, Language, DS 
 
@@ -13744,33 +13767,23 @@ OOP/OOD
 
 Abstract Classes and Methods
 https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d 
-Python Tricks
-Lambda Statements
 
-Java Tricks
+# Python Tricks
+
+Sort List by Element via Lambda Statements
+`sorted(intervals, key = lambda x: x[1])`
+
+# Java Tricks
 Tree Map
 https://www.geeksforgeeks.org/treemap-in-java/ 
-Definitions
-Pattern
-A repeating abstraction found in interview problems
-Examples
-Algorithms
-Two Pointer, Backtracking
-Variants
-
-Data Structures
-	Queue
-	Heap
-	Linked List
-	Tree
-	Graph
-	Disjoint Union Set
-	Monotonic Stack, Doubly Linked List
-	Combo
 
 # Prep, Learning, Strategy, Originization, Schedule, Etc. 
+- What is a pattern? 
+    - A repeating abstraction found in algorithm problems (e.g. Two Pointer, Backtracking)
 
-Never consume coffee ever again before a test. 
+- What is a data structure? 
+    - Queue, Heap, Linked List, Tree, Graph, Disjoint Union Set, Monotonic Stack, Doubly Linked List, Combination of the above
+
 
 - Goal  
 	- Break up the problems into patterns + variants to increase recall  
@@ -13877,6 +13890,8 @@ Types of Tests
 
 - Onsite 
 	- Coder Pad 
+
+Never consume coffee ever again before a test
 
 # Templates 
 
