@@ -13665,23 +13665,28 @@ https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss
 
 When you can find a recursive relationship within the problem
 
-- Step 1: Find the base case
+- Step 1: Find the base case 
+- Step 1.5: Find the state variable
 - Step 2: Find the recurrence relationship
 
 Note: this step can require a lot of edgecases that need to be thoroughly though through (e.g. see 91. decode ways)
 
-Advanced techniques
-Types of recurrence relations
+- Advanced techniques
+- Types of recurrence relations
 	- Type 1: Using just integer counters
 	- Type 2: Using lists of integers for counters
-Bottom up versus top down
+- Two Approaches
+    - Bottom up - Recursive [More intuitive]
+    - Top down - Tabular [More concise]
 
 - Variants + Problems: 
 	- 2d DP
 		- 62. Unique Paths
 	- 1d DP 
 		- 322. Coin Change 
-		- 198. House Robber 
+		- 198. House Robber
+        - 91. Decode Ways 
+        - 2361. Minimum Cost Using Train Line 
 
 ```
 def dynamicProgramming(array):
@@ -13693,10 +13698,17 @@ def dynamicProgramming(array):
     return dp[-1]
 ```
 
-Reddit Answer
-The 2 most important things for dp are state variables and the recurrent relationship. Doing it from recursion (top-down) is more intuitive. Usually, when I am stuck on the state variables, I would try to solve it from top down first. It is a lot easier to figuring out the state variables by doing top-down.
-The second part is the recurrence relationship. There are essentially like 5 types of recurrent relationships, 0/1 knapsack, fibonacci, unbounded knapsack, longest common substring, Kadane's algo. 0/1 knapsack is referred to the classic thief's knapsack problem. Fibonacci is like the house robber. Unbounded knapsack is like coin change. Longest common substring is referred to the classic longest common substring, which could be expanded to answer the longest common subsequence. Kadane's algo is like best time to buy and sell stocks.
-The lists isn't complete or exhaustive but for interviews, covering the 5 basic cases should be good enough
+- 5 types of recurrent relationships (Reddit)
+    - 0/1 knapsack 
+        - classic knapsack 
+    - fibonacci
+        - house robber
+    - unbounded knapsack
+        - coin change 
+    - longest common substring
+        - longest common subsequence
+    - Kadane's algo
+        - best time to buy sell stock 
 
 
 # Graph Traversal
