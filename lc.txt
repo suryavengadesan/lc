@@ -436,6 +436,8 @@ Phone Screen
 Onsite 
 	- Coder Pad 
 
+-------------------------------------------------------------------------------------------------------
+
 from sys import prefix
 
 
@@ -583,27 +585,4 @@ def main():
 
 if __name__ == '__main__':
     main()
--------------------------------------------------------------------------------------------------------
 
-General References
-
-Dummy Codes: https://www.youtube.com/watch?v=WCr8ydxgsNA 
-Reasons to Fail Onsite: https://www.youtube.com/watch?v=xx5GAE9hfSU 
-Behavioral Interview Prep: https://www.youtube.com/c/DanCroitor/videos 
-How to pass FB’s interview: https://automationhacks.io/2022/01/02/how-i-got-that-job-at-meta 
-Journey to Meta: https://medium.com/@andyangnyc/my-journey-to-meta-a431663763f9 
-Meta Offer + Mental Health: https://leetcode.com/discuss/general-discussion/1483601/from-zero-to-fb-offer-and-mentoring-other-people-my-way-to-750-problems 
-Work: https://www.youtube.com/watch?v=_zR6ROjoOX0 
-Quant Overview: https://www.math.lsu.edu/~smolinsk/Quant_Interview_Prep.pdf 
-Quant Youtube Walkthrough: https://www.youtube.com/channel/UCF6yapaqaAp-1xuDvH_mDmQ/videos 
-Algorithm Patterns
-Leetcode: https://leetcode.com/discuss/general-discussion/665604/Important-and-Useful-links-from-all-over-the-LeetCode/1011825 
-Solvers: https://cc189.github.io/leetcode/ 
-Topo Sort: https://leetcode.com/discuss/general-discussion/1078072/introduction-to-topological-sort 
-Jane Street SWE Interview: https://blog.janestreet.com/what-a-jane-street-dev-interview-is-like/ 
-Gitbook of Patterns: https://liuzhenglaichn.gitbook.io/algorithm/monotonic-stack
-Youtube Walkthroughs (William Fiset): https://www.youtube.com/@WilliamFiset-videos/videos
-Youtube Walkthroughs (Neetcode): https://www.youtube.com/c/NeetCode?app=desktop
-Guided Site (Neetcode): https://neetcode.io/
-William Lin Solves 150 problems in 12 hrs: https://m.youtube.com/watch?v=dZ_6MS14Mg4 
-Reddit DP: https://www.reddit.com/r/leetcode/comments/v14q6y/comment/iakfr83/?utm_source=share&utm_medium=web2x&context=3 
