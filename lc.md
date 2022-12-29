@@ -3826,11 +3826,26 @@ Input: preorder = [-1], inorder = [-1]
 Output: [-1]
 
 
-## Intelligent Iteration
+## Recursion - Build Tree
 
 For every element in the inorder array, everything to the left of an element corresponds to everything left on the tree for the root node. Likewise, everything right of an element is everything to the right of the tree for the root node. 
 
+Build the tree by recursing over subarrays preorder and inorder. Remove the first element of preorder on at a time, to set as new root and construct left and right child nodes based on left and right half of inorder subarries.
+
+Popping the values off of preorder allows preorder to keep shrinking during recursive calls, and since all left children are popped first, right recursive calls have the accurate values.
+
+Stop recursing when inorder subarries and preorder array are empty. 
+
+Time: O(n)
+Space: O(n)
+
 ```
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
 def traverse(preorder, inorder):
     if not inorder or not preorder: 
         return
@@ -3853,34 +3868,6 @@ def traverse(preorder, inorder):
         
 tree = traverse(preorder, inorder)
 return tree
-```
-
-```
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-def solution(preorder, inorder):
-    def traverse(preorder, inorder):
-        if not inorder or not preorder: 
-            return
-
-        root = preorder.pop(0)
-        index = inorder.index(root)
-
-        leftSubtree = inorder[:index]
-        rightSubtree = inorder[index + 1:]
-
-        tree = TreeNode(root)
-        tree.left = traverse(preorder, leftSubtree)  
-        tree.right = traverse(preorder, rightSubtree)
-
-        return tree
-            
-    tree = traverse(preorder, inorder)
-    return tree
 ```
 
 # 111. Minimum Depth of Binary Tree
@@ -13434,17 +13421,24 @@ def distinctAverages(nums) -> int:
     return len(s)
 ```
 
-# Notes
+# My Notes
 
 # DFS (Depth First Search)
 
 When you need to traverse a tree or graph, searching for a specific heuristic
 
+```
+def dfs(root):
+    if not root: 
+        return
+    else:
+        for child in root.children: 
+            if condition(child): 
+                dfs(child)
+```
+
+
 - Variants + Problems
-	- Tree Search
-		- Pre Order
-		- In Order
-		- Post Order
 	- Connected Components 
 		- 547. Number of Provinces
 
@@ -13453,6 +13447,15 @@ When you need to traverse a tree or graph, searching for a specific heuristic
 When you need to search a graph-life data structure in level order
 	- Level Order Traversal
 	- Use a Queue
+
+```
+def bfs(root):
+    queue = [root]
+    while queue: 
+        nextNode = queue.popleft()
+        queue.append(nextNode.left)
+        queue.append(nextNode.right)
+```
 
 - Variants + Problems
 	- General Search 
@@ -13470,6 +13473,27 @@ When you need to search a graph-life data structure in level order
     - Iterate through the visited table 
     - If node not visited yet (e.g. visited[i] == 0), perform dfs
 
+```
+vertices = 10
+visited = [0 for node in range(vertices)]
+cycle = False
+def topoHelper(root):
+    if not root: 
+        return
+    else:
+        for child in root.children:
+            if visited[child] == 1: 
+                cycle = True
+            if visited[child] == 0:
+                visited[child] = 1
+                topoHelper(child)
+
+def topo(vertices):
+    for vertex in vertices:
+        if visited[vertex] == 0: 
+            topoHelper(vertex)
+```
+
 
 - BFS Version [More Intuitive but Lengthy Code]
     - Add all nodes with 0 indegree to queue
@@ -13480,9 +13504,32 @@ When you need to search a graph-life data structure in level order
 	- 207. Course Schedule 
     - 269. Alien Dictionary
 
+# Recursive Tree Traversal
+
+Preorder - Visit Root First, before Left or Right Child 
+Inorder - Visit Root after Left Child, but before Right Child
+Postorder - Visit root after right Child 
+
+```
+if not root: 
+    return 
+else: 
+    #preorder
+    search(root.left)
+    #inorder
+    search(root.right)
+    #postorder
+```
+
+- Problems + Variants  
+    - Pre Order
+    - In Order
+    - Post Order
+        - (105) Construct Binary Tree From Preorder and Inorder Traversal 
 
 # Iterative Tree Traversal (Used when recursion stack grows too long)
-	- Morris
+- Problems + Variants 
+    - Morris
 	- Parent Traversal (Linked List)
 	- Node Stack (e.g. Flatten BT)
 
@@ -13492,6 +13539,7 @@ When you need to search a graph-life data structure in level order
 Keep track of visited data structure to prune search 
 Template
 Def Backtrack():
+
 
 - Variants + Problems 
 	- Stack + String
@@ -13524,7 +13572,18 @@ Common Issues + Errors with Execution
 		- if left pointer increments incorrectly
 		- if right pointer decrements incorrectly 
 		- if left pointer == right pointer, but left pointer never < right pointer 
-		
+
+```	
+sortedArray = []
+def binarysearch(left, right):
+    while left < right:
+        mid = (left + right)//2
+        if sortedArray[mid] < sortedArray[right]:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return sortedArray[left]
+```
 
 Implementation:
 def binarySearch():
@@ -13575,6 +13634,23 @@ Def twoPointer(l, r):
 			Return False
 	Return True
 
+```
+def slidingWindow(array):
+    value = 0 
+    length = 0
+    minOrMax = 0
+    for right in range(len(array)):  
+        value += array[right]
+        length += 1
+        while condition(value):
+            value -= array[left]
+            left += 1
+            length -=1 
+        minOrMax = min(max(length))
+    return minOrMax
+```
+
+
 Variants + Problems 
 - Start and End of Array
 	- Trapping Rain Water
@@ -13609,7 +13685,44 @@ Variants + Problems
 	- Continuous Subarray Sum (Keep defaultdict(int))
 - Stacks 
 - Sets
-- Lists 
+- Lists
+
+# Linked List
+
+- Variants + Problems 
+    - Add Two Numbers
+
+# Bit Manipulation
+
+```
+def binaryAddition(a, b):
+    sum = (a ^ b)
+    carry = (a & b) << 1
+
+    while b: 
+        sum = (a ^ b)
+        carry = (a & b) << 1
+        a = sum
+        b = carry
+
+    return a 
+
+def binarySubtraction(a, b):
+    diff = (a ^ b)
+    borrow = (~a & b) << 1
+
+    while b: 
+        diff = (a ^ b)
+        borrow = (~a & b) << 1
+        a = diff
+        b = borrow
+
+    return a
+```
+
+- Variants + Problems
+    - (371) Sum of Two Integers 
+    - (338) Counting Bits 
 
 # Stack
 
@@ -13637,8 +13750,6 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
     - One Pointer
         - 435. Non-overlapping Intervals
         - 57. Insert Interval 
-
-
 
 - Template 1
     Def Iterate():
@@ -13921,19 +14032,7 @@ def prefixSum(array):
     return prefixSum
 
 
-def slidingWindow(array):
-    value = 0 
-    length = 0
-    minOrMax = 0
-    for right in range(len(array)):  
-        value += array[right]
-        length += 1
-        while condition(value):
-            value -= array[left]
-            left += 1
-            length -=1 
-        minOrMax = min(max(length))
-    return minOrMax
+
 
 def backtrack(grid):
     return 
@@ -13941,20 +14040,7 @@ def backtrack(grid):
 def condition(x):
     return True
 
-def bfs(root):
-    queue = [root]
-    while queue: 
-        nextNode = queue.popleft()
-        queue.append(nextNode.left)
-        queue.append(nextNode.right)
 
-def dfs(root):
-    if not root: 
-        return
-    else:
-        for child in root.children: 
-            if condition(child): 
-                dfs(child)
 
 def dfsBinaryTree(root):
     if not root: 
@@ -13974,24 +14060,7 @@ def dfsIterative(root):
         stack.append(newNode.left)
         stack.append(newNode.right)
 
-vertices = 10
-visited = [0 for node in range(vertices)]
-cycle = False
-def topoHelper(root):
-    if not root: 
-        return
-    else:
-        for child in root.children:
-            if visited[child] == 1: 
-                cycle = True
-            if visited[child] == 0:
-                visited[child] = 1
-                topoHelper(child)
 
-def topo(vertices):
-    for vertex in vertices:
-        if visited[vertex] == 0: 
-            topoHelper(vertex)
 
 def buildAdjacencyList(edges):
     graph = {}
@@ -14002,40 +14071,6 @@ def buildAdjacencyList(edges):
             graph[start] = [end]
         else:
             graph[start].append(end)
-    
-sortedArray = []
-def binarysearch(left, right):
-    while left < right:
-        mid = (left + right)//2
-        if sortedArray[mid] < sortedArray[right]:
-            left = mid + 1
-        else:
-            right = mid - 1
-    return sortedArray[left]
-
-def binaryAddition(a, b):
-    sum = (a ^ b)
-    carry = (a & b) << 1
-
-    while b: 
-        sum = (a ^ b)
-        carry = (a & b) << 1
-        a = sum
-        b = carry
-
-    return a 
-
-def binarySubtraction(a, b):
-    diff = (a ^ b)
-    borrow = (~a & b) << 1
-
-    while b: 
-        diff = (a ^ b)
-        borrow = (~a & b) << 1
-        a = diff
-        b = borrow
-
-    return a
 
 def binaryCounting():
     return 
