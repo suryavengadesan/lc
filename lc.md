@@ -2183,65 +2183,6 @@ for index in range(len(intervals)):
 return newArray + [newInterval]
 ```
 
-```
-def solution(intervals, newInterval):
-    newArray = []
-
-    for index in range(len(intervals)): 
-        interval = intervals[index]
-        if interval[1] < newInterval[0]:
-            newArray.append(interval)
-        elif interval[0] > newInterval[1]:
-            return newArray + [newInterval] + intervals[index:]
-        else:
-            newInterval[0] = min(newInterval[0], interval[0])
-            newInterval[1] = max(newInterval[1], interval[1])
-
-    return newArray + [newInterval]
-        
-
-def solution1(intervals, newInterval):
-    def intersects(intervalA, intervalB):
-        if intervalB[0] <= intervalA[0] and intervalB[1] >= intervalA[1]:
-            return True
-        elif intervalB[0] >= intervalA[0] and intervalB[1] <= intervalA[1]:
-            return True
-        elif intervalB[0] >= intervalA[0] and intervalB[0] <= intervalA[1]:
-            return True
-        elif intervalB[1] <= intervalA[1] and intervalB[1] >= intervalA[0]:
-            return True
-        else:
-            return False
-
-    newArray = []
-    newIntervalMin = newInterval[0]
-    newIntervalMax = newInterval[1]
-    for interval in intervals: 
-        if intersects(interval, newInterval):
-            newIntervalMin = min(newIntervalMin, interval[0])
-            newIntervalMax = max(newIntervalMax, interval[1])
-        else:
-            newArray.append(interval)
-
-    newInterval = [newIntervalMin, newIntervalMax]
-
-    if not newArray: 
-        return [newInterval]
-
-    for index in range(len(newArray)):
-        start = newArray[index][0]
-        end = newArray[index][1]
-    
-        if newIntervalMax < start:
-            newArray.insert(index, newInterval)
-            break
-
-    if newIntervalMin > newArray[-1][1]:
-        newArray.append(newInterval)
-
-    return newArray
-```
-
 # 62. Unique Paths
 Medium
 
@@ -5249,6 +5190,9 @@ Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
 
 ## Dynamic Programming
 
+Keep track of the maxmimum product and minimum product so far. 
+
+
 Base Case: Set all negative and positive max arrays to -inf
 Recursive step: new max = previous max's (both positive and negative) * new element 
 if any previous value is -inf or 0, then set new value to the current value 
@@ -5274,49 +5218,14 @@ def solution(nums):
         maxSoFarTmp = max(curr, curr * minSoFar, curr * maxSoFar)
         minSoFar = min(curr, curr * minSoFar, curr * maxSoFar)
         maxSoFar = maxSoFarTmp
-        
         result = max(result, maxSoFar)
 
     return result
-    
-def solution(nums):
-    negMax = [-inf for i in range(len(nums) + 1)]
-    posMax = [-inf for i in range(len(nums) + 1)]
-    for index in range(len(nums)):
-        a = nums[index] * negMax[index - 1]
-        b = nums[index] * posMax[index - 1]
-
-        if negMax[index - 1] == 0 or negMax[index - 1] == -inf: 
-            a = nums[index]
-        if posMax[index - 1] == 0 or posMax[index - 1] == -inf: 
-            b = nums[index]
-
-        if a < 0: 
-            negMax[index] = a
-        if a == 0:
-            negMax[index] = a
-            posMax[index] = a
-        if a > 0: 
-            posMax[index] = a
-
-        if b < 0: 
-            negMax[index] = b
-        if b == 0:
-            negMax[index] = b
-            posMax[index] = b
-        if b > 0: 
-            posMax[index] = b
-
-    return max(max(negMax), max(posMax))
-
-
-
-        
-
-
-
-
 ```
+
+## Kadane's Algorithm
+
+Compute the maximum prefix product and maximum suffix product. 
 
 # 153. Find Minimum in Rotated Sorted Array
 Medium
@@ -8358,29 +8267,23 @@ Output: 1
 4. Return max of all counters
 
 ## Dynamic Programming
-Keep a DP table inialized to 1's. 
 
-Iterate through the given array, setting the corresponding dp[i] = dp[i-1] + 1 if the current value is greater than the previous value. 
+State variable = longest subsequence up until index.
 
-The DP Table contains the length of the longest increasing subsequence up until each index. 
+The DP Table contains the length of the longest increasing subsequence up until each index.
 
-Keep a separate DP table, where index i of the table containes the length of longest increasing subsequence up to that length. 
+Keep a DP table inialized to 1's, since each element, is by default a sequence of length 1.  
 
-Set the default values to 1, since each element, is by default a sequence of length 1. 
+Step 1:  Iterate through the given array, setting the corresponding dp[i] = dp[i-1] + 1 if the current value is greater than the previous value. 
 
-For each element before the current index, if the current value is greater than that value, check if table[j] + 1> table[i].
+ 
+Step 2: For each element before the current index, if the current value is greater than that value, check if table[j] + 1> table[i], where i is the current index. 
 
 If so, set table[i] to table[j] + 1. 
 
 [1, 2, 3, 1, 2, 1, 1, 5]
 
-Time: O(N^2)
-Space: O(N)
-
-## Intelligent Subsequence Iteration 
-
-
-Time: O((N/2)^2)
+Time: O(N)
 Space: O(N)
 
 ```
@@ -8398,10 +8301,6 @@ def main():
     test = [0,1,0,3,2,3]
     ans = solution(test)
     print(ans)
-
-if __name__ == '__main__':
-    main()
-
 ```
 
 # 301. Remove Invalid Parentheses
@@ -13108,6 +13007,101 @@ def solution(n, x):
 				return n 
 		return n + str(x)
 ```
+# 2361. Minimum Costs Using the Train Line
+Hard
+66
+13
+company
+Citadel
+
+A train line going through a city has two routes, the regular route and the express route. Both routes go through the same n + 1 stops labeled from 0 to n. Initially, you start on the regular route at stop 0.
+
+You are given two 1-indexed integer arrays regular and express, both of length n. regular[i] describes the cost it takes to go from stop i - 1 to stop i using the regular route, and express[i] describes the cost it takes to go from stop i - 1 to stop i using the express route.
+
+You are also given an integer expressCost which represents the cost to transfer from the regular route to the express route.
+
+Note that:
+
+    There is no cost to transfer from the express route back to the regular route.
+    You pay expressCost every time you transfer from the regular route to the express route.
+    There is no extra cost to stay on the express route.
+
+Return a 1-indexed array costs of length n, where costs[i] is the minimum cost to reach stop i from stop 0.
+
+Note that a stop can be counted as reached from either route.
+
+ 
+
+Example 1:
+
+Input: regular = [1,6,9,5], express = [5,2,3,10], expressCost = 8
+Output: [1,7,14,19]
+Explanation: The diagram above shows how to reach stop 4 from stop 0 with minimum cost.
+- Take the regular route from stop 0 to stop 1, costing 1.
+- Take the express route from stop 1 to stop 2, costing 8 + 2 = 10.
+- Take the express route from stop 2 to stop 3, costing 3.
+- Take the regular route from stop 3 to stop 4, costing 5.
+The total cost is 1 + 10 + 3 + 5 = 19.
+Note that a different route could be taken to reach the other stops with minimum cost.
+
+Example 2:
+
+Input: regular = [11,5,13], express = [7,10,6], expressCost = 3
+Output: [10,15,24]
+Explanation: The diagram above shows how to reach stop 3 from stop 0 with minimum cost.
+- Take the express route from stop 0 to stop 1, costing 3 + 7 = 10.
+- Take the regular route from stop 1 to stop 2, costing 5.
+- Take the express route from stop 2 to stop 3, costing 3 + 6 = 9.
+The total cost is 10 + 5 + 9 = 24.
+Note that the expressCost is paid again to transfer back to the express route.
+
+ 
+
+Constraints:
+
+    n == regular.length == express.length
+    1 <= n <= 105
+    1 <= regular[i], express[i], expressCost <= 105
+
+## BFS (Suboptimal & Incorrect)
+
+Modify the regular indexes to (index+1) * 2 (even)
+Modify the express indexes to (index+1) * 2 - 1 (odd)
+
+Apply djikstra's on the graph
+
+For each index, return the min((index + 1) * 2, (index + 1) * 2 - 1)
+
+## Dynamic Programming - 1D variant
+
+3 possible steps at any given moment: regular, express, regular + toll 
+
+- two paths 
+    - (1) move forward, then switch 
+    - (2)switch, then forward
+
+code for both approaches provided below
+
+Time: O(n)
+Space: O(n)
+
+
+```
+def minimumCosts(self, regular: List[int], express: List[int], expressCost: int) -> List[int]:
+        dpr = [0] * (len(regular) + 1)
+        dpe = [0] * (len(regular) + 1)
+        dpe[0] = expressCost
+        output = [0] * len(regular)
+        for i in range(1, len(regular) + 1):
+            #Switch Forward
+            #dpr[i] = min(dpr[i - 1] + regular[i-1], dpe[i - 1] + regular[i-1])
+            #dpe[i] = min(dpr[i-1] + expressCost + express[i-1], dpe[i-1] + express[i-1])
+            #Forward Switch 
+            dpr[i] = min(dpr[i-1] + regular[i-1], dpe[i-1] + express[i-1])
+            dpe[i] = min(dpr[i-1] + regular[i-1] + expressCost, dpe[i-1] + express[i-1])
+            output[i - 1] = min(dpr[i], dpe[i])
+        return output
+```
 
 # 2416. Sum of Prefix Scores of Strings
 Hard
@@ -13642,6 +13636,8 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
 - Variants + Problems: 
     - One Pointer
         - 435. Non-overlapping Intervals
+        - 57. Insert Interval 
+
 
 
 - Template 1
@@ -13681,13 +13677,16 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
 
 - Variants + Problems: 
 	- 2d DP
-		- 62) Unique Paths
+		- (62) Unique Paths
 	- 1d DP 
+        - (300) Longest Increasing Subsequence 
 		- (322) Coin Change 
-		- 198) House Robber
-        - 91) Decode Ways 
-        - 2361) Minimum Cost Using Train Line 
-
+		- (198) House Robber
+        - (91) Decode Ways 
+        - (2361) Minimum Cost Using Train Line 
+    - Kadane's Algorithm
+        - (53) Maximum Subarray (Sum)
+        - Maximum Subarray Product
 
 ```
 def dynamicProgramming(array):
