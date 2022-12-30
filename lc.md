@@ -6743,11 +6743,30 @@ Constraints:
     p != q
     p and q will exist in the BST.
 
+## DFS Traversal - Recursive
 
+Space: O(n)
+Time: O(n)
 
-## DFS Traversal
+```
+def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+    high = max(p.val, q.val)
+    low = min(p.val, q.val)
+    def inorder(root):
+        if not root:
+            return 
+        if low <= root.val <= high:
+            return root
+        elif root.val <= low:
+            return inorder(root.right)
+        elif root.val >= high:
+            return inorder(root.left)
+    return inorder(root)
+```
 
-If low <= root <= high return root
+## DFS Traversal - Iterative 
+
+- If low <= root <= high return root
 - If root <= low return search root.right
 - If root >= high search root.right
 
@@ -6755,7 +6774,7 @@ Space: O(1)
 Time: O(n)
 
 ```
-def solution(root, p, q):
+def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
     inRange = False
     low = min(p.val, q.val)
     high = max(p.val, q.val)
@@ -13410,7 +13429,17 @@ def topo(vertices):
 Preorder - Visit Root First, before Left or Right Child 
 Inorder - Visit Root after Left Child, but before Right Child
 Postorder - Visit root after right Child 
-
+```
+def dfsBinaryTree(root):
+    if not root: 
+        return
+    else: 
+        print('preorder: parent -> leftchild -> rightchild')
+        dfsBinaryTree(root.left)
+        print('inorder: leftchild -> parent -> rightchild')
+        dfsBinaryTree(root.right)
+        print('postorder: leftchild -> rightchild -> parent')
+```
 ```
 if not root: 
     return 
@@ -13427,6 +13456,8 @@ else:
     - In Order
     - Post Order
         - (105) Construct Binary Tree From Preorder and Inorder Traversal 
+        - (235) Lowest Common Ancestor of a Binary Search Tree
+        - (236) Lowest Common Ancestor of a Binary Tree
 
 # Iterative Tree Traversal (Used when recursion stack grows too long)
 - Problems + Variants 
@@ -13728,6 +13759,18 @@ def dynamicProgramming(array):
 
 # Graph Traversal
 
+```
+def buildAdjacencyList(edges):
+    graph = {}
+    for edge in edges:
+        start = edge[0]
+        end = edge[1]
+        if start not in graph: 
+            graph[start] = [end]
+        else:
+            graph[start].append(end)
+```
+
 - Variants + Problems 
 	- Accounts Merge
 	- Making a Large Island
@@ -13925,7 +13968,6 @@ Never consume coffee ever again before a test
 ```
 from sys import prefix
 
-
 def prefixSum(array):
     prefixSum = [0 for _ in range(len(array))]
     currSum = 0
@@ -13935,26 +13977,11 @@ def prefixSum(array):
         prefixSum[index] = currSum
     return prefixSum
 
-
-
-
 def backtrack(grid):
     return 
 
 def condition(x):
     return True
-
-
-
-def dfsBinaryTree(root):
-    if not root: 
-        return
-    else: 
-        print('preorder: parent -> leftchild -> rightchild')
-        dfsBinaryTree(root.left)
-        print('inorder: leftchild -> parent -> rightchild')
-        dfsBinaryTree(root.right)
-        print('postorder: leftchild -> rightchild -> parent')
 
 stack = []
 def dfsIterative(root):
@@ -13963,18 +13990,6 @@ def dfsIterative(root):
         newNode = stack.pop()
         stack.append(newNode.left)
         stack.append(newNode.right)
-
-
-
-def buildAdjacencyList(edges):
-    graph = {}
-    for edge in edges:
-        start = edge[0]
-        end = edge[1]
-        if start not in graph: 
-            graph[start] = [end]
-        else:
-            graph[start].append(end)
 
 def binaryCounting():
     return 
