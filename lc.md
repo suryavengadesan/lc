@@ -4290,16 +4290,7 @@ Return the longest search length, which corresponds to the longest consequitive 
 Time: O(n^3)
 Space: O(1)
 
-## Union Find (Suboptimal)
-
-## Sort (Suboptimal)
-
-Sort the values, and keep track of the longest sequence of elements by iterating over the sorted list. 
-
-Time: O(nlogn)
-Space: O(n)
-
-## Intelligent Subsequence Search (Optimal)
+## Iteration with Set (Optimal)
 
 Convert the input nums array into a set. Then iterate through the elements in the set. The set allows out to perform existence checks in O(1) time. 
 
@@ -4313,16 +4304,17 @@ Time: O(n)
 Space: O(1)
 
 ```
-nums = set(nums)
-maxlength = 0
-for num in nums: 
-    length = 1
-    if num - 1 not in nums: 
-        while num + 1 in nums: 
-            length += 1
-            num = num + 1
-    maxlength = max(maxlength, length)
-return maxlength
+def longestConsecutive(self, nums: List[int]) -> int:
+    maxCount = 0
+    nums = set(nums)
+    for n in nums: 
+        if n - 1 not in nums: 
+            count = 0
+            while n in nums: 
+                count += 1
+                n += 1 
+            maxCount = max(maxCount, count)
+    return maxCount
 ```
 
 ```
@@ -4663,28 +4655,26 @@ For every word in the dictionary, check if it the current string starts with the
 If it is a substring, search the remaining string likewise.
 If remaining string is empty, return True.
 
+```
+def search(word):
+    if word == "":
+        memo[word] = True
+        return True 
+    else: 
+        valid = False 
+        for w in wordDict: 
+            length = len(w)
+            if word[:length] == w: 
+                valid = valid or search(word[length:])
+        return valid 
+
+return search(s)
+```
+
 ## DFS + Memo (Optimal):
 Store intermediate inputs into a hashmap. 
 
-## Dynamic Programming (Optimal):
-Solve substring s[0, i], then solve substring s[0, i + 1].
-Keep a dp table of valid word breaks, such that dp[i] == True means s[0, i] has a valid word break.
-For each new letter, iterate from 0 to i, using j. If s[0, j] is True and s[j, i] is in dictionary, set dp[i] to True.
-After all indices computed, return dp[-1], which will tell if a valid string can be made.
-
 ```
-def solution(s, wordDict):
-    table = [False for i in range(len(s) + 1)]
-    table[0] = True
-    for index in range(1, len(s) + 1):
-        for subindex in range(index):
-            validString = table[subindex]
-            remainingString = s[subindex: index]
-            if validString and remainingString in wordDict:
-                table[index] = True
-                break
-    return table[-1]
-
 def solution(s, wordDict):
     wordDict = set(wordDict)
     memo = {}
@@ -4706,9 +4696,26 @@ def solution(s, wordDict):
         return False
 
     return search(0)
+```
 
-def solution1():
-    return 
+## Dynamic Programming (Optimal):
+Solve substring s[0, i], then solve substring s[0, i + 1].
+Keep a dp table of valid word breaks, such that dp[i] == True means s[0, i] has a valid word break.
+For each new letter, iterate from 0 to i, using j. If s[0, j] is True and s[j, i] is in dictionary, set dp[i] to True.
+After all indices computed, return dp[-1], which will tell if a valid string can be made.
+
+```
+def solution(s, wordDict):
+    table = [False for i in range(len(s) + 1)]
+    table[0] = True
+    for index in range(1, len(s) + 1):
+        for subindex in range(index):
+            validString = table[subindex]
+            remainingString = s[subindex: index]
+            if validString and remainingString in wordDict:
+                table[index] = True
+                break
+    return table[-1]
 ```
 
 # 140. Word Break II
@@ -7073,37 +7080,13 @@ Example 2:
 Input: intervals = [[7,10],[2,4]]
 Output: 1
 
-
-## Iteration after double sorting (overcomplicated but optimal)
-
-Similar to head implementation, but sort both start times and end times. And keep track of the last end time. 
-
-## Heap (optimal)
-
-Keep a heap of most meeting endTimes
+## Sorting 
 
 Time: O(nlogn)
 Space: O(n)
 
-
-
 ```
-from collections import heapq
-
-def solution(intervals):
-    intervals = sorted(intervals, key = lambda x: x[0])
-    endTimes = []
-    for interval in intervals: 
-        startTime = interval[0]
-        endTime = interval[1]
-        if endTimes and startTime >= endTimes[0]:
-            heapq.heapreplace(endTimes, endTime)
-        else: 
-            heapq.heappush(endTimes, endTime)
-    return len(endTimes)
-
-    
-def solution2(intervals):
+def minMeetingRooms(self, intervals: List[List[int]]) -> int:
     startTimes = sorted([i[0] for i in intervals])
     endTimes = sorted([i[1] for i in intervals])
 
@@ -7120,29 +7103,35 @@ def solution2(intervals):
         currentMeeting += 1
     
     return usedRooms
-    
+```
 
-def solution1(intervals):
+## Heap (optimal)
+
+Keep a Min Heap of endTimes, such that the top element of the heap is the first room that will be empty at any given moment in time. 
+
+Iterate through the meeting times in sorted order of start time. 
+
+If the next meeting time starts after the min endTime so far, perform heap replace -- imagine the current person is taking the existing room. 
+
+If the next meeting time starts before the min endTime so far, perform heap push -- imagine the current person is taking a new room, since no rooms are free. If the minimum endTime is greater than the current startTime, all the other rooms must have largers endTimes, so they must not be free either.   
+
+Time: O(nlogn)
+Space: O(n)
+
+```
+from collections import heapq
+
+def minMeetingRooms(self, intervals: List[List[int]]) -> int:
     intervals = sorted(intervals, key = lambda x: x[0])
-
-    #memo = {}
-    def search(index):
-        if index == len(intervals) - 1:
-            return 1
-        elif intervals[index + 1][0] < intervals[index][1]: 
-            return 1
+    endTimes = []
+    for interval in intervals: 
+        startTime = interval[0]
+        endTime = interval[1]
+        if endTimes and startTime >= endTimes[0]:
+            heapq.heapreplace(endTimes, endTime)
         else: 
-            return search(index + 1) + 1
-
-    maxDepth = 0
-    index = 0 
-    while index < len(intervals):
-        depth = search(index)
-        print(depth, maxDepth)
-        maxDepth = max(depth, maxDepth)
-        index += 1
-    
-    return maxDepth
+            heapq.heappush(endTimes, endTime)
+    return len(endTimes)
 ```
 
 # 261. Graph Valid Tree
@@ -9939,7 +9928,9 @@ Output: [[0,0]]
 Explanation: The water can flow from the only cell to the Pacific and Atlantic oceans.
 
 
-## DFS with Backtracking and Intelligent Start (Optimal)
+## DFS with Backtracking (Optimal)
+
+The key to this problem is to search from each boarder outward. Searching if each cell reaches a border is significantly more complex. 
 
 Perform DFS from all pacific border coordingates. 
 
@@ -9947,8 +9938,10 @@ Perform DFS for all atlantic border coordinates.
 
 Return the intersection of the coordinates that can reach Pacfifc and can reach Atlantic. 
 
+Pass as input, separate arrays for cells reached from the pacific and the atlantic. Store the cell information in an array of 0's and 1's or as a set of pairs. 
 
-## DP (Doesn't Work)
+Time: O(M*N)
+Space: O(M*N)
 
 ```
 def solution(heights):
@@ -9975,7 +9968,6 @@ def solution(heights):
                 newCol = col + direction[1]
                 if valid(newRow, newCol) and heights[newRow][newCol] >= heights[row][col]:
                     reached.add((row, col))
-
                     search(newRow, newCol, reached)
 
     for row in range(len(heights)):
@@ -13305,8 +13297,12 @@ def dfs(root):
 
 
 - Variants + Problems
+    - Graph
+        - (417) Pacific Atlantic Water Flow     
 	- Connected Components 
-		- 547. Number of Provinces
+		- (547) Number of Provinces
+    - String 
+        - (139) Word Break
 
 # BFS (Breadth First Search)
 
@@ -13430,19 +13426,20 @@ Def Backtrack():
 
 # Djikstra's Algorithm 
 
-	- BFS + Priority Queue 
-	- Find shortest path to all remaining nodes
+- BFS + Priority Queue 
+- Find shortest path to all remaining nodes
 
-Problems
+- Problems
 	- 743. Network Delay Time 
 
 # Binary Search
-	
-Step 1: Find the left and right pointers
-Step 2: Set the center pointer
-Step 3: Move left or right pointer to center, based on specific conditions
 
-Common Issues + Errors with Execution 
+- General Steps
+    - Step 1: Find the left and right pointers
+    - Step 2: Set the middle pointer
+    - Step 3: Move left or right pointer to middle, based on specific conditions
+
+- Common Issues + Errors with Execution 
 	- Infinite loop
 		- if mid set incorrectly gets rounded down incorrectly 
 			- mid = ((r - l) // 2) + 1
@@ -13451,6 +13448,25 @@ Common Issues + Errors with Execution
 		- if right pointer decrements incorrectly 
 		- if left pointer == right pointer, but left pointer never < right pointer 
 
+- Choosing mid: 
+	- Think about if you are finding upper bound or lower bound
+		- If l = mid + 1 (left moved) and r = mid 
+            - then use mid = (l + r)//2
+		- If r = mid - 1 (right moved) and l = mid
+            - then use mid = (l + r + 1)//2
+
+- Variants + Problems:
+    - Search of Separate Search Space
+        - Cutting Ribbons
+    - Search based on Specific Condition
+        - Find K Closest Elements (x - arr[mid] > arr[mid + k] - x)
+        - Find Peak Element (arr[mid] > arr[mid + 1])
+    - Search based on Search Space
+        - Random Pick with Weight
+    - Perform Two Searches
+        - (33) Search in Rotated Subarary
+
+Implementation:
 ```	
 sortedArray = []
 def binarysearch(left, right):
@@ -13463,7 +13479,7 @@ def binarysearch(left, right):
     return sortedArray[left]
 ```
 
-Implementation:
+```
 def binarySearch():
 	l = 0
 	r = len(arr) - 1
@@ -13477,22 +13493,7 @@ def binarySearch():
 		else:
 			r = mid 
 	return l 
-
-Choosing mid: 
-	Think about if you are finding upper bound or lower bound
-		- If l = mid + 1 (left moved) then use mid = (l + r)//2
-			- r = mid
-		- If r = mid - 1 (right moved)  then use mid = (l + r + 1)//2
-			- l = mid
-
-Variants + Problems:
-- Search of Separate Search Space
-	- Cutting Ribbons
-- Search based on Specific Condition
-	- Find K Closest Elements (x - arr[mid] > arr[mid + k] - x)
-	- Find Peak Element (arr[mid] > arr[mid + 1])
-- Search based on Search Space
-	- Random Pick with Weight
+```
 
 References:
 https://jonisalonen.com/2016/get-binary-search-right-the-first-time/ 
@@ -13629,8 +13630,12 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
 
 - Variants + Problems: 
     - One Pointer
-        - 435. Non-overlapping Intervals
-        - 57. Insert Interval 
+        - (435) Non-overlapping Intervals
+    - Stack 
+        - (57) Insert Interval 
+    - Heap 
+        - (253) Meeting Rooms II 
+
 
 - Template 1
     Def Iterate():
@@ -13678,7 +13683,7 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
         - (2361) Minimum Cost Using Train Line 
     - Kadane's Algorithm
         - (53) Maximum Subarray (Sum)
-        - Maximum Subarray Product
+        - (152) Maximum Product Subarray
 
 ```
 def dynamicProgramming(array):
@@ -13767,7 +13772,6 @@ Used to find minimum path
 - Variants + Problems: 
 	- Path Compression
 
-
 # Kahn’s Algo
 
 DFS (Tri Color)
@@ -13775,6 +13779,11 @@ Morris Search [No Recursion Stack]
 Q: When can we use this? 
 
 # Kadane's Algo 
+
+- Problems + Variants
+    - (53) Maximum (Sum) Subarray
+    - (152) Maximum Product Subarray
+    - (128) Longest Consequtive Sequence 
 
 
 # Design, Language, DS 
@@ -13788,6 +13797,19 @@ https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d
 
 Sort List by Element via Lambda Statements
 `sorted(intervals, key = lambda x: x[1])`
+
+- Heap's are initialized to minHeaps in Python
+    - Input value * -1 to create a maxHeap 
+
+```
+from collections import heapq
+import heapq
+
+heap = []
+heapq.heappush(heap, x)
+heapq.heapreplace(heap, y)
+z = heapq.heappop(heap)
+```
 
 # Java Tricks
 Tree Map
@@ -13839,6 +13861,8 @@ https://www.geeksforgeeks.org/treemap-in-java/
 	- If you can't explain the solutions in plain english to a non computer science student, you won't remember the concept yourself.  
 
 - Daily Prep  
+    - Hours per day  
+	    - 8 hrs per day  
 
 - Schedule  
 	- Day A : Do 3 practice onsites  
@@ -13847,8 +13871,6 @@ https://www.geeksforgeeks.org/treemap-in-java/
 - Questions to self  
 	- What do you want to improve on?  
 
-- Hours per day  
-	- 8 hrs per day  
 
 - Meta Learning  
 	- Stages of Learning  
@@ -13863,6 +13885,10 @@ https://www.geeksforgeeks.org/treemap-in-java/
 	- start a timer for 20 minutes, and write down as much of an answer as you can 
 	- separate scratch work from final code solution
 
+- Learning Philosophy
+    - Looking back at old suboptimal solutions, or poorly explained explanations will only slow down learning process, if the goal is to memorize the optimal solutions for each solution to pass OA's and interviews
+    - Keep a clean and concise answer for each question, to memorize to improve pattern matching skills. 
+    - Memorizing a incorrect or suboptimal solutions will only lead to poor recall 
 
 - Not all problems are made the same  
 	- For example both Word Break II and Remove Invalid Parentheses are both classic BackTracking problems
