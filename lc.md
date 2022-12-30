@@ -4860,31 +4860,12 @@ Input: head = [1,2,3,4,5]
 Output: [1,5,2,4,3]
 
 
-## Iteration (Deep Copy)
-
-For each element of the linked list, save pointers to the nodes in a separate list.
-
-Iterate over the elements within the new list, and modify the pointers to match the patter 0 -> n -> 1 -> n - 1 -> n - 2 ... 
-
-Return the node at the first element of the list.
-
-Space: O(n)
-Time: O(n)
-
-## Iteration (In-place) (Suboptimal)
-
-Set the current node's next value to the last value in the list. Determine the last value of linked list as the only node without a next node. 
-
-Set the new last node's next node was as the previous node's next node. Repeat the process until the new last values equals the original next value.
-
-Couldn't get this solution to work. 
-
-Space: O(1)
-Time: O(n^2)
-
 ## Iteration (Reverse and Merge) (Optimal)
 
-First find the middle of the first linked list. Then reverse the last half of the linked list. Then merge the two linked lists. 
+- 3 Steps: 
+    - Find the middle of the linked list by using slow and fast pointers
+    - Reverse the last half of the linked list
+    - Merge the two linked lists
 
 Space: O(1)
 Time: O(n)
@@ -4924,86 +4905,6 @@ def mergeLists(headA, headB):
 middle = findMiddle(head)
 reverse = reverseList(middle)
 return mergeLists(head, reverse)
-```
-
-```
-def solution(head):
-    def findMiddle(head):
-        slow = head
-        fast = head
-        while fast and fast.next: 
-            slow = slow.next
-            fast = fast.next.next
-        return slow
-
-    def reverseList(head):
-        prev = None
-        while head:
-            tmp1 = head.next
-            head.next = prev
-            prev = head
-            head = tmp1
-
-        '''
-        while head.next:
-            tmp1 = head.next
-            tmp2 = head
-            head.next = prev
-            head = tmp1
-            prev = tmp2
-        '''
-        return prev
-
-
-    def mergeLists(headA, headB):
-        head = headA
-        while headB.next:
-            tmp1 = headA.next
-            headA.next = headB
-            headA = tmp1
-
-            tmp2 = headB.next
-            headB.next = headA
-            headB = tmp2
-
-        '''
-        while headA:
-            tmp1 = headA.next
-            tmp2 = headB.next
-            
-            headA.next = headB
-            headB.next = tmp1
-
-            headA = tmp1
-            headB = tmp2
-        '''
-
-        return head
-
-    middle = findMiddle(head)
-    reverse = reverseList(middle)
-    return mergeLists(head, reverse)
-
-def solution1(head):
-    currNode = head
-
-    while True:
-        lastNode = currNode
-        while lastNode.next:
-            lastNode = lastNode.next
-        if lastNode == currNode.next or lastNode == currNode:
-            break
-        lastNode.next = currNode.next
-        '''
-        prevNode = currNode
-        prevNode.next = lastNode
-        currNode = currNode.next
-        '''
-        prevNode = currNode.next
-        currNode.next = lastNode
-        currNode = prevNode
-        
-    return head
 ```
 
 # 146. LRU Cache
@@ -13690,7 +13591,10 @@ Variants + Problems
 # Linked List
 
 - Variants + Problems 
-    - Add Two Numbers
+    - (2) Add Two Numbers
+    - (21) Merge Two Sorted Lists
+    - (143) Reorder List
+    - (206) Reverse Linked List
 
 # Bit Manipulation
 
