@@ -6871,81 +6871,27 @@ Example 2:
 Input: nums = [-1,1,0,-3,3]
 Output: [0,0,9,0,0]
 
- 
+## Prefix Sum Iteration (Optimal)
 
+Keep track of products in an array. Compute the prefix sum, intialized at 1, moving left to right on the original array and appending the values to the array of products. Compute the suffix sum, initialized at 1, moving from right to left on the original array. Multiply the suffix to the array of products, and return it as the output.
 
-
-## 3-pass Prefix Product (i.e. Prefix Sum) Iteration 
-
-A1: Use three arrays, with productSoFar from to back, and productSoFar, back to front, and final Product
-New array is product of both arrays 
-Space: O(n)
-Time: O(n)
-
-## 2-pass Prefix Product (i.e. Prefix Sum) Iteration (Optimal)
-
-A2: Use 1 arary, and keep track of productSoFar in a variable, and multiple front to back first, then back to first last.
-
-For the products in the 1st forward pass, the product at the current index equals the product of all elements to the left of the current index. 
-
-For the products in the 2nd backward pass, the product at the current idnex equals the products of all elements to the right of the current index. 
 Space: O(n)
 Time: O(n)
 
 ```
-output = []
-productLR = 1
-for index in range(len(nums)):
-    output.append(productLR)
-    productLR *= nums[index]
-
-productRL = 1
-for index in reversed(range(len(nums))):
-    output[index] *= productRL
-    productRL *= nums[index]
-    
-return output
-```
-
-```
-def solution(nums):
+def productExceptSelf(self, nums: List[int]) -> List[int]:
     product = []
-
-    forwardProduct = 1
-    for index in range(len(nums)):
-        product.append(forwardProduct)
-        forwardProduct *= nums[index]
-
-    backwardProduct = 1
-    for index in reversed(range(len(nums))):
-        product[index] *= backwardProduct
-        backwardProduct *= nums[index]
-
-    return product 
-
-def solutionOld(nums):
-    forward = [0 for i in nums]
-    backward = [0 for i in nums]
-    product = [0 for i in nums]
-
-    forwardProduct = 1
-    for index in range(len(nums)):
-        forward[index] = forwardProduct
-        forwardProduct *= nums[index]
-
-    backwardProduct = 1
-    for index in reversed(range(len(nums))):
-        backward[index] = backwardProduct
-        backwardProduct *=  nums[index]
-
-    for index in range(len(nums)):
-        product[index] = forward[index] * backward[index]
-
-    return product 
-
-
-
-
+    prefix = 1 
+    for i in range(len(nums)):
+        product.append(prefix)
+        prefix *= nums[i]
+        
+    suffix = 1
+    for i in reversed(range(len(nums))):
+        product[i] *= suffix
+        suffix *= nums[i]
+        
+    return product
 ```
 
 # 242. Valid Anagram
