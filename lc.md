@@ -6298,55 +6298,24 @@ Time: O(n)
 Space: O(n)
 
 ```
-def solution(nums):
-    if not nums:
-            return 0
+def rob(self, nums: List[int]) -> int:
     if len(nums) <= 2: 
-        return max(nums)
-    
-    def robHouses(nums):
-        if not nums:
-            return 0
-        
-        if len(nums) <= 2: 
             return max(nums)
 
-        dp = nums
-        dp[1] = max(nums[:2])
+    dp1 = [0 for i in range(len(nums))]
+    dp1[0] = nums[0]
+    dp1[1] = max(nums[0], nums[1])
+    for i in range(2, len(nums) - 1):
+        dp1[i] = max(dp1[i - 1], dp1[i-2] + nums[i])
 
-        for index in range(2, len(nums)):
-            dp[index] = max(dp[index - 2] + dp[index], dp[index - 1])
-        
-        return max(dp)
-    
-    return max(robHouses(nums[1:]), robHouses(nums[:-1]))
+    dp2 = [0 for i in range(len(nums))]
+    dp2[1] = nums[1]
+    dp2[2] = max(nums[1], nums[2])
+    for i in range(3, len(nums)):
+        dp2[i] = max(dp2[i - 1], dp2[i-2] + nums[i])
 
-def solution(nums):
-    if len(nums) == 1:
-        return nums[0]
-    if len(nums) == 2:
-        return max(nums[0], nums[1]) 
-    
-    a = nums[:-1]
-    b = nums[1:]
-    
-    aSoFar = []
-    bSoFar = []
-    
-    aSoFar.append(a[0])
-    aSoFar.append(max(a[0], a[1]))
 
-    bSoFar.append(b[0])
-    bSoFar.append(max(b[0], b[1]))
-    
-    i = 2
-    while i < len(a):
-        aSoFar.append(max(aSoFar[-1], aSoFar[-2] + a[i]))
-        bSoFar.append(max(bSoFar[-1], bSoFar[-2] + b[i]))
-        i += 1 
-        
-        
-    return max(aSoFar[-1], bSoFar[-1])
+    return max(max(dp1), max(dp2))
 ```
 
 # 215. Kth Largest Element in an Array
