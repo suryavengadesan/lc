@@ -2437,24 +2437,24 @@ Keep a DP table of size n. Bases cases dp[0] = 1 and dp[1] = 2, corresponding to
 
 Add up subproblems dp[i] = dp[i - 1] + dp[i - 2]
 
+In essence, this question is a masked version of the Fibonacci sequence. 
+
 Time: O(N)
 Space: O(N)
 
 
 ```
-def solution(n):
-    if n == 1: 
-        return 1
-    elif n == 2:
-        return 2
-    
-    dp = [0 for _ in range(n)]
-    dp[0] = 1
-    dp[1] = 2
-    
-    for index in range(2, n):
-        dp[index] = dp[index - 1] + dp[index - 2]
-    
+def climbStairs(self, n: int) -> int:
+    dp = [0 for i in range(n)]
+            
+    if n >= 1: 
+        dp[0] = 1
+    if n >= 2: 
+        dp[1] = 2
+
+    for i in range(2, n): 
+        dp[i] = dp[i-1] + dp[i-2]
+
     return dp[-1]
 ```
 
@@ -5465,37 +5465,19 @@ Follow up: If this function is called many times, how would you optimize it?
 
 ## Iteration
 
-Subtract the number by the largest to smallest power of 2 such that the number converges to 0
-        
-Takes O(32) where it checks 2^32 all the way to 2^0
-
-Create a map of of 32 numbers 2^1 all the way to 2^32 or just left shifting the 1 bit
-
-Then 'and' that bit with the input number to check if it is equal to 0b0 or not
-
-If it is not, add 1 to the counter
+Keep left shifting n until it is 0. Perform logical and with n and 1, which tells us if the right most bit is a 1 or not. If logical and returns true, increment the count of number of 1's. Finally, return the total count. 
 
 Time: O(n)
 Space: O(1)
 
 ```
-def solution(n):
+def hammingWeight(self, n: int) -> int:
     count = 0
-    while n: 
-        count += n & 1
-        n = n >> 1
-    return count
-    
-def solution(n):
-    validBits = []
-    x = 1
-    count = 0
-    for bit in range(32):
-        if n & x != 0:
+    while n > 0: 
+        if n & 1 == 1: 
             count += 1
-        x = x << 1
-    return count
-
+        n = n >> 1
+    return count 
 ```
 
 # 198. House Robber
@@ -6306,10 +6288,11 @@ Constraints:
 
 ## Dynamic Programming
 
-Run House robber twice on 1 to n-1 and 2 to n 
-- Forward till the second to last
-- Back till the second from the first 
-- Return the mox of those two arrays 
+- Run House robber twice on the following intervals
+    - 1 to n-1 and 2 to n
+- Return the maximum robbed over both intervals
+- This ensures that the first and last houses which are touching aren't robbed, which also ensuring that the max value is still calculated for cases when the first house and second to last house are robbed or when the second and the last house are robbed. 
+    - x1, x2, x3, x4, x5 -> (x1 and x4), (x2 and x5), but not (x1 and x5)
 
 Time: O(n)
 Space: O(n)
@@ -13297,10 +13280,12 @@ def dfs(root):
 
 
 - Variants + Problems
-    - Graph
+    - Graph Search
         - (417) Pacific Atlantic Water Flow     
+            - Heuristic = Height 
 	- Connected Components 
 		- (547) Number of Provinces
+        - (323) Number of Connected Components in an Undirected Graph
     - String 
         - (139) Word Break
 
@@ -13371,6 +13356,9 @@ def topo(vertices):
 Preorder - Visit Root First, before Left or Right Child 
 Inorder - Visit Root after Left Child, but before Right Child
 Postorder - Visit root after right Child 
+
+Trie 
+
 ```
 def dfsBinaryTree(root):
     if not root: 
@@ -13400,7 +13388,8 @@ else:
         - (105) Construct Binary Tree From Preorder and Inorder Traversal 
         - (235) Lowest Common Ancestor of a Binary Search Tree
         - (236) Lowest Common Ancestor of a Binary Tree
-
+    - Trie
+        - (208) Implement Trie (Prefix Tree)
 # Iterative Tree Traversal (Used when recursion stack grows too long)
 - Problems + Variants 
     - Morris
@@ -13603,8 +13592,12 @@ def binarySubtraction(a, b):
 ```
 
 - Variants + Problems
-    - (371) Sum of Two Integers 
-    - (338) Counting Bits 
+    - XOR
+        - (371) Sum of Two Integers 
+    - Dynamic Programming
+        - (338) Counting Bits 
+    - AND 
+        - (191) Number of 1 Bits
 
 # Stack
 
@@ -13676,11 +13669,13 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
 	- 2d DP
 		- (62) Unique Paths
 	- 1d DP 
+        - (70) Climbing Stairs (Fibonacci)
         - (300) Longest Increasing Subsequence 
 		- (322) Coin Change 
 		- (198) House Robber
         - (91) Decode Ways 
         - (2361) Minimum Cost Using Train Line 
+        - (213) House Robber II
     - Kadane's Algorithm
         - (53) Maximum Subarray (Sum)
         - (152) Maximum Product Subarray
