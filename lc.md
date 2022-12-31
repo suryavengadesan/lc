@@ -4227,18 +4227,22 @@ Constraints:
     1 <= s.length <= 2 * 105
     s consists only of printable ASCII characters.
 
+## Brute Force (Suboptimal)
 
+Create new string with only alphanumer letters, then comare it with it's reverse. 
+
+Time: O(n)
+Space: O(n)
 
 ## Two Pointer (Optimal)
 
-- PREPROCESS
-- Two Pointer 
-- While L < R
-    - Move left until l is not alnum AND i < j
-    - Move right until r is not alnum AND i < j
-    - Check if l.lower != r.lower, return false
-    - l += 1, r -= 1
-- Return True
+Initialized a left and right pointer starting at either end of the string. If the letter at the left pointer isn't alphanumeric increment the left pointer in a while loop. If the letter at the right pointer isn't alphanumeric decrement the right pointer in a while loop. 
+
+If the current letter at the left and right pointers are the same value when lowercases, move to the next step by decrementing the right pointer and incrementing the left pointer. If the current letter isn't the same, then return False.
+
+Keep performing the above steps while the left pointer is less than the the right pointer. If loop successfully terminates, then all the strings have been processed successfully and it is a palindrome. 
+
+This approach saves memory, but not needing to create a separate new string. 
 
 Time: O(n) 
 Space: O(1)
@@ -4479,40 +4483,12 @@ Constraints:
     There are no repeated edges and no self-loops in the graph.
     The Graph is connected and all nodes can be visited starting from the given node.
 
-
-
 ## Iteration BFS
 
-Time: O(n)
-Space: O(1)
-
-## DFS 
-
-Time: O(N)
-Space: O(N)
+Time: O(M + N)
+Space: O(n)
 
 ```
-import copy
-    
-def solution(node):
-    visited = {}
-    def traverse(node):
-        nonlocal visited
-        if not node: 
-            return node
-        if node in visited:
-            return visited[node]
-        copyNode = Node(node.val, [])
-        if node not in visited: 
-            visited[node] = copyNode
-            for neighbor in node.neighbors: 
-                copyNeighbor = traverse(neighbor)
-                copyNode.neighbors.append(copyNeighbor)
-        return copyNode
-    
-    copyNode = traverse(node)
-    return copyNode
-    
 def solution(node):
     visited = []
     unvisited = []
@@ -4542,7 +4518,33 @@ def solution(node):
         unvisited.pop(0)
     
     return clone
+```
 
+## DFS 
+
+Perform dfs on the given node, and start building the graph while searching. Don't use any adjaceny lists in this queustion, the problem statement can throw you off. 
+
+Make sure to check if the input node isn't an empty graph. In addition, when performing dfs, handle reaching visisted nodes by returning the copy of the visited node and stoping the recursion from getting caught in a cycle, hence an infinite loop. 
+
+When building the graph, create a copy of the node and store it in visited, and also modify the node's copy's neighbors by saving the recursive searches outputs within the copy's list of neighbors. 
+
+Time: O(M + N)
+Space: O(N)
+
+```
+def cloneGraph(self, node: 'Node') -> 'Node':
+    visited = {}
+    def search(node, visited):
+        if not node: 
+            return node 
+        if node in visited: 
+            return visited[node]
+        if node not in visited:
+            currNode = Node(node.val, [])
+            visited[node] = currNode
+            currNode.neighbors = [search(n, visited) for n in node.neighbors]
+        return currNode
+    return search(node, visited)
 ```
 
 # 138. Copy List with Random Pointer
@@ -8487,14 +8489,42 @@ Constraints:
     ai != bi
     There are no repeated edges.
 
+## DFS 
 
+Repeat DFS at each unvisited node that is kept track in an array. 
 
-## BFS Traversal
+```
+def countComponents(self, n: int, edges: List[List[int]]) -> int:
+    def search(node, graph):
+        if visited[node] == 0: 
+            visited[node] = 1
+            for n in graph[node]:
+                if visited[n] == 0: 
+                    search(n, graph)
 
-Space: O(n)
-Time: O(n)
+    graph = {}
+    for i in range(n):
+        graph[i] = []
+    for e in edges: 
+        a = e[0]
+        b = e[1]
+        graph[a].append(b)
+        graph[b].append(a)
 
-## DFS Traversal w/ Topo
+    visited = [0 for i in range(n)]
+    
+    count = 0
+    for i in range(n):
+        if visited[i] == 0: 
+            search(i, graph)
+            count += 1
+
+    return count 
+```
+
+## Topological Sort
+
+Repeated DFS with visited graph that stores [0, 1, 2]
 
 Space: O(n)
 Time: O(n)
@@ -8527,32 +8557,6 @@ def solution(n, edge):
             traverse(index)
 
     return count
-
-def solution(n, edges):
-    unvisited = []
-    for i in range(n):
-        unvisited.append(i)
-
-    cc = 0
-    while unvisited:
-        cc += 1
-        print(unvisited)
-        nextnode = unvisited.pop(0)
-        
-        queue = []
-        queue.append(nextnode)
-        while queue:
-            node = queue.pop()
-            for edge in edges:
-                if (node == edge[0]) or (node == edge[1]):
-                    if edge[1] in unvisited:
-                        unvisited.remove(edge[1])
-                        queue.append(edge[1])
-                    elif edge[0] in unvisited:
-                        unvisited.remove(edge[0])
-                        queue.append(edge[0])
-        
-    return cc
 ```
 
 # 325. Maximum Size Subarray Sum Equals k
@@ -13257,6 +13261,8 @@ def dfs(root):
         - (323) Number of Connected Components in an Undirected Graph
     - String 
         - (139) Word Break
+    - Topological Sort
+        - ()
 
 # BFS (Breadth First Search)
 
@@ -13489,8 +13495,9 @@ def slidingWindow(array):
 
 
 Variants + Problems 
-- Start and End of Array
+- Start and End of Array or String 
 	- Trapping Rain Water
+    - (125) Valid Palindrome
 	- Valid Palindrome II
 - Sliding Window
 	- Max Consecutive Ones III
@@ -13674,6 +13681,10 @@ def dynamicProgramming(array):
 
 # Graph Traversal
 
+- Graph Representations: 
+    - Adjacency List - O(N)
+    - Ajacency Matrix - O(N^2)
+
 ```
 def buildAdjacencyList(edges):
     graph = {}
@@ -13758,8 +13769,11 @@ Abstract Classes and Methods
 https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d 
 
 # Python Tricks
+- String Formatting
+    - isalnum()
+    - lower()
 
-Sort List by Element via Lambda Statements
+- Sort List by Element via Lambda Statements
 `sorted(intervals, key = lambda x: x[1])`
 
 - Heap's are initialized to minHeaps in Python
