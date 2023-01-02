@@ -1885,22 +1885,20 @@ Time: O(N^2)
 
 ## Kadane's Algo - Dynamic Programming (Optimal)
 
-Keep track of maxSum and currSum, initializating max to negative infinity and curr to 0. Iterate over values and add them to currSum. Reset currSum to 0, when currSum becomes negative. 
+Intialize the DP problem, with the first value. The state variable is the cumalitive sum of the array, which gets updated as the max of the sum so far or the current value. Also keep track of the max cumalitive sum which is returned. 
 
 Space: O(1)
 Time: O(N)
 
-
 ```
 def maxSubArray(self, nums: List[int]) -> int:
-    maxSum = -inf
-    currSum = 0
-    for right in range(len(nums)):
-        currSum += nums[right]
-        maxSum = max(maxSum, currSum)
-        if currSum < 0: 
-            currSum = 0
-
+    import math
+    currSum = nums[0] 
+    maxSum = nums[0]
+    for i in range(1, len(nums)):
+        currSum = max(nums[i], currSum + nums[i])
+        maxSum = max(maxSum, currSum)        
+        
     return maxSum
 ```
 
@@ -3574,10 +3572,14 @@ Constraints:
     -104 <= Node.val <= 104
 
 
+## DFS Traversal Iterative 
 
-## DFS Traversal
+Space: O(1)
+Time: O(n)
 
-Checks if the two root values are empty. Checks if the roots aren't equal. 
+## DFS Traversal Recursion
+
+Checks if the two root values are empty. Check if only one of the two root values is empty. Checks if the roots aren't equal. Solve the same problem on the left and right children. If any of the children aren't equal, then the entire tree isn't equal. 
 
 Space: O(n)
 Time: O(n)
@@ -3776,37 +3778,28 @@ Constraints:
 Time: O(n)
 Space: O(n)
 
+```
+def maxDepth(self, root: Optional[TreeNode]) -> int:
+    def search(node, depth):
+        if not node:
+            return depth
+        else: 
+            leftDepth = search(node.left, depth+1)
+            rightDepth = search(node.right,depth+1) 
+            return max(leftDepth, rightDepth)
+    return search(root, 0)   
+```
+
+
 ## DFS Traveral with Stack
 
 Keep a stack to mimic recursion call stack. For each element popped of stack, add both it's children back on the stack. Keep performing this until stack is empty. 
 
+While performs same number of steps as recursion, it uses less memory. 
+
 Time: O(n)
 Space: O(logN) amortized
 
-```
-def solution(root):
-    def depthHelper(root, depth):
-        if not root:
-            return depth
-        if not root.left and not root.right:
-            return depth + 1
-        else: 
-            ldepth = 0
-            rdepth = 0
-            if root.left:
-                ldepth = depthHelper(root.left, ldepth + 1)
-            if root.right: 
-                rdepth = depthHelper(root.right, rdepth + 1)
-            return depth + max(ldepth, rdepth)
-    
-    max = 0
-    currlvl = 0
-
-    depth = depthHelper(root, 0)
-    return depth
-
-    
-```
 
 # 105. Construct Binary Tree from Preorder and Inorder Traversal
 Medium
@@ -4032,34 +4025,41 @@ Constraints:
     1 <= prices.length <= 105
     0 <= prices[i] <= 104
 
+## Kadane's Algorthm (Suboptimal)
+
+Compute an array of stock deltas. Apply kadane's algorithm to compute the maximum contiguous subarray sum from the day to day deltas. 
+
+Time: O(n)
+Space: O(n)
+
+```
+def maxProfit(self, prices: List[int]) -> int:
+    deltas = []
+    for i in range(len(prices) - 1):
+        deltas.append(prices[i + 1] - prices[i])
+
+    if len(deltas) == 0: 
+        return 0 
+
+    currSum = maxSum = deltas[0]
+    for i in range(1, len(deltas)):
+        currSum = max(deltas[i], currSum + deltas[i])
+        maxSum = max(currSum, maxSum)
+
+    return max(0, maxSum)
+```
 
 
 ## Iteration (Optimal)
 
-Two Pointer
+This can be seen as a primitive version of two sum. Keep track of the minimum stock value so far, and compute the maximum value by subtracting the current value by minium value so far. This ensures that all min-then-max pairs are checked, since the minimum value so far in the array is gauranteed to be checked with each index. 
         
-Valley - 5 0 10
-If the values are negative, move first pointer forward
-Move second pointer forward always
-
-Keep track of max difference computed so far
-Keep track of min value so far
-
-[7, 1, 5, 3, 6, 4]
-min so far
-    7  1  1  1  1  1 
-max difference so far = max(prevmax, (curr - minsofar))
-    0. 0  4  4. 5. 5
-
-7 6 4 3 1 
-minsofar
-7 6 4 3 1
-maxdiffsofar
-0 0 0 0 0
+Keep track of max difference (profit) computed so far, using the minimum value that has been tracked, and then return this value. 
 
 Time: O(n)
 Space: O(1)
 
+Code 
 ```
 from math import inf
 def solution(prices):
@@ -4069,6 +4069,22 @@ def solution(prices):
         minsofar = min(minsofar, p)
         maxdiffsofar = max(maxdiffsofar, p - minsofar)
     return maxdiffsofar
+```
+
+Example
+
+```
+[7, 1, 5, 3, 6, 4]
+min so far
+    7  1  1  1  1  1
+max difference so far = max(prevmax, (curr - minsofar))
+    0. 0  4  4. 5. 5
+
+7 6 4 3 1
+minsofar
+7 6 4 3 1
+maxdiffsofar
+0 0 0 0 0
 ```
 
 # 122. Best Time to Buy and Sell Stock II
@@ -4164,6 +4180,8 @@ Constraints:
 
 
 ## DFS Traversal 
+
+Keep track of a global maximum sum. 
 
 Perform post order traversal throughout the tree. Keep track of the maximum left path length and maximum right path length. 
 
@@ -7946,8 +7964,9 @@ Example 2:
 Input: root = []
 Output: []
 
-
 ## DFS Traversal (Optimal)
+
+Perform preorder traversal, and store the node values including null children as a comma separated list. Reconstruct the tree from this artifact. 
 
 Store the values in the format root -> left child -> right chil recursively, where missing children are saved as None.
 
@@ -7955,44 +7974,8 @@ Store the values as string in a comma separated list for serialization.
 
 Deserialize by splitting list by commas. Then rebuild list by popping off first element one at a time recursively. 
 
-
 Space: O(N)
 Time: O(N)
-
-```
-def solutionSerialize(root):
-    tree = []
-    def traverse(root):
-        if not root: 
-            tree.append(None)
-        else:
-            tree.append(root.val)
-            traverse(root.left)
-            traverse(root.right)
-
-    traverse(root)
-    serialization = ",".join([str(i) for i in tree])
-    print(tree)
-    print(serialization)
-    return serialization
-        
-def solutionDeserialize(data):
-    deserialized = data.split(",")
-    def build(data):
-        if data[0] == 'None':
-            data.pop(0)
-            return 
-        val = data.pop(0)
-        tree = TreeNode(val)
-        tree.left = build(data)
-        tree.right = build(data)
-        return tree
-
-            
-
-    tree = build(deserialized)
-    return tree
-```
 
 ```
 class TreeNode:
@@ -8027,7 +8010,6 @@ def solutionDeserialize(data):
         return tree
     tree = build(deserialized)
     return tree
-
 ```
 
 # 300. Longest Increasing Subsequence
@@ -8448,15 +8430,13 @@ def solution(coins, amount):
         if minCount != inf: 
             count[index] = minCount + 1
     return count[-1]
-
+```
+```
 def main():
     test1 = [1,2,5] 
     test2 = 11
     ans = solution(test1, test2)
     print(ans)
-
-if __name__ == '__main__':
-    main()
 ```
 
 # 323. Number of Connected Components in an Undirected Graph
@@ -13286,7 +13266,6 @@ def bfs(root):
 		- 743. Network Delay Time 
     - Topological Sort
 
-
 # Topological Sort
 	- Start with nodes with 0 indegree
 
@@ -13294,6 +13273,11 @@ def bfs(root):
     - Keep track of visited table with values 0, 1, 2
     - Iterate through the visited table 
     - If node not visited yet (e.g. visited[i] == 0), perform dfs
+
+- Kahn’s Algo [TODO]
+    - DFS (Tri Color)
+    - Morris Search [No Recursion Stack]
+    - Q: When can we use this? 
 
 ```
 vertices = 10
@@ -13325,6 +13309,7 @@ def topo(vertices):
 - Variants + Problems
 	- 207. Course Schedule 
     - 269. Alien Dictionary
+    - Kahn's Algorithm
 
 # Recursive Tree Traversal
 
@@ -13332,7 +13317,9 @@ Preorder - Visit Root First, before Left or Right Child
 Inorder - Visit Root after Left Child, but before Right Child
 Postorder - Visit root after right Child 
 
-Trie 
+Trie [TODO]
+
+Build Trees Recursively [TODO]
 
 ```
 def dfsBinaryTree(root):
@@ -13360,12 +13347,21 @@ else:
     - Pre Order
     - In Order
     - Post Order
+    - Traversal 
         - (105) Construct Binary Tree From Preorder and Inorder Traversal 
         - (235) Lowest Common Ancestor of a Binary Search Tree
         - (236) Lowest Common Ancestor of a Binary Tree
+        - (100) Same Tree
     - Trie
         - (208) Implement Trie (Prefix Tree)
+    - Build Trees
+        - (297) Serialize and Deserialize Binary Tree
+        - (105) Construct Binary Tree from Preorder and Inorder Traversal
+    
 # Iterative Tree Traversal (Used when recursion stack grows too long)
+
+[TODO]
+
 - Problems + Variants 
     - Morris
 	- Parent Traversal (Linked List)
@@ -13375,7 +13371,8 @@ else:
 # Backtrack
 	
 Keep track of visited data structure to prune search 
-Template
+
+Template [TODO]
 Def Backtrack():
 
 
@@ -13393,7 +13390,7 @@ Def Backtrack():
 - BFS + Priority Queue 
 - Find shortest path to all remaining nodes
 
-- Problems
+- Problems + Variants
 	- 743. Network Delay Time 
 
 # Binary Search
@@ -13459,8 +13456,8 @@ def binarySearch():
 	return l 
 ```
 
-References:
-https://jonisalonen.com/2016/get-binary-search-right-the-first-time/ 
+- References:
+- https://jonisalonen.com/2016/get-binary-search-right-the-first-time/ 
 https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb 
 	- Choosing next range’s L and R
 
@@ -13470,12 +13467,14 @@ https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb
 When you need to traverse a list in a specified order from both sides, or one side 
 
 Template
+```
 Def twoPointer(l, r):
 	While l < r: 
 		#Do something to move left and right pointer
 		If stopping condition: 
 			Return False
 	Return True
+```
 
 ```
 def slidingWindow(array):
@@ -13500,12 +13499,13 @@ Variants + Problems
     - (125) Valid Palindrome
 	- Valid Palindrome II
 - Sliding Window
-	- Max Consecutive Ones III
-	- Fruits in Basket
-	- 424. Longest Repeating Character Replacement
+    - (76) Minimum Window Substring
+	- (1004) Max Consecutive Ones III
+	- (904) Fruit into Basket
+	- (424) Longest Repeating Character Replacement
 		- 26 different sliding windows for each letter
 - Start of Two Different Arrays
-	- Add String
+	- (415) Add Strings [todo?]
 
 Pending Theory Questions
 Difference between while r < len(s) and for i in range(0, len(s))? 
@@ -13513,6 +13513,13 @@ Difference between while r < len(s) and for i in range(0, len(s))?
 References
 https://leetcode.com/problems/fruit-into-baskets/solutions/170740/java-c-python-sliding-window-for-k-elements/?orderBy=most_votes 
 
+# Simulation 
+
+Simulation (Matrix)
+- Variants + Problems 
+    - (54) Spiral Matrix
+	- Toeplitz Matrix
+	- Diagonal Traversal
 
 # One Pointer
 
@@ -13521,9 +13528,7 @@ When you need to traverse a list in a specified order
 Variants + Problems 
 - Math Logic
 	- Angle Between Hands of Clock
-- Simulation (Matrix)
-	- Toeplitz Matrix
-	- Diagonal Traversal
+
 - Hashmap Trick
 	- Prefix Sum
 	- Continuous Subarray Sum (Keep defaultdict(int))
@@ -13533,11 +13538,16 @@ Variants + Problems
 
 # Linked List
 
+Techniques
+
+Slow & Fast Pointers (find cycle or find middle element)
+
 - Variants + Problems 
     - (2) Add Two Numbers
     - (21) Merge Two Sorted Lists
     - (143) Reorder List
     - (206) Reverse Linked List
+    - (141) Linked List Cycle
 
 # Bit Manipulation
 
@@ -13622,7 +13632,6 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
 Implementation
 https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
 
-
 # Dynamic Programming
 
 When you can find a recursive relationship within the problem
@@ -13641,6 +13650,10 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
     - Bottom up - Recursive [More intuitive]
     - Top down - Tabular [More concise]
 
+- Kadane's Algorithm
+    - Uses optimal substructures of previous problems to reach new solution
+        - Recurrence relation is a conditional that determines which maximum and minimum values to track
+
 - Variants + Problems: 
 	- 2d DP
 		- (62) Unique Paths
@@ -13653,8 +13666,10 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
         - (2361) Minimum Cost Using Train Line 
         - (213) House Robber II
     - Kadane's Algorithm
-        - (53) Maximum Subarray (Sum)
+        - (53) Maximum (Sum) Subarray
         - (152) Maximum Product Subarray
+        - (128) Longest Consequtive Sequence
+        - (121) Best Time to Buy and Sell Stock  
 
 ```
 def dynamicProgramming(array):
@@ -13676,7 +13691,7 @@ def dynamicProgramming(array):
     - longest common substring
         - longest common subsequence
     - Kadane's algo
-        - best time to buy sell stock 
+        - (121) best time to buy sell stock 
 
 
 # Graph Traversal
@@ -13747,20 +13762,6 @@ Used to find minimum path
 - Variants + Problems: 
 	- Path Compression
 
-# Kahn’s Algo
-
-DFS (Tri Color)
-Morris Search [No Recursion Stack]
-Q: When can we use this? 
-
-# Kadane's Algo 
-
-- Problems + Variants
-    - (53) Maximum (Sum) Subarray
-    - (152) Maximum Product Subarray
-    - (128) Longest Consequtive Sequence 
-
-
 # Design, Language, DS 
 
 OOP/OOD
@@ -13769,9 +13770,14 @@ Abstract Classes and Methods
 https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d 
 
 # Python Tricks
+
+- Use python counter to count occurences within strings 
+    - `from collections import Counter`
+    - `count = Counter(s)`
+
 - String Formatting
-    - isalnum()
-    - lower()
+    - `isalnum()`
+    - `lower()`
 
 - Sort List by Element via Lambda Statements
 `sorted(intervals, key = lambda x: x[1])`
