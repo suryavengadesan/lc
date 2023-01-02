@@ -1006,71 +1006,35 @@ Example 3:
 Input: s = "(]"
 Output: false
 
+## Stack + Hashmap (Optimal)
 
-## Stack (Optimal)
+Go through the input string and append and pop letters from stack to keep track of valid parenthesis pairs. 
 
-Keep a stack to add each element of the input string. For each open character '(','{', or '[' add the element to the stack.
+Create a hashmap as well to show the pairs of closing to open parentheses, such that if a closing parentheses is reached, we should expect the corresponding open parentheses on the stack. If not, there exists an invalid pair, so we can return False.
 
-For each close character ')', '}', ']' pop off the last element of the stack. If the element that popped off isn't the corresponding opening character return false. 
+Keep iterating through the elements of the string, and if the stack is empty at the end that means all closing parentheses had a corresponding open parentheses, so the string is valid. 
 
-If the stack still has remaining characters after iterating through the entire string return False, since it means some open characters don't have matching close characters. 
-
+Code 
 ```
-stack = []
-for letter in s:
-    if letter in {'(', '{', '['}:
-        stack.append(letter)
-    else:
-        if not stack:
-            return False
-        previousLetter = stack.pop()
-        if previousLetter is None:
-            return False
-        elif letter == ')' and previousLetter != '(':
-            return False
-        elif letter == ']' and previousLetter != '[':
-            return False
-        elif letter == '}' and previousLetter != '{':
-            return False
-if stack:
-    return False
-return True
-```
-
-```
-def solution(s):
+def isValid(self, s: str) -> bool:
     stack = []
-    for letter in s:
-        if letter in {'(', '{', '['}:
-            stack.append(letter)
-        else:
-            if not stack:
+    mapping = {')': '(', '}': '{', ']': '['}
+    for i in range(len(s)):
+        currLetter = s[i]
+        if currLetter in mapping:
+            if stack and stack[-1] == mapping[currLetter]:
+                stack.pop()
+            else: 
                 return False
-            previousLetter = stack.pop()
-            if previousLetter is None:
-                return False
-            elif letter == ')' and previousLetter != '(':
-                return False
-            elif letter == ']' and previousLetter != '[':
-                return False
-            elif letter == '}' and previousLetter != '{':
-                return False
-    if stack:
-        return False
-    return True
+        else: 
+            stack.append(currLetter)
+    return stack == []
+```
 
-def main():
-    test = '{{{}}}'
-    ans = solution(test)
-    print(ans)
-
-    test = '{{]}}'
-    ans = solution(test)
-    print(ans)
-
-if __name__ == '__main__':
-    main()
-
+Examples
+```
+'{{{}}}'
+'{{]}}'
 ```
 
 # 21. Merge Two Sorted Lists
@@ -13354,6 +13318,7 @@ else:
         - (100) Same Tree
     - Trie
         - (208) Implement Trie (Prefix Tree)
+        - (212) Word Search II
     - Build Trees
         - (297) Serialize and Deserialize Binary Tree
         - (105) Construct Binary Tree from Preorder and Inorder Traversal
@@ -13378,11 +13343,13 @@ Def Backtrack():
 
 - Variants + Problems 
 	- Stack + String
-		- 79. Word Break 
-		- 140. Work Break II
-		- 301. Remove Invalid Parentheses 
+		- (79) Word Break 
+		- (140) Work Break II
+		- (301) Remove Invalid Parentheses 
 	- Stack + Array
-		- 78. Subsets
+		- (78) Subsets
+    - Grid + Tree + String 
+        - (212) Word Search II
 
 
 # Djikstra's Algorithm 
@@ -13684,10 +13651,12 @@ def dynamicProgramming(array):
 - 5 types of recurrent relationships (Reddit)
     - 0/1 knapsack 
         - classic knapsack 
-    - fibonacci
-        - house robber
+        - (416) Partition Equal Subset Sum  
+            - bounded knapsack
     - unbounded knapsack
         - coin change 
+    - fibonacci
+        - house robber 
     - longest common substring
         - longest common subsequence
     - Kadane's algo
@@ -13725,16 +13694,25 @@ def buildAdjacencyList(edges):
 
 # Sorting 
 
+[TODO]
+
 Variants + Problems
 	- Bucket Sort (Used when working with frequencies)
 	- Cycle Sort (While loop until arr[i] != arr[arr[i]])
 	- Counting Sort
 	- Bubble Sort
 	- Quick Sort
+    - Quick Sort (Quick Select)
 
 References 
 https://en.wikipedia.org/wiki/Bucket_sort 
 https://en.wikipedia.org/wiki/Cycle_sort 
+
+# Sorting w/ Heaps
+
+[TODO]
+Variants + Problems
+    - (347) Top K Frequent Elements
 
 # Quick Select
 - Implementation:
@@ -13750,9 +13728,9 @@ https://en.wikipedia.org/wiki/Cycle_sort
     - Hoare’s Partition 
         - Random Pivot or Middle Pivot
 
-References:
-Sorting Visualized: https://www.youtube.com/watch?v=MZaf_9IZCrc 
-Lomuto Implementation: https://en.wikipedia.org/wiki/Quickselect#Algorithm 
+- References:
+    - Sorting Visualized: https://www.youtube.com/watch?v=MZaf_9IZCrc 
+    - Lomuto Implementation: https://en.wikipedia.org/wiki/Quickselect#Algorithm 
 
 # Union Find
 
@@ -13770,6 +13748,9 @@ Abstract Classes and Methods
 https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d 
 
 # Python Tricks
+
+- Hashmap functions
+    - `map.items()` -> returns list of key-value tuples 
 
 - Use python counter to count occurences within strings 
     - `from collections import Counter`
