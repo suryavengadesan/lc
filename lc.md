@@ -5740,89 +5740,38 @@ Output: false
 Explanation: There are a total of 2 courses to take. 
 To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
 
-
-## Detect Cycles in a graph with BFS
-
-Create a set of visited nodes by adding all the element found in requirements. Create a graph of class : [all class that need this class as prereq]
-
-While unvisited nodes is non-empty, perform BFS for any random element from univisted nodes. If a node is reached during the BFS and found in unvisited, remove it from unvistied. 
-
-While performing BFS, keep a visited set. If reach a set found in visited, return false. 
-
-Keep searching unvistied nodes, until unvisted set is empty, then return true. 
-
-Space: O(N)
-Time: O(N)
-
-## Detect Cycles in graph with DFS (TLE)
-
-Perform DFS from each node. If DFS reaches visited, return false. 
-
 ## Topologial Sort (Optimal)
 
 Keep track if a node hasn't been visited, is current being visited, or has finished been visited. A node is finished being visited if it checks all its neighbors. 
 
 ```
-def search(course):
-    nonlocal visited
-    nonlocal invalid
-    if visited[course] == 1:
-        invalid = False
-    if visited[course] == 0:
-        visited[course] = 1
-        neighbors = graph[course]
-        for neighbor in neighbors: 
-            search(neighbor)
-        visited[course] = 2
-
-graph = {}
-
-for course in range(numCourses):
-    graph[course] = []
-
-for prereq in prerequisites: 
-    graph[prereq[0]].append(prereq[1])
-
-invalid = True
-
-visited = [0 for i in range(numCourses)]
-
-for course in range(numCourses):
-    if visited[course] == 0:
-        search(course)
-
-return invalid 
-```
-
-```
-def solution(numCourses, prerequisites):
-    visited = [0 for _ in range(numCourses)]
+def canFinish(self, numCourses, prerequisites):
     graph = {}
     for course in range(numCourses):
         graph[course] = []
-    
     for prereq in prerequisites: 
         graph[prereq[0]].append(prereq[1])
-        
-    
-    canFinish = True
-    def topo(course):
+
+    invalid = True
+    visited = [0 for i in range(numCourses)]
+
+    def search(course):
         nonlocal visited
-        nonlocal canFinish
-        if visited[course] == 1: 
-            canFinish = False
-        if visited[course] == 0: 
+        nonlocal invalid
+        if visited[course] == 1:
+            invalid = False
+        if visited[course] == 0:
             visited[course] = 1
-            for neighbor in graph[course]:
-                topo(neighbor)
+            neighbors = graph[course]
+            for neighbor in neighbors: 
+                search(neighbor)
             visited[course] = 2
 
-    
-    for course in range(numCourses): 
-        if visited[course] == 0: 
-            topo(course)
-    
-    return canFinish 
+    for course in range(numCourses):
+        if visited[course] == 0:
+            search(course)
+
+    return invalid
 ```
 
 # 208. Implement Trie (Prefix Tree)
@@ -6007,18 +5956,13 @@ wordDictionary.search("bad"); // return True
 wordDictionary.search(".ad"); // return True
 wordDictionary.search("b.."); // return True
 
-
-## Set (Brute Force)
-
-Add all the strings into a set. Adding a string can be done by simply adding the value. Checking if same string exists can be done by performing a contain operation. 
-
-Time: O(1)
-Space: O(N) s.t. N is total number of strings
-
 ## Trie (Optimal)
-Add a string, by iterating from the root node of the trie while also iterating through each letter of the string. If the child node does not exist corresponding to the current letter of the input string, create a new child node and continue performing searches by iterating through each subsequent letter. For the final letter of the string, mark the node -- indicating that the string ends here. 
 
-To check a string, iterating letter by letter from the root node. If a child node does not exist, return False. If the final letter does not correspond to a marked node, return False. Return true if final letter does correspond to a marked node. 
+Add the words to a trie data structure. Store the trie in an embedded hashmap, and signify the end by adding a special character. In this case, set the value of the last's letter's hashmap (e.g. trie[lastLetter] =  {'#'}).
+
+Recursively search through the trie to find if a word exist in the trie. Handle the sepcial character '.' by searching all letters in the current Trie level. 
+
+Performance optimizations include pruning the the search space, by return at the first valid word found through when searching all letters for '.'
 
 Time: O(M) s.t. M is length of longest string
 Space: O(m) s.t. M is length of longest string
@@ -13257,7 +13201,6 @@ def dfs(root):
                 dfs(child)
 ```
 
-
 - Variants + Problems
     - Graph Search
         - (417) Pacific Atlantic Water Flow     
@@ -13292,29 +13235,89 @@ def bfs(root):
 		- 743. Network Delay Time 
     - Topological Sort
 
+# Graph Traversal
+
+- Graph Representations: 
+    - Adjacency List - O(N)
+    - Ajacency Matrix - O(N^2)
+
+- Variants + Problems 
+	- Accounts Merge
+	- Making a Large Island
+
+Code Templates
+```
+def buildAdjacencyList(edges):
+    graph = {}
+    for edge in edges:
+        start = edge[0]
+        end = edge[1]
+        if start not in graph: 
+            graph[start] = [end]
+        else:
+            graph[start].append(end)
+```
+
+# Backtrack
+	
+Keep track of visited data structure to prune search 
+
+- Variants + Problems 
+	- Stack + String
+		- (79) Word Break 
+		- (140) Work Break II
+		- (301) Remove Invalid Parentheses 
+	- Stack + Array
+		- (78) Subsets
+    - Grid + Tree + String 
+        - (212) Word Search II
+
+Template [TODO]
+```
+Def Backtrack():
+```
+
+
+# Djikstra's Algorithm 
+
+[TODO] - Explain the algorithm steps 
+
+- Goal: Find shortest path to all remaining nodes
+- Implementation: BFS + Priority Queue 
+
+- Problems + Variants
+	- (743) Network Delay Time 
+
+Code Template [TODO]
+```
+```
+
 # Topological Sort
 
 - Goal: Find an ordering of nodes, where each node has no incoming edges from the later nodes in the ordering
 - Applications: [TODO]
-
-- General Steps	
-    - Start with nodes with 0 indegree
-    - Remove all ougoing edges from start node
-    - Add any nodes with 0 indegree
-    - Repeat
     
 - DFS Version 
     - Less Intuitive but Concise Code
+    - Similar to cycle detction & finding connected components 
     - Steps 
         - Keep track of visited table with values 0, 1, 2
+            - Node Status
+                - 0 => not visited
+                - 1 => visited (inprogress)
+                - 2 => all neighbors visisted (complete)
         - Iterate through the visited table 
         - If node not visited yet (e.g. visited[i] == 0), perform dfs
+        - If visited node ever reached when searching, no topological sorts exist
 
 - BFS Version 
     - More Intuitive but Lengthy Code
     - Steps 
         - Add all nodes with 0 indegree to queue
         - Perform BFS using this intialized queue
+        - Remove edges from graph that have already been traversed
+        - Add new nodes with 0 indegree
+        - Repeat until queue empty
 
 - Kahn’s Algo [TODO]
     - DFS (Tri Color)
@@ -13324,29 +13327,42 @@ def bfs(root):
     - General Topo
         - (207) Course Schedule 
         - (269) Alien Dictionary
+        - () Number of Connected Components in an Undirected Graph 
     - Kahn's Algorithm
         - [TODO]
 
 Code Template
+DFS Version
 ```
-vertices = 10
-visited = [0 for node in range(vertices)]
-cycle = False
-def topoHelper(root):
-    if not root: 
-        return
-    else:
-        for child in root.children:
-            if visited[child] == 1: 
-                cycle = True
-            if visited[child] == 0:
-                visited[child] = 1
-                topoHelper(child)
+def search(course):
+    nonlocal visited
+    nonlocal invalid
+    if visited[course] == 1:
+        invalid = False
+    if visited[course] == 0:
+        visited[course] = 1
+        neighbors = graph[course]
+        for neighbor in neighbors: 
+            search(neighbor)
+        visited[course] = 2
 
-def topo(vertices):
-    for vertex in vertices:
-        if visited[vertex] == 0: 
-            topoHelper(vertex)
+graph = {}
+
+for course in range(numCourses):
+    graph[course] = []
+
+for prereq in prerequisites: 
+    graph[prereq[0]].append(prereq[1])
+
+invalid = True
+
+visited = [0 for i in range(numCourses)]
+
+for course in range(numCourses):
+    if visited[course] == 0:
+        search(course)
+
+return invalid 
 ```
 
 # Recursive Tree Traversal
@@ -13382,6 +13398,7 @@ Build Trees Recursively [TODO]
         - Post Order
     - Trie
         - (208) Implement Trie (Prefix Tree)
+        - (211) Design Add and Search Words Data Structure
         - (212) Word Search II
     - Build Trees
         - (297) Serialize and Deserialize Binary Tree
@@ -13440,40 +13457,6 @@ while stack or root:
     prev = root.val
     root = root.right
 return True
-```
-
-# Backtrack
-	
-Keep track of visited data structure to prune search 
-
-- Variants + Problems 
-	- Stack + String
-		- (79) Word Break 
-		- (140) Work Break II
-		- (301) Remove Invalid Parentheses 
-	- Stack + Array
-		- (78) Subsets
-    - Grid + Tree + String 
-        - (212) Word Search II
-
-Template [TODO]
-```
-Def Backtrack():
-```
-
-
-# Djikstra's Algorithm 
-
-[TODO] - Explain the algorithm steps 
-
-- Goal: Find shortest path to all remaining nodes
-- Implementation: BFS + Priority Queue 
-
-- Problems + Variants
-	- (743) Network Delay Time 
-
-Code Template [TODO]
-```
 ```
 
 # Binary Search
@@ -13853,29 +13836,6 @@ def dynamicProgramming(array):
         if condition(curr):
             dp[index] = dp[index - 1]
     return dp[-1]
-```
-
-# Graph Traversal
-
-- Graph Representations: 
-    - Adjacency List - O(N)
-    - Ajacency Matrix - O(N^2)
-
-- Variants + Problems 
-	- Accounts Merge
-	- Making a Large Island
-
-Code Templates
-```
-def buildAdjacencyList(edges):
-    graph = {}
-    for edge in edges:
-        start = edge[0]
-        end = edge[1]
-        if start not in graph: 
-            graph[start] = [end]
-        else:
-            graph[start].append(end)
 ```
 
 # String Logic
