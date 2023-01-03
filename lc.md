@@ -6449,34 +6449,25 @@ Constraints:
     The number of nodes in the tree is in the range [0, 100].
     -100 <= Node.val <= 100
 
+## DFS Traversal - Preorder (Optimal)
 
-
-## DFS Traversal
+Recursively traverse the tree. During the traversal, perform a preorder swap of the left and right children. This ensures, that all left and right children are flipped for all nodes of the tree. 
 
 Space: O(n)
 Time: O(n)
 
 ```
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-        
-def solution(root):
-    def invertHelper(root):
-        if not root:
+def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+    def search(node):
+        if not node: 
             return 
-        else:
-            parent = TreeNode(root.val)
-            if root.left:
-                left = invertHelper(root.left)
-                parent.right = left
-            if root.right:
-                right = invertHelper(root.right)
-                parent.left = right
-            return parent
-    return invertHelper(root)
+        else: 
+            node.left, node.right = node.right, node.left
+            search(node.left)
+            search(node.right)
+
+    search(root)
+    return root
 ```
 
 # 227. Basic Calculator II
