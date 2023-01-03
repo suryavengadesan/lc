@@ -13376,6 +13376,26 @@ Trie [TODO]
 
 Build Trees Recursively [TODO]
 
+- Problems + Variants  
+    - DFS Traversal 
+        - General 
+            - (105) Construct Binary Tree From Preorder and Inorder Traversal 
+            - (235) Lowest Common Ancestor of a Binary Search Tree
+            - (236) Lowest Common Ancestor of a Binary Tree
+            - (100) Same Tree
+            - (102) Binary Tree Level Order Traversal
+        - Pre Order
+        - In Order
+            - (98) Validate Binary Search Tree
+        - Post Order
+    - Trie
+        - (208) Implement Trie (Prefix Tree)
+        - (212) Word Search II
+    - Build Trees
+        - (297) Serialize and Deserialize Binary Tree
+        - (105) Construct Binary Tree from Preorder and Inorder Traversal
+    
+Code Templates 
 ```
 def dfsBinaryTree(root):
     if not root: 
@@ -13398,23 +13418,6 @@ else:
     #postorder
 ```
 
-- Problems + Variants  
-    - Pre Order
-    - In Order
-        - (98) Validate Binary Search Tree
-    - Post Order
-    - Traversal 
-        - (105) Construct Binary Tree From Preorder and Inorder Traversal 
-        - (235) Lowest Common Ancestor of a Binary Search Tree
-        - (236) Lowest Common Ancestor of a Binary Tree
-        - (100) Same Tree
-    - Trie
-        - (208) Implement Trie (Prefix Tree)
-        - (212) Word Search II
-    - Build Trees
-        - (297) Serialize and Deserialize Binary Tree
-        - (105) Construct Binary Tree from Preorder and Inorder Traversal
-    
 # Iterative Tree Traversal 
 
 - Used when recursion stack grows too long) 
@@ -13682,6 +13685,12 @@ class ListNode:
 
 - XOR Properties
     - 1 xor 1 = 0 and 0 xor 0 = 0
+- AND Properties
+    - n & 1 => return the last bit of n
+    - n = n & 0 => sets the last bit of n to 0 
+- OR Properties
+    - n | 1 => sets the last bit of n to 1 
+
 
 - Variants + Problems
     - XOR
@@ -13691,6 +13700,8 @@ class ListNode:
         - (338) Counting Bits 
     - AND 
         - (191) Number of 1 Bits
+    - OR 
+        - (190) Reverse Bits  
 
 - Code Templates 
 ```
