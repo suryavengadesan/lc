@@ -1067,6 +1067,8 @@ Output: [0]
 
 Create a new merged list by incrementally appending the minimum of two list heads. Once at least one list is completely merged, this means the other list will contain only values greater than the completed list. This means the remaining list can be appended to the merged list to preserve the sorted ordering.  
 
+This process can be made easier by intializing a dummy head list node for the new merged list, which can be thought of as a pointer to the newly merged string. We can dereference the dummy head to get the correct merged output.
+
 Time: O(n)
 Space: O(1)
 
