@@ -3393,7 +3393,25 @@ Output: false
 Explanation: The root node's value is 5 but its right child's value is 4.
 
 
-## DFS Traversal (Inorder) (Optimal)
+## DFS Traversal (Preorder) (Optimal)
+
+Check the range of the node, and modify the high and low values of the range during the recursive search. 
+
+Space: O(N)
+Time: O(N)
+
+```
+def isValidBST(self, root: Optional[TreeNode]) -> bool:
+    def traverse(root, low, high):
+        if not root:
+            return True
+        if not low < root.val < high: 
+            return False
+        return traverse(root.left, low, root.val) and traverse(root.right, root.val, high)
+    return traverse(root, -inf, inf)
+```
+
+## DFS Traversal Recursive (Inorder) (Optimal)
 
 For a valid BST, the each next element that is traversed must be greater than the current element of inorder traversal. 
 
@@ -3402,71 +3420,30 @@ In order: Left -> Parent -> Right
 Space: O(N)
 Time: O(N)
 
-## DFS Traversal (Preorder) (Optimal)
+```
+def isValidBST(self, root: Optional[TreeNode]) -> bool:
+    import math 
+    self.prev = -math.inf
+    self.valid = True 
 
-Check the range of the node, and modify the high and low values of the range during the recursive search. 
+    def search(node):
+        if not node: 
+            return 
+        else: 
+            search(node.left)
+            if node.val <= self.prev: 
+                self.valid = False 
+            self.prev = node.val
+            search(node.right)
+
+    search(root)
+    return self.valid 
+```
+
+## DFS Traversal Iterative (Inorder) (Optimal)
 
 Space: O(N)
 Time: O(N)
-
-## DFS Traversal + Stack (Preorder) (Optimal)
-
-Space: O(N)
-Time: O(N)
-
-```
-from math import inf
-
-def solution(root):
-    def traverse(root, low, high):
-        if not root:
-            return True
-        if not low < root.val < high: 
-            return False
-        return traverse(root.left, low, root.val) and traverse(root.right, root.val, high)
-    return traverse(root, -inf, inf)
-
-def solution1(root):
-    valid = True
-    prev = -inf
-    def traverse(root):
-        nonlocal valid
-        nonlocal prev
-        if not root: 
-            return
-        else:
-            traverse(root.left)
-            if root.val <= prev: 
-                valid = False
-            prev = root.val
-            traverse(root.right)      
-    traverse(root)
-    return valid
-
-def solution2(root):
-    isBST = True
-    def traverse(root, stack):
-        nonlocal isBST 
-        if not root: 
-            return
-        else:
-            for parent in stack:
-                if parent[1] == 'R' and root.val >= parent[0]:
-                        isBST = False
-                if parent[1] == 'L' and root.val <= parent[0]:
-                        isBST = False
-                        
-            stack.append((root.val, 'R'))
-            traverse(root.left, stack)
-            stack.pop()
-            stack.append((root.val, 'L'))
-            traverse(root.right, stack)
-            stack.pop()
-
-    traverse(root, [])
-    return isBST
-    
-```
 
 # 100. Same Tree
 Easy
@@ -4492,6 +4469,84 @@ def cloneGraph(self, node: 'Node') -> 'Node':
         return currNode
     return search(node, visited)
 ```
+
+# 134. Gas Station
+Medium
+
+There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
+
+You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from the ith station to its next (i + 1)th station. You begin the journey with an empty tank at one of the gas stations.
+
+Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, otherwise return -1. If there exists a solution, it is guaranteed to be unique
+
+ 
+
+Example 1:
+
+Input: gas = [1,2,3,4,5], cost = [3,4,5,1,2]
+Output: 3
+Explanation:
+Start at station 3 (index 3) and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+Travel to station 4. Your tank = 4 - 1 + 5 = 8
+Travel to station 0. Your tank = 8 - 2 + 1 = 7
+Travel to station 1. Your tank = 7 - 3 + 2 = 6
+Travel to station 2. Your tank = 6 - 4 + 3 = 5
+Travel to station 3. The cost is 5. Your gas is just enough to travel back to station 3.
+Therefore, return 3 as the starting index.
+
+Example 2:
+
+Input: gas = [2,3,4], cost = [3,4,3]
+Output: -1
+Explanation:
+You can't start at station 0 or 1, as there is not enough gas to travel to the next station.
+Let's start at station 2 and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+Travel to station 0. Your tank = 4 - 3 + 2 = 3
+Travel to station 1. Your tank = 3 - 3 + 3 = 3
+You cannot travel back to station 2, as it requires 4 unit of gas but you only have 3.
+Therefore, you can't travel around the circuit once no matter where you start.
+
+ 
+
+Constraints:
+
+    n == gas.length == cost.length
+    1 <= n <= 105
+    0 <= gas[i], cost[i] <= 104
+
+## Iteration 
+
+There are two generalization in this question: 
+
+If the total gas is less than the total travel cost, there can be no valid solutions.
+
+If the gas to get to the next location is less the travel cost, then it can't be a valid start point.
+
+Iterate over all such starting points, and move the starting point index accordingly. If no such points exist by the end of iterating over all starting points, there there can't be a starting point either. 
+
+
+Time: O(N)
+Space: O(1)
+
+```
+def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+    currDist = 0
+    totalDist = 0
+    startLocation = 0 
+
+    for i in range(len(gas)):
+        currDist += gas[i] - cost[i]
+        totalDist += gas[i] - cost[i]
+        if currDist < 0:
+            startLocation = i + 1 
+            currDist = 0 
+    
+    if totalDist < 0: 
+        return -1
+    else: 
+        return startLocation
+```
+
 
 # 138. Copy List with Random Pointer
 Medium
@@ -5887,14 +5942,6 @@ class Trie:
 
 # 209. Minimum Size Subarray Sum
 Medium
-8.4K
-235
-company
-Apple
-company
-Citadel
-company
-Amazon
 
 Given an array of positive integers nums and a positive integer target, return the minimal length of a
 subarray
@@ -6378,6 +6425,78 @@ def solution(nums):
         duplicate.add(n)
     return False
 ```
+
+# 221. Maximal Square
+Medium
+8.4K
+180
+company
+Amazon
+company
+Apple
+company
+TikTok
+
+Given an m x n binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+
+ 
+
+Example 1:
+
+Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+Output: 4
+
+Example 2:
+
+Input: matrix = [["0","1"],["1","0"]]
+Output: 1
+
+Example 3:
+
+Input: matrix = [["0"]]
+Output: 0
+
+ 
+
+Constraints:
+
+    m == matrix.length
+    n == matrix[i].length
+    1 <= m, n <= 300
+    matrix[i][j] is '0' or '1'.
+
+## Dynamic Programming
+
+The key is to understand the relationship from a square from side length 1 to side length 2. 
+
+If the right, bottom, and bottom right values are all 1, and the top left value is 1, then a square of side length 2 exists at the top left. This relationship can be generalized to square of arbitrary size: 
+
+topleft = min(bottom, right, bottom right) + 1
+dp[i][j] = min(dp[i][j + 1], dp[i + 1][j], dp[i+1][i+1]) + 1
+
+In general, if the top left element is 1, then it is the top left element of a square with side length equal to the minimum value of it's lower right neighbor's size plus 1. 
+
+```
+def maximalSquare(self, matrix: List[List[str]]) -> int:
+    output = [[0 for i in range(len(matrix[0]))] for j in range(len(matrix))]
+
+    for i in reversed(range(len(matrix))):
+        for j in reversed(range(len(matrix[0]))):
+            output[i][j] = int(matrix[i][j])
+    print(output)
+
+    for i in reversed(range(len(output) - 1)):
+        for j in reversed(range(len(output[0]) - 1)):
+            if output[i][j] != 0: 
+                output[i][j] = min(output[i+1][j], output[i+1][j+1], output[i][j+1]) + 1
+    
+    maxSide = 0
+    for i in range(len(output)):
+        for j in range(len(output[0])):
+            maxSide = max(maxSide, output[i][j])
+    return maxSide ** 2
+```
+
 
 # 226. Invert Binary Tree
 Easy
@@ -13196,18 +13315,41 @@ def bfs(root):
     - Topological Sort
 
 # Topological Sort
-	- Start with nodes with 0 indegree
 
-- DFS Version [Less Intuitive but Concise Code]
-    - Keep track of visited table with values 0, 1, 2
-    - Iterate through the visited table 
-    - If node not visited yet (e.g. visited[i] == 0), perform dfs
+- Goal: Find an ordering of nodes, where each node has no incoming edges from the later nodes in the ordering
+- Applications: [TODO]
+
+- General Steps	
+    - Start with nodes with 0 indegree
+    - Remove all ougoing edges from start node
+    - Add any nodes with 0 indegree
+    - Repeat
+    
+- DFS Version 
+    - Less Intuitive but Concise Code
+    - Steps 
+        - Keep track of visited table with values 0, 1, 2
+        - Iterate through the visited table 
+        - If node not visited yet (e.g. visited[i] == 0), perform dfs
+
+- BFS Version 
+    - More Intuitive but Lengthy Code
+    - Steps 
+        - Add all nodes with 0 indegree to queue
+        - Perform BFS using this intialized queue
 
 - Kahn’s Algo [TODO]
     - DFS (Tri Color)
     - Morris Search [No Recursion Stack]
-    - Q: When can we use this? 
 
+- Variants + Problems
+    - General Topo
+        - (207) Course Schedule 
+        - (269) Alien Dictionary
+    - Kahn's Algorithm
+        - [TODO]
+
+Code Template
 ```
 vertices = 10
 visited = [0 for node in range(vertices)]
@@ -13229,24 +13371,20 @@ def topo(vertices):
             topoHelper(vertex)
 ```
 
-
-- BFS Version [More Intuitive but Lengthy Code]
-    - Add all nodes with 0 indegree to queue
-    - Perform BFS using this intialized queue
-
-
-- Variants + Problems
-    - General Topo
-        - (207) Course Schedule 
-        - (269) Alien Dictionary
-    - Kahn's Algorithm
-        - ? 
-
 # Recursive Tree Traversal
 
-Preorder - Visit Root First, before Left or Right Child 
-Inorder - Visit Root after Left Child, but before Right Child
-Postorder - Visit root after right Child 
+- Types of Trees
+    - Binary Tree
+    - Binary Search Tree
+    - N-ary Tree (Trie)
+
+- Build a search function that traverses a binary tree: 
+    - Preorder - Visit Root First, before Left or Right Child 
+    - Inorder - Visit Root after Left Child, but before Right Child
+    - Postorder - Visit root after right Child  
+- Keep track of a variable to update during traversal 
+    - Global variable (e.g. `self.max = -math.inf`)
+    - Function parameter and function return value (e.g. `f(depth + 1)` or `return depth`)
 
 Trie [TODO]
 
@@ -13277,6 +13415,7 @@ else:
 - Problems + Variants  
     - Pre Order
     - In Order
+        - (98) Validate Binary Search Tree
     - Post Order
     - Traversal 
         - (105) Construct Binary Tree From Preorder and Inorder Traversal 
@@ -13290,15 +13429,37 @@ else:
         - (297) Serialize and Deserialize Binary Tree
         - (105) Construct Binary Tree from Preorder and Inorder Traversal
     
-# Iterative Tree Traversal (Used when recursion stack grows too long)
+# Iterative Tree Traversal 
 
-[TODO]
+- Used when recursion stack grows too long) 
+- Replace the recursive call stack with a literal stack data structure
+- Only used in follow-up question as an optimization to recursive traversals   
 
-- Problems + Variants 
+[TODO] - Explain Stack + Inorder  
+
+- Problems + Variants [TODO]
     - Morris
 	- Parent Traversal (Linked List)
 	- Node Stack (e.g. Flatten BT)
 
+[TODO] - Write Code templates for iterative preorder, inorder, and post order
+```
+[Q98 solution]
+stack, prev = [], -math.inf
+while stack or root:
+    while root:
+        stack.append(root)
+        root = root.left
+    root = stack.pop()
+    # If next element in inorder traversal
+    # is smaller than the previous one
+    # that's not BST.
+    if root.val <= prev:
+        return False
+    prev = root.val
+    root = root.right
+return True
+```
 
 # Backtrack
 	
@@ -13328,7 +13489,7 @@ Def Backtrack():
 - Implementation: BFS + Priority Queue 
 
 - Problems + Variants
-	- 743. Network Delay Time 
+	- (743) Network Delay Time 
 
 Code Template [TODO]
 ```
@@ -13368,7 +13529,7 @@ Code Template [TODO]
     - Perform Two Searches
         - (33) Search in Rotated Subarary
 
-Implementation:
+Code Templates:
 ```	
 sortedArray = []
 def binarysearch(left, right):
@@ -13495,7 +13656,7 @@ Variants + Problems
 - Variant + Problems 
     - Hashmap Trick
         - (1) Two Sum
-        - () 3Sum
+        - (15) 3Sum
     - Set Trick 
         - (217) Contains Duplicate
     - Two Pointer 
@@ -13520,7 +13681,7 @@ Variants + Problems
     - (143) Reorder List
     - (2) Add Two Numbers
 
-Code Template [TODO]
+Code Templates [TODO]
 
 List Node Class
 ```
@@ -13575,18 +13736,26 @@ def binarySubtraction(a, b):
 
 # Stack
 
-- Problems + Variants:
-	- Regular Stack 
-		- idk? 
-	- Monotonic Stack
-		- Next Greater Element I
-		- Buildings with Ocean View
+Stack: Data structure with data processed first in first out (FIFO)
+    - Think a "stack" of pancakes
 
 - MonoStack = Stack + Staggered and Conditional Removing and Adding 
 	- hence the elements within the stack are always increasing? 	
 	Types: 
 		- Increasing MS
 		- Decreasing MS 
+
+- Problems + Variants:
+	- Regular Stack [TODO]
+		- idk? 
+	- Monotonic Stack
+		- Next Greater Element I
+		- Buildings with Ocean View
+
+Code Templates [TODO]
+
+```
+```
 
 References:
 https://leetcode.com/problems/sum-of-subarray-minimums/discuss/178876/stack-solution-with-very-detailed-explanation-step-by-step
@@ -13605,42 +13774,49 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
 
 Code Template [TODO]
 - Template 1
-    Def Iterate():
-    For n in range(nums):
-    Do something with n
-    Modify a tracker
-    Return tracker 
+```
+Def Iterate():
+For n in range(nums):
+Do something with n
+Modify a tracker
+Return tracker 
+```
 - Template 2
-    Def Iterate()
-    While not stopping condition:
-    Modify nums
-    Modify tracker
-    Return tracker
+```
+Def Iterate()
+While not stopping condition:
+Modify nums
+Modify tracker
+Return tracker
+```
 
-Implementation
-https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
+- Implementation
+- https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
 
 # Dynamic Programming
 
-When you can find a recursive relationship within the problem
+Definition: Solve a larger problem, but solving it's subproblems one at a time
 
-- Step 0: Find the base case 
-- Step 1: Find the state variable
-- Step 2: Find the recurrence relationship
+- Finding problems' recursive relationship:
+    - Step 0: Find the base case 
+    - Step 1: Find the state variable
+    - Step 2: Find the recurrence relationship
 
-In other words
-- Step 1: Identify optimimal substructure
-- Step 2: Find overlapping subproblems
-
-Note: this step can require a lot of edgecases that need to be thoroughly though through (e.g. see 91. decode ways)
+- In other words:
+    - Step 1: Identify optimimal substructure
+    - Step 2: Find overlapping subproblems
 
 - Advanced techniques
 - Types of recurrence relations
 	- Type 1: Using just integer counters
 	- Type 2: Using lists of integers for counters
 - Two Approaches
-    - Bottom up - Recursive [More intuitive]
-    - Top down - Tabular [More concise]
+    - Top down
+        - Recursive 
+        - More intuitive
+    - Bottom up 
+        - Tabular
+        - More concise
 
 - Kadane's Algorithm
     - Uses optimal substructures of previous problems to reach new solution
@@ -13664,6 +13840,7 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
 - Variants + Problems: 
 	- 2d DP
 		- (62) Unique Paths
+        - (221) Maximal Square
 	- 1d DP 
         - (70) Climbing Stairs (Fibonacci)
         - (300) Longest Increasing Subsequence 
@@ -13695,6 +13872,11 @@ def dynamicProgramming(array):
     - Adjacency List - O(N)
     - Ajacency Matrix - O(N^2)
 
+- Variants + Problems 
+	- Accounts Merge
+	- Making a Large Island
+
+Code Templates
 ```
 def buildAdjacencyList(edges):
     graph = {}
@@ -13706,10 +13888,6 @@ def buildAdjacencyList(edges):
         else:
             graph[start].append(end)
 ```
-
-- Variants + Problems 
-	- Accounts Merge
-	- Making a Large Island
 
 # String Logic
 
@@ -13737,7 +13915,7 @@ https://en.wikipedia.org/wiki/Cycle_sort
 # Sorting w/ Heaps
 
 [TODO]
-Variants + Problems
+- Variants + Problems
     - (347) Top K Frequent Elements
 
 # Quick Select
@@ -13760,13 +13938,15 @@ Variants + Problems
 
 # Union Find
 
-Properties
-Used to find minimum path
+- Properties
+- Used to find minimum path
 
 - Variants + Problems: 
 	- Path Compression
 
 # Math 
+
+[TODO]
 
 - Variants + Problems: 
     - Gauss's Formula
