@@ -3575,16 +3575,7 @@ Constraints:
     The number of nodes in the tree is in the range [0, 2000].
     -1000 <= Node.val <= 1000
 
-
-
-## DFS Traversal
-
-Keep level order list and append values while performing DFS. 
-
-Time: O(n)
-Space: O(n)
-
-## BFS Traversal
+## BFS Traversal (Optimal)
 
 Use a queue to perform BFS traversal. Include the level of the each node when adding them to the queue. If the current level is greater that the previous level, then start a new list within the level order list. Then append the new node to the new embedded list. 
 
@@ -3596,7 +3587,7 @@ Time: O(n)
 ```
 from collections import deque
 
-def solution(root):
+def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
     if not root: 
         return []
     order = []
@@ -3616,38 +3607,39 @@ def solution(root):
             queue.insert(0, (node.right, currLevel+1))
         prevLevel = currLevel
     return order
+```
 
-def solution(root):
-    out = []
-    dl = {}
-    q = deque()
-    if root:
-        q.append((root, 1))
-        dl[1] = [root.val]
-    else:
-        return out
-    while q:
-        nn = q.popleft()
-        if nn[0].left:
-            q.append((nn[0].left, nn[1] + 1))
-            if nn[1] + 1 in dl:
-                dl[nn[1]+1].append(nn[0].left.val)
-            else:
-                dl[nn[1]+1] = [nn[0].left.val]
-        if nn[0].right:
-            q.append((nn[0].right, nn[1] + 1))
-            if nn[1] + 1 in dl:
-                dl[nn[1]+1].append(nn[0].right.val)
-            else:
-                dl[nn[1]+1] = [nn[0].right.val]
+## DFS Traversal (Optimal)
 
-    l = 1
-    while dl:
-        if l in dl:
-            out.append(dl[l])
-        dl.pop(l)
-        l += 1
-    return out
+Compute the depth of each element in the tree, by performing recursive tree traversal. Keep track of a hashmap that stores all the node values at a given level. 
+
+Iterate through the depth values in the hashmap and append the list of nodes per level to a larger list. This list of lists will now contain the level ordering of the tree nodes.  
+
+Time: O(n)
+Space: O(n)
+
+```
+def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+    self.levels = {}
+    def search(node, depth):
+        if not node: 
+            return
+        else:
+            if depth not in self.levels: 
+                self.levels[depth] = [node.val]
+            else: 
+                self.levels[depth].append(node.val)
+            search(node.left, depth+1)
+            search(node.right, depth+1)
+    search(root, 0)
+
+    output = []
+    i = 0 
+    while i in self.levels: 
+        output.append(self.levels[i])
+        i += 1
+
+    return output
 ```
 
 # 104. Maximum Depth of Binary Tree
