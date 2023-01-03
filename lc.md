@@ -1063,28 +1063,27 @@ Example 3:
 Input: list1 = [], list2 = [0]
 Output: [0]
 
+# Two Pointer
 
+Create a new merged list by incrementally appending the minimum of two list heads. Once at least one list is completely merged, this means the other list will contain only values greater than the completed list. This means the remaining list can be appended to the merged list to preserve the sorted ordering.  
 
+Time: O(n)
+Space: O(1)
 
 ```
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-def solution(list1, list2):
-    head = ListNode()
+def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+    head = ListNode(0)
     merged = head
     while list1 and list2:
-        if list1.val <= list2.val: 
-            merged.next = ListNode(list1.val)
+        if list1.val < list2.val: 
+            merged.next = list1
             list1 = list1.next
-        else:
-            merged.next = ListNode(list2.val)
-            list2 = list2.next
+        else: 
+            merged.next = list2
+            list2 = list2.next 
         merged = merged.next
     merged.next = list1 or list2
-    return head.next
+    return head.next 
 ```
 
 # 22. Generate Parentheses
@@ -6397,19 +6396,17 @@ Example 3:
 Input: nums = [1,1,1,3,3,4,3,2,4,2]
 Output: true
 
-
-## Hashmap (Bruteforce)
-BF: Store each value you run into in a set, if element already found in this set, return True
-
-Space: O(n)
-Time: O(n) 
-
 ## Sorting (Optimal)
-Opt1: Sort the array, and if curr value is same as prev, return True
+Sort the array. Since the values are in ascending order, if curr value is same as prev, then there must be a duplicate. 
 
 Space: O(1)
 Time: O(nlogn)
 
+## Hashmap (Optimal)
+Store each value you run into in a visited set. If an element already found in this set, this means a duplicate exists. If no elements are found in the visisted set, then not dupicates are in the array.
+
+Space: O(n)
+Time: O(n) 
 
 ```
 def solution(nums):
@@ -13278,9 +13275,11 @@ def topo(vertices):
 
 
 - Variants + Problems
-	- 207. Course Schedule 
-    - 269. Alien Dictionary
+    - General Topo
+        - (207) Course Schedule 
+        - (269) Alien Dictionary
     - Kahn's Algorithm
+        - ? 
 
 # Recursive Tree Traversal
 
@@ -13344,10 +13343,6 @@ else:
 	
 Keep track of visited data structure to prune search 
 
-Template [TODO]
-Def Backtrack():
-
-
 - Variants + Problems 
 	- Stack + String
 		- (79) Word Break 
@@ -13358,14 +13353,25 @@ Def Backtrack():
     - Grid + Tree + String 
         - (212) Word Search II
 
+Template [TODO]
+```
+Def Backtrack():
+```
+
 
 # Djikstra's Algorithm 
 
-- BFS + Priority Queue 
-- Find shortest path to all remaining nodes
+[TODO] - Explain the algorithm steps 
+
+- Goal: Find shortest path to all remaining nodes
+- Implementation: BFS + Priority Queue 
 
 - Problems + Variants
 	- 743. Network Delay Time 
+
+Code Template [TODO]
+```
+```
 
 # Binary Search
 
@@ -13502,29 +13508,61 @@ When you need to traverse a list in a specified order
 Variants + Problems 
 - Math Logic
 	- Angle Between Hands of Clock
-
-- Hashmap Trick
+- Hashmap Trick (Array Problems)
 	- Prefix Sum
 	- Continuous Subarray Sum (Keep defaultdict(int))
+    - (217) Contains Duplicate
 - Stacks 
 - Sets
 - Lists
 
+# Array 
+- Variant + Problems 
+    - Hashmap Trick
+        - (217) Contains Duplicate
+    - Two Pointer 
+
+
 # Linked List
 
-Techniques
-
-Slow & Fast Pointers (find cycle or find middle element)
+- Techniques
+    - Slow & Fast Pointers (find cycle or find middle element)
+    - Create dummy head list node (used when merging lists)
+        - The next value from the dummy head will contain the accurate value
 
 - Variants + Problems 
-    - (2) Add Two Numbers
-    - (21) Merge Two Sorted Lists
-    - (143) Reorder List
     - (206) Reverse Linked List
     - (141) Linked List Cycle
+    - (21) Merge Two Sorted Lists
+    - (143) Reorder List
+    - (2) Add Two Numbers
+
+Code Template [TODO]
+
+List Node Class
+```
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+```
+    
 
 # Bit Manipulation
 
+- XOR Properties
+    - 1 xor 1 = 0 and 0 xor 0 = 0
+
+- Variants + Problems
+    - XOR
+        - (371) Sum of Two Integers 
+        - (268) Missing Number
+    - Dynamic Programming
+        - (338) Counting Bits 
+    - AND 
+        - (191) Number of 1 Bits
+
+- Code Templates 
 ```
 def binaryAddition(a, b):
     sum = (a ^ b)
@@ -13537,7 +13575,8 @@ def binaryAddition(a, b):
         b = carry
 
     return a 
-
+```
+```
 def binarySubtraction(a, b):
     diff = (a ^ b)
     borrow = (~a & b) << 1
@@ -13550,16 +13589,6 @@ def binarySubtraction(a, b):
 
     return a
 ```
-
-- Variants + Problems
-    - XOR
-        - (371) Sum of Two Integers 
-        - (268) Missing Number
-    - Dynamic Programming
-        - (338) Counting Bits 
-    - AND 
-        - (191) Number of 1 Bits
-
 
 # Stack
 
@@ -13591,7 +13620,7 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
     - Heap 
         - (253) Meeting Rooms II 
 
-
+Code Template [TODO]
 - Template 1
     Def Iterate():
     For n in range(nums):
@@ -13630,6 +13659,21 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
     - Uses optimal substructures of previous problems to reach new solution
         - Recurrence relation is a conditional that determines which maximum and minimum values to track
 
+- 5 types of recurrent relationships (Reddit)
+    - 0/1 knapsack 
+        - classic knapsack 
+        - (416) Partition Equal Subset Sum  
+            - bounded knapsack
+    - unbounded knapsack
+        - coin change 
+    - fibonacci
+        - house robber 
+    - longest common substring
+        - longest common subsequence
+    - Kadane's algo
+        - (121) best time to buy sell stock 
+
+
 - Variants + Problems: 
 	- 2d DP
 		- (62) Unique Paths
@@ -13647,6 +13691,7 @@ Note: this step can require a lot of edgecases that need to be thoroughly though
         - (128) Longest Consequtive Sequence
         - (121) Best Time to Buy and Sell Stock  
 
+Code Template
 ```
 def dynamicProgramming(array):
     dp = [0 for _ in range(len(array))]
@@ -13656,21 +13701,6 @@ def dynamicProgramming(array):
             dp[index] = dp[index - 1]
     return dp[-1]
 ```
-
-- 5 types of recurrent relationships (Reddit)
-    - 0/1 knapsack 
-        - classic knapsack 
-        - (416) Partition Equal Subset Sum  
-            - bounded knapsack
-    - unbounded knapsack
-        - coin change 
-    - fibonacci
-        - house robber 
-    - longest common substring
-        - longest common subsequence
-    - Kadane's algo
-        - (121) best time to buy sell stock 
-
 
 # Graph Traversal
 
