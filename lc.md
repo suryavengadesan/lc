@@ -11110,7 +11110,6 @@ Input: s = "aaa"
 Output: 6
 Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
 
-
 ## Dynamic Programming
 
 Time: O(N^2)
@@ -11118,29 +11117,30 @@ Space: O(N^2)
 
 ## Intelligent Iteration with Recursive Search
 
-Start at each index and search outward. 
+Start at each index and search outward. Start at each pair of indices and search outward. This allows us to consider all possible palindromes, both ones of even and odd length. Using two pointers simplifies the search step, and using a counter variable simplified the counting step. 
 
 Time: O(N^2)
 Space: O(1)
 
 ```
-def solution(s):
-    totalCount = 0
-    def search(left, right):
-        nonlocal totalCount
-        if left < 0 or right >= len(s): 
-            return 
-        if s[left] == s[right]:
-            totalCount += 1
-            search(left - 1, right + 1)
-
-    for index in range(len(s)): 
-        search(index, index)
-
-    for index in range(len(s) - 1):
-        search(index, index + 1)
-
-    return totalCount
+def countSubstrings(self, s: str) -> int:
+        count = 0
+        for i in range(len(s)):
+            l = r = i 
+            while 0 <= l < len(s) and 0 <= r < len(s) and s[l] == s[r]:  
+                l -= 1
+                r += 1
+                count += 1
+        
+        for i in range(1, len(s)):
+            l = i - 1
+            r = i 
+            while 0 <= l < len(s) and 0 <= r < len(s) and s[l] == s[r]:   
+                l -= 1
+                r += 1
+                count += 1
+        
+        return count 
 ```
 
 # 658. Find K Closest Elements
@@ -13458,7 +13458,24 @@ https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb
 
 When you need to traverse a list in a specified order from both sides, or one side 
 
-Template
+Pending Theory Questions
+Difference between while r < len(s) and for i in range(0, len(s))? 
+
+Variants + Problems 
+- Start and End of Array or String 
+	- Trapping Rain Water
+    - (125) Valid Palindrome
+	- Valid Palindrome II
+- Sliding Window
+    - (76) Minimum Window Substring
+	- (1004) Max Consecutive Ones III
+	- (904) Fruit into Basket
+	- (424) Longest Repeating Character Replacement
+		- 26 different sliding windows for each letter
+- Start of Two Different Arrays
+	- (415) Add Strings [todo?]
+
+Code Templates
 ```
 Def twoPointer(l, r):
 	While l < r: 
@@ -13484,34 +13501,24 @@ def slidingWindow(array):
     return minOrMax
 ```
 
-
-Variants + Problems 
-- Start and End of Array or String 
-	- Trapping Rain Water
-    - (125) Valid Palindrome
-	- Valid Palindrome II
-- Sliding Window
-    - (76) Minimum Window Substring
-	- (1004) Max Consecutive Ones III
-	- (904) Fruit into Basket
-	- (424) Longest Repeating Character Replacement
-		- 26 different sliding windows for each letter
-- Start of Two Different Arrays
-	- (415) Add Strings [todo?]
-
-Pending Theory Questions
-Difference between while r < len(s) and for i in range(0, len(s))? 
-
 References
 https://leetcode.com/problems/fruit-into-baskets/solutions/170740/java-c-python-sliding-window-for-k-elements/?orderBy=most_votes 
 
+
 # Simulation 
+
+Matrix Properties
+    - Apply general linear algebra properties 
+        - 90 degree matrix rotation = transpose + flip accross vertical center 
 
 Simulation (Matrix)
 - Variants + Problems 
-    - (54) Spiral Matrix
-	- Toeplitz Matrix
-	- Diagonal Traversal
+    - General 
+        - (54) Spiral Matrix
+        - Toeplitz Matrix
+        - Diagonal Traversal
+    - Tranformation
+        - (48) Rotate Image
 
 # One Pointer
 
@@ -13527,12 +13534,24 @@ Variants + Problems
 - Stacks 
 - Sets
 - Lists
+    - (252) Meeting Rooms
 
 # Array 
+
+- Ways to simplify an array problem: 
+    - Sort the values, and exploit a pattern
+    - Keep track of previously visited values, through a hashmap or set 
+    - Explore a range of values using two pointers 
+
 - Variant + Problems 
     - Hashmap Trick
+        - (1) Two Sum
+        - () 3Sum
+    - Set Trick 
         - (217) Contains Duplicate
     - Two Pointer 
+    - Sorting Values 
+        - (252) Meeting Rooms 
 
 
 # Linked List
@@ -13653,9 +13672,13 @@ https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss
 
 When you can find a recursive relationship within the problem
 
-- Step 1: Find the base case 
-- Step 1.5: Find the state variable
+- Step 0: Find the base case 
+- Step 1: Find the state variable
 - Step 2: Find the recurrence relationship
+
+In other words
+- Step 1: Identify optimimal substructure
+- Step 2: Find overlapping subproblems
 
 Note: this step can require a lot of edgecases that need to be thoroughly though through (e.g. see 91. decode ways)
 
