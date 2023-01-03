@@ -5383,41 +5383,35 @@ Output:   3221225471 (10111111111111111111111111111111)
 Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, so return 3221225471 which its binary representation is 10111111111111111111111111111111.
 
 
-## Iteration (Brute Force)
+## Iteration - Bit by Bit
 
-Iterate from 2^0 to 2^32, and perform AND 2^n with the input number. If the value is > 0, then perform OR of 2^(32-n) on the output value. 
+Create a new reversed integer by mapping each bit at the end of the original number to the new number. 
 
-Return the output value
+My left shifting the new number and right shifting the original number, the values at the end of the original number now are values at the front of the new number. 
 
-1 1 NAND -> 0
-1 0 
-0 1 NAND -> 0
-0 0
+Select the last bit of the original number by performing a logical with 1. Append the bit to the new number my performing a logical or. 
 
-Time: O(N)
-Space: O(N)
+Time: O(1)
+Space: O(1)
 
 ```
-def solution(n):
-    output = 0
+def reverseBits(self, n: int) -> int:
+    reverse = 0
     for i in range(32):
-        x = 1 << i
-        if n & x > 0: 
-            y = 1 << (32 - i - 1 )
-            output = output | y
-    return output
-
-def solution(n):
-    nReverse = 0
-    i = 0
-    
-    while i < 32:
-        nReverse = nReverse << 1
-        nReverse = nReverse | (n & 1)
+        reverse = reverse << 1
+        reverse = reverse | (n & 1)
         n = n >> 1
-        i += 1
-    return nReverse
+    return reverse 
 ```
+
+## Byte by Byte Optimization
+
+Memoize byte values (8 bits) at a time with the following formula: 
+
+`(byte * 0x0202020202 & 0x010884422010) % 1023`
+
+Time: O(1)
+Space: O(1)
 
 # 191. Number of 1 Bits
 Easy
