@@ -13384,6 +13384,7 @@ Build Trees Recursively [TODO]
             - (100) Same Tree
             - (102) Binary Tree Level Order Traversal
         - Pre Order
+            - (226) Invert Binary Tree
         - In Order
             - (98) Validate Binary Search Tree
         - Post Order
