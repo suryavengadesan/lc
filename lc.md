@@ -898,83 +898,32 @@ Example 3:
 Input: head = [1,2], n = 1
 Output: [1]
 
- 
+## Slow and Fast Pointers (Optimal)
 
-## Iteration (Brute Force)
+Keep a fast and slow pointer. Initialize a dummy head and set the fast and slow pointers to the values. Move the fast pointer forward n + 1 nodes. Move the slow pointer and fast pointer ahead together, until fast pointer reaches the end. 
 
-Iterate through the linked list, keeping count of all the elements in the list. After count has been calculated, reiterate through the list. This time, stop at the (len(list) - n)'th node, and the node's next pointer to the node's next next pointer. 
+This ensures that the slow pointer will always be n-1 steps behind the fast pointer. When the fast pointer reaches the end, the slow pointer is effectively n-1 steps from the end. Change the slow pointer's next value to remove the nth node. 
 
+Return the dummy head's next value, which would be the modified linked list. 
+
+Time: O(n)
 Space: O(1)
-Time: O(n) = O(2n)
-
-## Iteration (Optimal)
-
-HLD
-Iterate through the linked list, and keep a previous pointer that is n steps behind the first pointer. When the original pointer reaches the end, remove the node at previous pointer.  
-
-LLD
-Initialize the previous pointer to None. Once the length of the list == n, initialize the previous pointer to the head. 
-
-When the length of the list > n, update the previous pointer to the previous pointer's next node. 
-
-Once the original pointer has no next node value, break out of the while loop. 
-
-Afterwards, set previous node's next node to the previous nodes' next next node. 
 
 ```
-dummy = ListNode(0, head)
-previousNode = dummy
-currNode = dummy
-length = 0
-
-while currNode:
-    if length >= n + 1: 
-        previousNode = previousNode.next
-    currNode = currNode.next
-    length += 1
-
-previousNode.next = previousNode.next.next
-return dummy.next
-```
-
-OR 
-
-```
-dummy = ListNode(0, head)
-currNode = dummy
-prevNode = dummy
-
-for index in range(n + 1):
-    currNode = currNode.next
-
-while currNode != None: 
-    currNode = currNode.next
-    prevNode = prevNode.next
-
-prevNode.next = prevNode.next.next
-return dummy.next
-```
-
-
-```
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-def solution(head, n):
-    dummy = ListNode(0, head)
+def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+    dummy = ListNode(0)
+    dummy.next = head
     slow = dummy
     fast = dummy
-    
-    for i in range(n + 1):
-        fast = fast.next
 
+    for i in range(n + 1):
+        fast = fast.next 
+    
     while fast: 
         slow = slow.next
-        fast = fast.next
-        
-    slow.next = slow.next.next
+        fast = fast.next 
+    
+    slow.next = slow.next.next 
     return dummy.next
 ```
 
@@ -13557,7 +13506,10 @@ Variants + Problems
 # Linked List
 
 - Techniques
-    - Slow & Fast Pointers (find cycle or find middle element)
+    - Slow & Fast Pointers
+        - find cycle 
+        - find middle element
+        - find nth last element
     - Create dummy head list node (used when merging lists)
         - The next value from the dummy head will contain the accurate value
 
