@@ -1717,7 +1717,7 @@ Input: strs = ["a"]
 Output: [["a"]]
 
 
-## Sorting and Hashmap (Optimal)
+## Sorting and Hashmap (Suboptimal)
 
 Keep a hashmap that is used to store words with the same letters. 
 
@@ -1726,7 +1726,7 @@ Sort each word by the letters. If the new word isn't in the hashmap add it the k
 Return the values of the hashmap, which will be a list of lists.
 
 Space: O(N) s.t. N is the number of words
-Time: NLogM s.t. M is the length of the longest word
+Time: O(N*MLogM) s.t. M is the length of the longest word
 
 ```
 anagrams = {}
@@ -1750,6 +1750,10 @@ def solution(strs):
             
     return anagrams.values()
 ```
+
+## Count 
+
+Time: O(MN)
 
 # 50. Pow(x, n)
 Medium
@@ -6867,8 +6871,13 @@ Constraints:
 
 Follow up: What if the inputs contain Unicode characters? How would you adapt your solution to such a case?
 
+## Sorting (suboptimal)
 
-## Hashmap
+Space: O(n)
+Time: O(nlogn) 
+
+
+## Hashmap (optimal)
 
 Space: O(n)
 Time: O(n)
@@ -7267,14 +7276,12 @@ Keep a set of all the elements previous seen in a set. Iterate through the indic
 Space O(N)
 Time O(N)
 
-## Intelligent Iteration 
+## Discrete Math 
 
-Perform iteration, but using binary values as the equivalent indices of the boolean array. 
+Apply Gauss's formula to find the num of values from 1 to n. Then subtract the sum of the array from the total sum to find the missing number. 
 
-Addres the binary value over flow issues, by keeping track of the indices mod 32. 
-
-Space O(1)
-Time O(N)
+Space: O(1)
+Time: O(N)
 
 ## XOR (Optimal)
 
@@ -13547,10 +13554,12 @@ def binarySubtraction(a, b):
 - Variants + Problems
     - XOR
         - (371) Sum of Two Integers 
+        - (268) Missing Number
     - Dynamic Programming
         - (338) Counting Bits 
     - AND 
         - (191) Number of 1 Bits
+
 
 # Stack
 
@@ -13739,6 +13748,12 @@ Used to find minimum path
 
 - Variants + Problems: 
 	- Path Compression
+
+# Math 
+
+- Variants + Problems: 
+    - Gauss's Formula
+        - (268) Missing Number
 
 # Design, Language, DS 
 
