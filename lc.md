@@ -8586,59 +8586,38 @@ Example 2:
 Input: nums = [9], target = 3
 Output: 0
 
+## Dynamic Programming
 
+This is an unbounded knapsack problem, since we can assume we have an unlimited amount of each item. In this case the knapsack is the target amount and the items in the knapsack are the number in the array nums. 
 
+Since we are counting the total possible ways to reach the target amount, it is equal to the amount of value use one of the numbers in nums as the last step to reach the target amount. 
 
+Therefore the following recursive relationship holds: `dp[i] = dp[i] + dp[i - n]` for every n in nums. Finally, the base case is that there is only 1 way to make a total sum of value 0. 
+
+Together, we can use a dp table of size target + 1 to store the values of the solutions to the intermediate subproblems. 
+
+Time: O(n)
+Space: O(n)
+
+Code 
 ```
-'''
-Q: Return number of ways the target integer can be made with integers in list nums
-
-Start at integer 1, then move up to max integer
-
-BaseCase = 1, Total = 1, if 1 in nums, else 0
-Recursive statement
-n + 1 = sum(x)
-
-baseCase = [0 for i in range(len(nums) + 1)]
-total = 0
-for i in nums
-    if n + 1 - i >= 0: 
-        total =+ 1 + basecase[n + 1 - i]
-
-Explain in English: 
-Start at the base case of 0, and increment one integer at a time -- check if new can can be made up of previously solved integers
-n = total[n-2] + 1, if n can be made from n - 2
-
-Need to account for duplicate counts
-1a + 1b is the same as 1b + 1a
-
-
-'''
-
-def solution(nums, target):
-    counts = [None for i in range(target + 1)]
-    counts[0] = 1
-    counts[-1] = 0
-    for index in range(len(counts)): 
-        total = 0
+def combinationSum4(self, nums: List[int], target: int) -> int:
+    dp = [0 for i in range(target + 1)]
+    dp[0] = 1
+        
+    for i in range(target + 1):
         for n in nums: 
-            if (index - n >= 0) and counts[index-n] is not None:
-                total += counts[index - n]
-        if total > 0: 
-            counts[index] = total
-    #print(counts)
-    return counts[-1]
-
-def main():
-    test1 = [1,2,3]
-    test2 = 4
-    ans = solution(test1, test2)
-    print(ans)
-
-if __name__ == '__main__':
-    main()
-
+            if i - n >= 0: 
+                dp[i] += dp[i - n]
+                
+    return dp[-1]
 ```
+
+Examples
+```
+nums = [1,2,3], target = 4
+```
+
 
 # 338. Counting Bits
 Easy
@@ -13370,10 +13349,16 @@ return invalid
 - Keep track of a variable to update during traversal 
     - Global variable (e.g. `self.max = -math.inf`)
     - Function parameter and function return value (e.g. `f(depth + 1)` or `return depth`)
+- Modify the nodes while going through the tree
+    - Swap children (invert tree)
 
-Trie [TODO]
+- Trie [TODO]
+    - Iterate through a string, and add letters one a time while updating position within trie  
+    - Mark the end of a word with a special character like `#`
+    - Recursively search trie with substrings of the word to find a word
 
-Build Trees Recursively [TODO]
+- Build Trees Recursively [TODO]
+    - Set the return value of the traverse function to be a new tree
 
 - Problems + Variants  
     - DFS Traversal 
@@ -13793,6 +13778,7 @@ Definition: Solve a larger problem, but solving it's subproblems one at a time
             - bounded knapsack
     - unbounded knapsack
         - coin change 
+        - (337) Combination Sum IV
     - fibonacci
         - house robber 
     - longest common substring
@@ -13813,6 +13799,7 @@ Definition: Solve a larger problem, but solving it's subproblems one at a time
         - (91) Decode Ways 
         - (2361) Minimum Cost Using Train Line 
         - (213) House Robber II
+        - (377) Combination Sum IV
     - Kadane's Algorithm
         - (53) Maximum (Sum) Subarray
         - (152) Maximum Product Subarray
@@ -14067,8 +14054,6 @@ Never consume coffee ever again before a test
 # Templates 
 
 ```
-from sys import prefix
-
 def prefixSum(array):
     prefixSum = [0 for _ in range(len(array))]
     currSum = 0
@@ -14099,8 +14084,5 @@ def main():
     n = 10
     grid = [[0 for i in range(len(n))] for j in range(len(n))]
     backtrack(grid)
-
-if __name__ == '__main__':
-    main()
 
 ```
