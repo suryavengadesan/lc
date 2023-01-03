@@ -5503,47 +5503,39 @@ Constraints:
 
 ## Dynamic Programming (Optimal)
 
-Trick: Return even vs. odd sum O(n)
-- Maximum ammount to rob in a night
+Figuring out the maximum value to rob at the n'th house can be solved given the maximum values robbed so far in the previous houses. In particular, we can either decide to rob the nth house or not. 
 
-Proof for even or odd
-    - Since there are no houses with negative amounts you can maximize the total loot but looting every other house
-    - There are only two options where you can loot every other house
-        - Start at the first house
-        - Start at the second house if the second house exists 
-        
-Implemenation
-- Two counters  
-    - Iterate through each index, and if index is odd to coutner 1
-    - If index is even, add value at index to counter 2
-- Return max of two counters
+If we rob the nth house we can get a maximum value of the value at the n'th house and the maximum value robbed up to the n-2'th house. This is because we can't rob the house right before the n'th house or the alarms will go off. 
 
-See if there is a faster method than iterating through all the values once
+If we decide to not rob the nth house, we can get a maximum value of the previous maximum value robbed up to the n-1th house. 
 
+At any given point, we can the maximum value to rob by choosing between the maximum of robbing or not robbing the nt'th hosue. 
+
+This gives us the following recursive relationship: `dp[n] = max(dp[i-1], dp[i-2] + nums[i])`. Finally, if there is only 1 house, the max we can rob is the value at that house. In addition, if there are two houses, the maximum we can rob is the maximum vaulue of either of the houses.  
+
+Time: O(n)
+Space: O(n)
+
+Code 
+```
+def rob(self, nums: List[int]) -> int:
+    if len(nums) == 1: 
+        return nums[0]
+    dp = [0 for i in range(len(nums))]
+    dp[0] = nums[0]
+    dp[1] = max(nums[0], nums[1])
+    for i in range(2, len(nums)): 
+        dp[i] = max(nums[i] + dp[i-2], dp[i-1])
+    return dp[-1]
+```
+
+Examples
+```
 COE - Try at least 3 examples
 ex1. [2, 1, 1, 2]
     - check each subset and search again
     - check for the largets of each adjacent values
 ex2. [2, 1, 2, 1, 1, 2, 1, 2]
-
-Time: O(n)
-Space: O(1)
-
-```
-def solution(nums):
-    if len(nums) == 0: 
-        return 0
-    if len(nums) == 1: 
-        return nums[0]
-
-    dp = [0 for _ in range(len(nums))]
-
-    dp[0] = nums[0]
-    dp[1] = max(nums[0], nums[1])
-
-    for index in range(2, len(dp)):
-        dp[index] = max(dp[index - 1], dp[index - 2] + nums[index])
-    return dp[-1]
 ```
 
 # 199. Binary Tree Right Side View
