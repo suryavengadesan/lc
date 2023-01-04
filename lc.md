@@ -2035,9 +2035,11 @@ Output: [[1,5]]
 Explanation: Intervals [1,4] and [4,5] are considered overlapping.
 
 
-## Sorting + Stack without popping (Optimal)
+## Sorting + Stack (Optimal)
 
-First sort all elements in the list. And initialize a stack called merged, which will store the final output and all intermediate states. 
+Determing which intervals is easier to determin after sorting all intervals by start time. This allows us to tell if a new interval, which is gauranteed to start after the previous interval starts, may however start before the previous ends. This will encompass all merge situations.  
+
+To implement this, first sort all elements in the list. Also, initialize a stack, which will store the final output and all intermediate states. 
 
 If the current interval's start time is less than the last merged intervals end time, merge the two intervals. Else append the current interval directly to the merged stack.
 
@@ -2047,15 +2049,15 @@ Space: O(n)
 Time: O(nlogn)
 
 ```
-def solution(intervals):
+def merge(self, intervals: List[List[int]]) -> List[List[int]]:
     intervals.sort()
-    merged = []
-    for interval in intervals:
-        if merged and merged[-1][1] >= interval[0]:
-            merged[-1] = [merged[-1][0], max(merged[-1][1], interval[1])]
-        else:
-            merged.append(interval)
-    return merged
+    stack = []
+    for i in range(len(intervals)):
+        if stack and intervals[i][0] <= stack[-1][1]:
+            stack[-1][1] = max(stack[-1][1], intervals[i][1])
+        else: 
+            stack.append(intervals[i])
+    return stack
 ```
 
 # 57. Insert Interval
@@ -8609,7 +8611,7 @@ def combinationSum4(self, nums: List[int], target: int) -> int:
         for n in nums: 
             if i - n >= 0: 
                 dp[i] += dp[i - n]
-                
+
     return dp[-1]
 ```
 
@@ -10689,75 +10691,50 @@ Input: root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
 Output: false
 
 
-## DFS Traversal (Brute Force)
+## DFS Traversal (Suboptimal)
 
-Perform an in order traversal of the original tree. For each node of the original tree, perform a check comparing the subtree head node with the current node. 
+This problem can be simplied as perform the same tree problem N times. Therefore, we must traverse through the tree, and perform the same tree check on each node.
 
-Iterate through the current node, and for each subnode compare with the subtree nodes, by iterating together. If any of the nodes don't match return false. 
-
-Return true if at least one of the original tree node's search returns true. 
-
-Time: O(n^2) s.t. n = number of total nodes in the tree
-Space: O(1)
-
-## DFS Traversal + Memo Table (Optimal)
-
-Keep a memo table of all root and subroot pairs, and short cut the search if the the root and subroot are found in the table. 
+Time: O(M * N) s.t. M = nodes in original tree, N = nodes in subtree
+Space: O(M + N)
 
 ```
-def solution(root, subRoot):
-    def checkIfEqual(root, subRoot):
-        if subRoot and not root:
-            return False
-        elif not root: 
+def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+    def same(node, subnode):
+        if not node and not subnode:
             return True
-        else:
-            if not subRoot: 
-                return False
-            elif root.val != subRoot.val:
-                return False
-            leftEqual = checkIfEqual(root.left, subRoot.left)
-            rightEqual = checkIfEqual(root.right, subRoot.right)
-            if rightEqual and leftEqual:
-                return True
+        if not node or not subnode:
+            return False
+        else: 
+            if node.val == subnode.val: 
+                leftSame = same(node.left, subnode.left)
+                rightSame = same(node.right, subnode.right)
+                return leftSame and rightSame
             else:
-                return False
+                return False 
 
-    equal = False
-    def traverse(root):
-        nonlocal equal
-        if not root:
-            return 
+    def search(node):
+        if not node:
+            return False 
         else:
-            if checkIfEqual(root, subRoot):
-                equal = True
-            traverse(root.left)
-            traverse(root.right)
+            if same(node, subRoot):
+                return True
+            leftMatch = search(node.left)
+            rightMatch = search(node.right)
+            return leftMatch or rightMatch
 
-    traverse(root)
-    return equal
-
-equalSet = set()
-def checkIfEqual1(root, subRoot):
-    if (root, subRoot) in equalSet: 
-        return True
-    if not root and subRoot: 
-        return False
-    elif root and not subRoot:
-        return False
-    elif not root: 
-        return True
-    else:
-        if root.val != subRoot.val:
-            return False
-        leftEqual = checkIfEqual(root.left, subRoot.left)
-        rightEqual = checkIfEqual(root.right, subRoot.right)
-        if rightEqual and leftEqual:
-            equalSet.add((root, subRoot))
-            return True
-        else:
-            return False
+    return search(root)
 ```
+
+## DFS Traversal + Tree Hash (Optimal)
+
+Map the orignal tree's subtrees to unique hash values. Compare the specified subtree's hash value with the original tree's hash values, which takes O(1) time per comparison. 
+
+Time: O(M + N)
+Space: O(M + N)
+
+[TODO]
+
 
 # 588. Design In-Memory File System
 Hard
@@ -12158,50 +12135,43 @@ Input: text1 = "abc", text2 = "def"
 Output: 0
 Explanation: There is no such common subsequence, so the result is 0.
 
-
-## DFS (Brute Force):
-
-Iterate through the shorter string, while keeping a dictionary of of keys of letters and values of list of corresponding indices.
-Begin the DFS search by iterating through each letter longer string.
-If the longer string contains a letter found in the dictionary, start a few new searches using the list of indices.
-For each index, compare the shorter string [index: end] with the longer string [curr: end].
-Also only consider indices that are greater than the current index of the small substring.  
-During each search, increment the max subsequence length so far, then return the max common subsequence when the search is completed, which happens when the longer string is empty. 
-
 ## Dynamic Programming (Optimal): 
 
-String from the longest to shortest strings. 
+To solve the larger common subsequence problem, solve subproblems of substrings. In particular, there exists a recursive relation between smaller substrings:
 
-Iterate through the shorter string substrings [0, i] where i traverses from 0 to len(short string)
-For each valid substring, iterate through all substrings of the longer string [0, j] where i traverse from 0 to len(long string)
+1. If letters match in the substring, increment the longest subsequence by one value.
 
-```
-dp = [[0 for _ in range(len(text2) + 1)] for _ in range(len(text1) + 1)]
-        
-for row in reversed(range(len(text1))):
-    for col in reversed(range(len(text2))):
-        if text1[row] == text2[col]: 
-            dp[row][col] = dp[row + 1][col + 1] + 1
-        else: 
-            dp[row][col] = max(dp[row + 1][col], dp[row][col + 1])
-
-return dp[0][0]
-```
+dp[i][j] = dp[i + 1][j + 1] + 1
 
 
+2. If letters don't match, save value of the longest subsequence from removing one letter form either other letter.
+
+dp[i][j] = max(dp[i + 1][j], dp[i][j+1])
 
 ```
-def solution(text1, text2):
-    dp = [[0 for _ in range(len(text2) + 1)] for _ in range(len(text1) + 1)]
-        
-    for row in reversed(range(len(text1))):
-        for col in reversed(range(len(text2))):
-            if text1[row] == text2[col]: 
-                dp[row][col] = dp[row + 1][col + 1] + 1
+def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+    dp = [[0 for i in range(len(text2) + 1)] for j in range(len(text1) + 1)]
+
+    for i in reversed(range(len(text1))):
+        for j in reversed(range(len(text2))):
+            if text1[i] == text2[j]:
+                dp[i][j] = dp[i + 1][j + 1] + 1
             else: 
-                dp[row][col] = max(dp[row + 1][col], dp[row][col + 1])
-    
+                dp[i][j] = max(dp[i + 1][j], dp[i][j + 1])
+
     return dp[0][0]
+```
+
+Examples
+```
+s1 = 'bad'
+s2 = 'cda
+
++ b a d +
+c 1 1 1 0
+d 1 1 1 0 
+a 1 1 0 0 
++ 0 0 0 0
 ```
 
 # 1213. Intersection of Three Sorted Arrays
@@ -13380,6 +13350,8 @@ return invalid
     - Build Trees
         - (297) Serialize and Deserialize Binary Tree
         - (105) Construct Binary Tree from Preorder and Inorder Traversal
+- Memorization Tips
+    - [TODO]
     
 Code Templates 
 ```
@@ -13416,6 +13388,8 @@ else:
     - Morris
 	- Parent Traversal (Linked List)
 	- Node Stack (e.g. Flatten BT)
+- Memorization Tips
+    - Memorize iteration using a stack template code
 
 [TODO] - Write Code templates for iterative preorder, inorder, and post order
 ```
@@ -13469,6 +13443,8 @@ return True
         - Random Pick with Weight
     - Perform Two Searches
         - (33) Search in Rotated Subarary
+- Memorization Tips
+    - Memorize mid pointer selection steps 
 
 Code Templates:
 ```	
@@ -13482,7 +13458,6 @@ def binarysearch(left, right):
             right = mid - 1
     return sortedArray[left]
 ```
-
 ```
 def binarySearch():
 	l = 0
@@ -13503,8 +13478,6 @@ def binarySearch():
 - https://jonisalonen.com/2016/get-binary-search-right-the-first-time/ 
 https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb 
 	- Choosing next range’s L and R
-
-
 # Two Pointer
 
 When you need to traverse a list in a specified order from both sides, or one side 
@@ -13512,19 +13485,20 @@ When you need to traverse a list in a specified order from both sides, or one si
 Pending Theory Questions
 Difference between while r < len(s) and for i in range(0, len(s))? 
 
-Variants + Problems 
-- Start and End of Array or String 
-	- Trapping Rain Water
-    - (125) Valid Palindrome
-	- Valid Palindrome II
-- Sliding Window
-    - (76) Minimum Window Substring
-	- (1004) Max Consecutive Ones III
-	- (904) Fruit into Basket
-	- (424) Longest Repeating Character Replacement
-		- 26 different sliding windows for each letter
-- Start of Two Different Arrays
-	- (415) Add Strings [todo?]
+- Variants + Problems 
+    - Start and End of Array or String 
+        - Trapping Rain Water
+        - (125) Valid Palindrome
+        - Valid Palindrome II
+    - Sliding Window
+        - (76) Minimum Window Substring
+        - (1004) Max Consecutive Ones III
+        - (904) Fruit into Basket
+        - (424) Longest Repeating Character Replacement
+            - 26 different sliding windows for each letter
+    - Start of Two Different Arrays
+        - (415) Add Strings [todo?]
+- Memorization Tips
 
 Code Templates
 ```
@@ -13570,6 +13544,9 @@ Simulation (Matrix)
         - Diagonal Traversal
     - Tranformation
         - (48) Rotate Image
+- Memorization Tips
+    - Memorize common matrix transformations trick
+    - Memorize common simulation tricks such using two variables as a changing unit vector 
 
 # One Pointer
 
@@ -13603,6 +13580,8 @@ Variants + Problems
     - Two Pointer 
     - Sorting Values 
         - (252) Meeting Rooms 
+- Memorization Tips
+    - [TODO]
 
 
 # Linked List
@@ -13621,6 +13600,8 @@ Variants + Problems
     - (21) Merge Two Sorted Lists
     - (143) Reorder List
     - (2) Add Two Numbers
+- Memorization Tips
+    - Memorize commmon linked list pointer tricks
 
 Code Templates [TODO]
 
@@ -13643,7 +13624,6 @@ class ListNode:
 - OR Properties
     - n | 1 => sets the last bit of n to 1 
 
-
 - Variants + Problems
     - XOR
         - (371) Sum of Two Integers 
@@ -13654,6 +13634,8 @@ class ListNode:
         - (191) Number of 1 Bits
     - OR 
         - (190) Reverse Bits  
+- Memorization Tips
+    - Memorize common logical operation tricks 
 
 - Code Templates 
 ```
@@ -13701,6 +13683,9 @@ Stack: Data structure with data processed first in first out (FIFO)
 		- Next Greater Element I
 		- Buildings with Ocean View
 
+- Memorization Tips
+    - Memorize steps for using stack to perform monostack functionality
+
 Code Templates [TODO]
 
 ```
@@ -13712,6 +13697,8 @@ https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack
 
 
 # Intervals
+
+[TODO]
 
 - Variants + Problems: 
     - One Pointer
@@ -13744,7 +13731,7 @@ Return tracker
 
 # Dynamic Programming
 
-Definition: Solve a larger problem, but solving it's subproblems one at a time
+- Definition: Solve a larger problem, but solving it's subproblems one at a time
 
 - Finding problems' recursive relationship:
     - Step 0: Find the base case 
@@ -13766,6 +13753,9 @@ Definition: Solve a larger problem, but solving it's subproblems one at a time
     - Bottom up 
         - Tabular
         - More concise
+- Space Optimizaitons
+    - Store 2d dp array values in less space
+        - Map essential state variables to 1d array of specific variables
 
 - Kadane's Algorithm
     - Uses optimal substructures of previous problems to reach new solution
@@ -13786,7 +13776,6 @@ Definition: Solve a larger problem, but solving it's subproblems one at a time
     - Kadane's algo
         - (121) best time to buy sell stock 
 
-
 - Variants + Problems: 
 	- 2d DP
 		- (62) Unique Paths
@@ -13804,7 +13793,10 @@ Definition: Solve a larger problem, but solving it's subproblems one at a time
         - (53) Maximum (Sum) Subarray
         - (152) Maximum Product Subarray
         - (128) Longest Consequtive Sequence
-        - (121) Best Time to Buy and Sell Stock  
+        - (121) Best Time to Buy and Sell Stock 
+
+- Memorization Tips
+- Understand and memorize all recursive relationships for each commonly asked question
 
 Code Template
 ```
@@ -13819,22 +13811,30 @@ def dynamicProgramming(array):
 
 # String Logic
 
+[TODO]
+
 - Variants + Problems
     - DFA 
         - Valid Number
         - String to Integer (atoi)
 
+- Memorization Tips
+    - Memorize all string modification functions 
+
 # Sorting 
 
 [TODO]
 
-Variants + Problems
+- Variants + Problems
 	- Bucket Sort (Used when working with frequencies)
 	- Cycle Sort (While loop until arr[i] != arr[arr[i]])
 	- Counting Sort
 	- Bubble Sort
 	- Quick Sort
     - Quick Sort (Quick Select)
+- Memorization Tips
+    - Understand and memorize all common sorting algos
+    - Memorize common heap operation in python
 
 References 
 https://en.wikipedia.org/wiki/Bucket_sort 
@@ -13847,7 +13847,8 @@ https://en.wikipedia.org/wiki/Cycle_sort
     - (347) Top K Frequent Elements
 
 # Quick Select
-- Implementation:
+
+- Implementation [TODO]
     - Select
     - Moves pivot until reaches k
     - Calls partition to find next pivot value
@@ -13866,6 +13867,7 @@ https://en.wikipedia.org/wiki/Cycle_sort
 
 # Union Find
 
+[TODO]
 - Properties
 - Used to find minimum path
 
@@ -13879,6 +13881,8 @@ https://en.wikipedia.org/wiki/Cycle_sort
 - Variants + Problems: 
     - Gauss's Formula
         - (268) Missing Number
+- Memorization Tips
+    - Memorize common discrete math formulas
 
 # Design, Language, DS 
 
@@ -13931,13 +13935,15 @@ z = heapq.heappop(heap)
 Tree Map
 https://www.geeksforgeeks.org/treemap-in-java/ 
 
+# C++ Tricks
+[TODO]
+
 # Prep, Learning, Strategy, Originization, Schedule, Etc. 
 - What is a pattern? 
     - A repeating abstraction found in algorithm problems (e.g. Two Pointer, Backtracking)
 
 - What is a data structure? 
     - Queue, Heap, Linked List, Tree, Graph, Disjoint Union Set, Monotonic Stack, Doubly Linked List, Combination of the above
-
 
 - Goal  
 	- Break up the problems into patterns + variants to increase recall  
@@ -13987,7 +13993,6 @@ https://www.geeksforgeeks.org/treemap-in-java/
 - Questions to self  
 	- What do you want to improve on?  
 
-
 - Meta Learning  
 	- Stages of Learning  
 
@@ -14008,12 +14013,12 @@ https://www.geeksforgeeks.org/treemap-in-java/
 
 - Not all problems are made the same  
 	- For example both Word Break II and Remove Invalid Parentheses are both classic BackTracking problems
-    – One causes a world of pain 
-    – the other doesn’t (hint: Remove Invalid Parentheses == RIP)
-	Some problems can be solved with one pattern + variant, and solved optimally with a different pattern + variant
-		Subarray Sum Equals K
-		Solved with 2 Pointer/DP by checking all subarrays
-		Solved with 1 Pointer and Hashmap by considering mod arithmetic
+    - One causes a world of pain 
+    - the other doesn’t (hint: Remove Invalid Parentheses == RIP)
+    - Some problems can be solved with one pattern + variant, and solved optimally with a different pattern + variant
+        - Subarray Sum Equals K
+		- Solved with 2 Pointer/DP by checking all subarrays
+		- Solved with 1 Pointer and Hashmap by considering mod arithmetic
 
 - How to integrate with anki
 	- Tag problems as solved and unsolved efficiently. 
@@ -14025,8 +14030,7 @@ https://www.geeksforgeeks.org/treemap-in-java/
     - Approach 2: Use stopwatch 
 	    - lap when finishing each problem
 
-
-Types of Tests
+- Types of Tests
 
 - OA 
 	- Code Signal
@@ -14041,7 +14045,6 @@ Types of Tests
 		- tests unit testing and logical thinking 
 	- Codility [Public & Hidden Test Cases]
 		- tests correctness, engineering, and logical thinking
-
 
 - Phone Screen 
 	- Coder Pad 
