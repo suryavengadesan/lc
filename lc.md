@@ -13211,7 +13211,16 @@ Keep track of visited data structure to prune search
 
 Template [TODO]
 ```
-Def Backtrack():
+def backtrack(grid):
+    return 
+
+def condition(x):
+    return True
+
+def main():
+    n = 10
+    grid = [[0 for i in range(len(n))] for j in range(len(n))]
+    backtrack(grid)
 ```
 
 # Djikstra's Algorithm 
@@ -13388,6 +13397,15 @@ else:
     - Memorize iteration using a stack template code
 
 [TODO] - Write Code templates for iterative preorder, inorder, and post order
+```
+stack = []
+def dfsIterative(root):
+    stack.append(root)
+    while stack:
+        newNode = stack.pop()
+        stack.append(newNode.left)
+        stack.append(newNode.right)
+```
 ```
 [Q98 solution]
 stack, prev = [], -math.inf
@@ -13567,6 +13585,18 @@ When you need to traverse a list in a specified order
     - Lists
         - (252) Meeting Rooms
 
+Code Templates
+```
+def prefixSum(array):
+    prefixSum = [0 for _ in range(len(array))]
+    currSum = 0
+    for index in range(len(array)):
+        curr = array[index]
+        currSum += curr
+        prefixSum[index] = currSum
+    return prefixSum
+```
+
 # Array 
 
 - Ways to simplify an array problem: 
@@ -13668,6 +13698,10 @@ def binarySubtraction(a, b):
         b = borrow
 
     return a
+```
+```
+def binaryCounting():
+    return 
 ```
 
 # Stack
@@ -14065,40 +14099,10 @@ https://www.geeksforgeeks.org/treemap-in-java/
 - Onsite 
 	- Coder Pad 
 
-Never consume coffee ever again before a test
+- Never consume coffee ever again before a test
 
-# Templates 
-
-```
-def prefixSum(array):
-    prefixSum = [0 for _ in range(len(array))]
-    currSum = 0
-    for index in range(len(array)):
-        curr = array[index]
-        currSum += curr
-        prefixSum[index] = currSum
-    return prefixSum
-
-def backtrack(grid):
-    return 
-
-def condition(x):
-    return True
-
-stack = []
-def dfsIterative(root):
-    stack.append(root)
-    while stack:
-        newNode = stack.pop()
-        stack.append(newNode.left)
-        stack.append(newNode.right)
-
-def binaryCounting():
-    return 
-
-def main():
-    n = 10
-    grid = [[0 for i in range(len(n))] for j in range(len(n))]
-    backtrack(grid)
-
-```
+- Measurement of mastery
+    - Scoring
+        - Award 1 point if question can be solved in 15 minutes
+        - Award 0 points if question can not be solved in 15 minutes
+    - Reach 95% in Blind 75 ~ Solve more than 70 questions in less than 15 minutes each
