@@ -3674,19 +3674,21 @@ Constraints:
 
 ## DFS Traversal
 
+Recursive check the depth of the left and right children, and setting the current depth to be the max of the values plus 1.
+
 Time: O(n)
 Space: O(n)
 
 ```
 def maxDepth(self, root: Optional[TreeNode]) -> int:
     def search(node, depth):
-        if not node:
-            return depth
+        if not node: 
+            return 0
         else: 
-            leftDepth = search(node.left, depth+1)
-            rightDepth = search(node.right,depth+1) 
-            return max(leftDepth, rightDepth)
-    return search(root, 0)   
+            leftMax = search(node.left, depth)
+            rightMax = search(node.right, depth)
+            return max(leftMax, rightMax) + 1
+    return search(root, 0)
 ```
 
 
@@ -6677,6 +6679,14 @@ Constraints:
     p and q will exist in the BST.
 
 ## DFS Traversal - Recursive
+
+The binary search tree properties must be used to convert this problem into a range search. Using nodes p and q as limits of a range, we can search through the binary search through efficiently. 
+
+If the current node is greater than the upper bound, the solution must be found within the left subtree. 
+
+Likewise, if the current node is less than the lower bound, the solution must be found within the right subtree. 
+
+If the current node is within the range, it will likely be the lowest height, so we can return the node.
 
 Space: O(n)
 Time: O(n)
