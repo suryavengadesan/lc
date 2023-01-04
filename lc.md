@@ -5156,37 +5156,18 @@ Explanation: The original array was [11,13,15,17] and it was rotated 4 times.
 
 ## Binary Search
 
-Find the rotation index in O(logn)
+The key to solving the problem is to determine which subarray to recursively search down for the minimum value. By comparing the mid point value with the end pointer of the array, we can tell how far the array has been rotated. 
 
-If left start is greater than right end, then it has been rotated
+If the middle value is greater than the right most value, then the right subarray it is not sorted. This means the array is rotated past the midpoint, so the values to the right must have the minimum value since that is the start of the original sorted array. 
 
-Set left and right point and middle
-    - If left > middle, search move right to middle
-        search again
-    - If right < middle, move left to middle
-        serach again
-    - Stop search when left == right, such that left is the new start of the array
-
-Search for value using left = new start, and right = (new start - 1) % length of array
-
-Idea: Set new search to left = 0, and right = len(array) - 1
-then set any index to, index = (index + start index) % len(array)
-
-EX: [3, 4, 5, 1, 2]
-l = 0
-r = 4
-c = 2
-l = 2
-c = (2 + 4)/2 = 3
-r = 3
-c = (3 + 2)/2 = 2 
-r = 2
+The binary search can be avoided as well, if the has been not rotated. This can be determined if the left endpoint is less than the right endpoint, in which case the minimum of a sorted array must be the first value. 
 
 Time: O(logN)
 Space: O(1)
 
+Code Solution
 ```
-def solution(nums):
+def findMin(self, nums: List[int]) -> int:
     if nums[0] < nums[-1]:
         return nums[0]
     
@@ -5201,6 +5182,19 @@ def solution(nums):
             right = mid
     
     return nums[left]
+```
+
+Example
+```
+EX: [3, 4, 5, 1, 2]
+l = 0
+r = 4
+c = 2
+l = 2
+c = (2 + 4)/2 = 3
+r = 3
+c = (3 + 2)/2 = 2 
+r = 2
 ```
 
 # 162. Find Peak Element
@@ -13127,9 +13121,12 @@ def distinctAverages(nums) -> int:
 
 # My Notes
 
+Below are key definitions, tricks, tips, and code templates for common patterns. 
+
 # DFS (Depth First Search)
 
-When you need to traverse a tree or graph, searching for a specific heuristic
+Definition: Search deep into a graph before searching all immediate neighbors. 
+Application: When you need to traverse a tree or graph, searching for a specific heuristic. 
 
 ```
 def dfs(root):
@@ -13155,10 +13152,17 @@ def dfs(root):
 
 # BFS (Breadth First Search)
 
-When you need to search a graph-life data structure in level order
-	- Level Order Traversal
-	- Use a Queue
+Definition: Search all immediate neighbors before searching deep into a graph. 
+Application: When it is optimal to search a graph-like data structure in level order
 
+- Variants + Problems
+	- General Search 
+		- (200) Number of Islands 
+	- Djikstra's Algorithm
+		- (743) Network Delay Time 
+    - Topological Sort
+
+Code Templates
 ```
 def bfs(root):
     queue = [root]
@@ -13167,13 +13171,6 @@ def bfs(root):
         queue.append(nextNode.left)
         queue.append(nextNode.right)
 ```
-
-- Variants + Problems
-	- General Search 
-		- 200. Number of Islands 
-	- Djikstra's Algorithm
-		- 743. Network Delay Time 
-    - Topological Sort
 
 # Graph Traversal
 
@@ -13216,7 +13213,6 @@ Template [TODO]
 ```
 Def Backtrack():
 ```
-
 
 # Djikstra's Algorithm 
 
@@ -13412,6 +13408,8 @@ return True
 
 # Binary Search
 
+[TODO] - Explain mid point relationship with upper and lower bounds
+
 - General Steps
     - Step 1: Find the left and right pointers
     - Step 2: Set the middle pointer
@@ -13435,16 +13433,18 @@ return True
 
 - Variants + Problems:
     - Search of Separate Search Space
-        - Cutting Ribbons
+        - (1891) Cutting Ribbons
     - Search based on Specific Condition
-        - Find K Closest Elements (x - arr[mid] > arr[mid + k] - x)
-        - Find Peak Element (arr[mid] > arr[mid + 1])
+        - (658) Find K Closest Elements (x - arr[mid] > arr[mid + k] - x)
+        - (162) Find Peak Element (arr[mid] > arr[mid + 1])
+        - (153) Find Minimum in Rotated Sorted Array
     - Search based on Search Space
-        - Random Pick with Weight
+        - (528) Random Pick with Weight
     - Perform Two Searches
         - (33) Search in Rotated Subarary
 - Memorization Tips
-    - Memorize mid pointer selection steps 
+    - Memorize mid pointer selection steps
+    - Memorize upper and lower bound defintions
 
 Code Templates:
 ```	
@@ -13478,6 +13478,7 @@ def binarySearch():
 - https://jonisalonen.com/2016/get-binary-search-right-the-first-time/ 
 https://medium.com/swlh/binary-search-find-upper-and-lower-bound-3f07867d81fb 
 	- Choosing next range’s L and R
+
 # Two Pointer
 
 When you need to traverse a list in a specified order from both sides, or one side 
@@ -13532,11 +13533,12 @@ https://leetcode.com/problems/fruit-into-baskets/solutions/170740/java-c-python-
 
 # Simulation 
 
-Matrix Properties
+- Matrix Properties
     - Apply general linear algebra properties 
         - 90 degree matrix rotation = transpose + flip accross vertical center 
 
-Simulation (Matrix)
+- Simulation (Matrix)
+
 - Variants + Problems 
     - General 
         - (54) Spiral Matrix
@@ -13544,6 +13546,7 @@ Simulation (Matrix)
         - Diagonal Traversal
     - Tranformation
         - (48) Rotate Image
+
 - Memorization Tips
     - Memorize common matrix transformations trick
     - Memorize common simulation tricks such using two variables as a changing unit vector 
@@ -13552,17 +13555,17 @@ Simulation (Matrix)
 
 When you need to traverse a list in a specified order
 
-Variants + Problems 
-- Math Logic
-	- Angle Between Hands of Clock
-- Hashmap Trick (Array Problems)
-	- Prefix Sum
-	- Continuous Subarray Sum (Keep defaultdict(int))
-    - (217) Contains Duplicate
-- Stacks 
-- Sets
-- Lists
-    - (252) Meeting Rooms
+- Variants + Problems 
+    - Math Logic
+        - Angle Between Hands of Clock
+    - Hashmap Trick (Array Problems)
+        - Prefix Sum
+        - Continuous Subarray Sum (Keep defaultdict(int))
+        - (217) Contains Duplicate
+    - Stacks 
+    - Sets
+    - Lists
+        - (252) Meeting Rooms
 
 # Array 
 
@@ -13580,6 +13583,7 @@ Variants + Problems
     - Two Pointer 
     - Sorting Values 
         - (252) Meeting Rooms 
+
 - Memorization Tips
     - [TODO]
 
@@ -13600,6 +13604,7 @@ Variants + Problems
     - (21) Merge Two Sorted Lists
     - (143) Reorder List
     - (2) Add Two Numbers
+
 - Memorization Tips
     - Memorize commmon linked list pointer tricks
 
@@ -13667,7 +13672,7 @@ def binarySubtraction(a, b):
 
 # Stack
 
-Stack: Data structure with data processed first in first out (FIFO)
+- Stack: Data structure with data processed first in first out (FIFO)
     - Think a "stack" of pancakes
 
 - MonoStack = Stack + Staggered and Conditional Removing and Adding 
@@ -13691,24 +13696,27 @@ Code Templates [TODO]
 ```
 ```
 
-References:
-https://leetcode.com/problems/sum-of-subarray-minimums/discuss/178876/stack-solution-with-very-detailed-explanation-step-by-step
-https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack 
+- References:
+    - https://leetcode.com/problems/sum-of-subarray-minimums/discuss/178876/stack-solution-with-very-detailed-explanation-step-by-step
+    - https://labuladong.gitbook.io/algo-en/ii.-data-structure/monotonicstack 
 
 
 # Intervals
 
 [TODO]
 
+Defintion: An interval is defined as a pair of numbers => (start time, end time)
+
 - Variants + Problems: 
     - One Pointer
         - (435) Non-overlapping Intervals
     - Stack 
         - (57) Insert Interval 
+        - (56) Merge Intervals
     - Heap 
         - (253) Meeting Rooms II 
 
-Code Template [TODO]
+Code Templates [TODO]
 - Template 1
 ```
 Def Iterate():
@@ -13727,11 +13735,12 @@ Return tracker
 ```
 
 - Implementation
-- https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
+    - https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/discuss/93735/a-concise-template-for-overlapping-interval-problem (Template)
 
 # Dynamic Programming
 
 - Definition: Solve a larger problem, but solving it's subproblems one at a time
+- Applications: [TODO]
 
 - Finding problems' recursive relationship:
     - Step 0: Find the base case 
@@ -13811,6 +13820,8 @@ def dynamicProgramming(array):
 
 # String Logic
 
+Defintion: [TODO]
+Applications: [TODO]
 [TODO]
 
 - Variants + Problems
@@ -13823,6 +13834,8 @@ def dynamicProgramming(array):
 
 # Sorting 
 
+Defintion: [TODO]
+Application: [TODO]
 [TODO]
 
 - Variants + Problems
