@@ -739,29 +739,8 @@ Explanation: The only possible triplet sums up to 0.
 Time: O(n^2)
 Space: O(nlogn)
 
-## Sorting and Hashset
-
-Iterate through the array, and perform a modified 2 sum for each value. If the current value is greater than 0, skip and don't perform the modified 2sum.
-
-The modified 2sum tries to reach the target value which is the current value. In addition, don't use the current index as a valid index when performing 2sum. 
-
-Modifications: 
-    - Set current value to the 2sum target value
-    - Skip the current index when iterating over the array to find valid pairs
-
-Make sure to sort the input array before performing any calculations. In addition, in the outer loop, if the current value is the same as the previous value, skip the value. 
-
-Time: O(N^2)
-Space: O(NlogN)
-
-## No Sorting and Hashset
-
-Time: O(N^2)
-Space: O(n)
-
-
 ```
-def solution(nums):
+def threeSum(self, nums: List[int]) -> List[List[int]]:
     def twoSum(target, arr, triples):
         lo, hi = 1, len(arr) - 1
         while (lo < hi):
@@ -788,9 +767,25 @@ def solution(nums):
             twoSum(-num, nums[index:], validTriples)
     
     return validTriples
-            
+```    
 
-def solution1(nums):
+## Sorting and Hashset
+
+First sort the array then iterate through the values, performing a modified 2 sum for each value. If the current value is greater than 0, skip and don't perform the modified 2sum, because there are no more valid three integers than sum to 0 if the smallest value is positive.
+
+The modified 2sum tries to reach the target value which is the current value. In addition, don't use the current index as a valid index when performing 2sum. 
+
+Modifications: 
+    - Set current value to the 2sum target value
+    - Skip the current index when iterating over the array to find valid pairs
+
+In addition, in the outer loop, if the current value is the same as the previous value, skip the value. 
+
+Time: O(N^2)
+Space: O(NlogN)
+
+```
+def threeSum(self, nums: List[int]) -> List[List[int]]:
     nums.sort()
     def twoSum(nums, targetIndex):
         target = -1 * nums[targetIndex]
@@ -835,17 +830,17 @@ def solution1(nums):
                 allPairs.add(p)
     allPairs = list(allPairs)
     return [list(p) for p in allPairs]
+```
 
-def main():
-    test = [-1,0,1,2,-1,-4]
-    test = [0, 0, 0]
-    ans = solution(test)
-    print(ans)
+## No Sorting and Hashset
 
-if __name__ == '__main__':
-    main()
-
-
+Time: O(N^2)
+Space: O(n)
+     
+Examples
+```
+test = [-1,0,1,2,-1,-4]
+test = [0, 0, 0]
 ```
 
 # 16. 3Sum Closest
@@ -2082,33 +2077,25 @@ Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
 Output: [[1,2],[3,10],[12,16]]
 Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
 
-## Iteration (Suboptimal)
-
-Check if the new interval overlaps each interval in the list. Keep track of all intervals it overlaps. 
-
-Remove all the overlapped elements and replace with a new element with min and max. Insert the the new element and resort the array. 
-
-Time: O(NlogN)
-Space: O(N)
-
-## Iteration + Greedy (Optimal)
+## Iteration + Stack (Optimal)
 
 Iterate through each interval, if it doesn't intersect with the new interval add it to the output array. If the current interval does intersect with the new interval, update the new interval boundaries, and don't add either intervals to the output array. If the current interval starts after the new Interval ends, then add the new interval to the output array first, then the remaining intervals to the output array right afterwards.  
 
 ```
-newArray = []
+def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
+    stack = []
 
-for index in range(len(intervals)): 
-    interval = intervals[index]
-    if interval[1] < newInterval[0]:
-        newArray.append(interval)
-    elif interval[0] > newInterval[1]:
-        return newArray + [newInterval] + intervals[index:]
-    else:
-        newInterval[0] = min(newInterval[0], interval[0])
-        newInterval[1] = max(newInterval[1], interval[1])
+    for index in range(len(intervals)): 
+        interval = intervals[index]
+        if interval[1] < newInterval[0]:
+            stack.append(interval)
+        elif interval[0] > newInterval[1]:
+            return stack + [newInterval] + intervals[index:]
+        else:
+            newInterval[0] = min(newInterval[0], interval[0])
+            newInterval[1] = max(newInterval[1], interval[1])
 
-return newArray + [newInterval]
+    return stack + [newInterval]
 ```
 
 # 62. Unique Paths
@@ -7031,31 +7018,6 @@ Example 2:
 Input: intervals = [[7,10],[2,4]]
 Output: 1
 
-## Sorting 
-
-Time: O(nlogn)
-Space: O(n)
-
-```
-def minMeetingRooms(self, intervals: List[List[int]]) -> int:
-    startTimes = sorted([i[0] for i in intervals])
-    endTimes = sorted([i[1] for i in intervals])
-
-    currentMeeting = 0
-    lastEndedMeeting = 0
-    usedRooms = 0
-
-    while currentMeeting < len(intervals):
-        if startTimes[currentMeeting] >= endTimes[lastEndedMeeting]:
-            usedRooms -= 1
-            lastEndedMeeting += 1 
-
-        usedRooms += 1
-        currentMeeting += 1
-    
-    return usedRooms
-```
-
 ## Heap (optimal)
 
 Keep a Min Heap of endTimes, such that the top element of the heap is the first room that will be empty at any given moment in time. 
@@ -8357,63 +8319,34 @@ Output: 0
 
 ## Dynamic Programming
 
-Base Case - Set initial value for integer 0, to 0
-Recrusive Relation - compute valid operations from values so far, return min computed so far
-Iterate from integer 0 to target
+Finding the minimum number of coins to add up to target requires us to solve the supproblems for all integers below target as well.
+
+In particular, we find minimum coins for a target value but finding the minimum value of coins it took to reach all values reachable by subtracting a coin value. 
+
+This gives us the dp relationship: dp[i] = min(dp[i], dp[i - coin] + 1) for all coin values. This is than mapped to a dp table and iteratively filled up solving the smallest to largest subproblems until we reach the target value. 
 
 Time: O(n)
 Space: O(n)
 
 ```
-from math import inf
-def solution(coins, amount):
-    if amount == 0: 
-        return 0
-    dp = [0 for _ in range(amount)]
-    
-    for coin in coins:
-        if 0 <= coin - 1 < amount: 
-            dp[coin - 1] = 1
-    
-    index = 0
-    while index < amount: 
-        prevCoins = []
+def coinChange(self, coins: List[int], amount: int) -> int:
+    import math 
+    dp = [math.inf for i in range(amount + 1)]
+    dp[0] = 0
+    for i in range(amount + 1):
         for coin in coins: 
-            if index - coin >= 0 and dp[index - coin] != 0:
-                prevCoins.append(dp[index - coin])
-        if prevCoins: 
-            if dp[index] != 1: 
-                dp[index] = min(prevCoins) + 1
-        index += 1
-        
-    if dp[-1] == 0: 
-        return -1
-    
-    return dp[-1]
+            if i - coin >= 0:
+                dp[i] = min(dp[i-coin] + 1, dp[i])
 
-def solution(coins, amount):
-    if amount == 0: 
-        return 0
-    count = [None for i in range(amount + 1)]
-    count[0] = 0
-    count[-1] = -1
-    for index in range(len(count)):
-        minCount = inf
-        for coin in coins: 
-            if index - coin >= 0 and count[index - coin] is not None:
-                val = count[index - coin]
-                if val < minCount: 
-                    minCount = val
-        if minCount != inf: 
-            count[index] = minCount + 1
-    return count[-1]
+    if dp[-1] == math.inf: 
+        return -1
+    else: 
+        return dp[-1]
 ```
+
+Example 
 ```
-def main():
-    test1 = [1,2,5] 
-    test2 = 11
-    ans = solution(test1, test2)
-    print(ans)
+coins = [1,2,5], amount = 11
 ```
 
 # 323. Number of Connected Components in an Undirected Graph
