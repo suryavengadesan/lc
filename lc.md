@@ -6859,30 +6859,40 @@ Follow up: What if the inputs contain Unicode characters? How would you adapt yo
 
 ## Sorting (suboptimal)
 
+Sort the strings and check if they are equal strings afterwards. 
+
 Space: O(n)
 Time: O(nlogn) 
 
 
 ## Hashmap (optimal)
 
+Use a single hashmap to count all the character counts. 
+
 Space: O(n)
 Time: O(n)
 
 ```
-def solution(s, t):
-    sd = {}
-    for i in s:
-        if i in sd:
-            sd[i] = sd[i] + 1
+def isAnagram(self, s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False 
+
+    counter = {}
+    for i in s: 
+        if i not in counter: 
+            counter[i] = 1
+        else: 
+            counter[i] += 1
+    
+    for i in t: 
+        if i not in counter:
+            return False 
         else:
-            sd[i] = 1
-    td = {}
-    for i in t:
-        if i in td:
-            td[i] = td[i] + 1
-        else:
-            td[i] = 1
-    return sd == td
+            counter[i] -= 1
+            if counter[i] < 0: 
+                return False 
+    
+    return True 
 ```
 
 # 249. Group Shifted Strings
@@ -13272,7 +13282,9 @@ Code Template [TODO]
     - General Topo
         - (207) Course Schedule 
         - (269) Alien Dictionary
+    - Cycle Detection Topo
         - () Number of Connected Components in an Undirected Graph 
+        - (261) Graph Valid Tree
     - Kahn's Algorithm
         - [TODO]
 
