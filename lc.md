@@ -8668,30 +8668,31 @@ Follow up:
 
 ## Dynamic Programming
 
-Keep a dp table initialized to 0 for n+1 elements. For each power of two less than n, we populate the table accordingly.
+Note the relationship between the binary values of n and n//2. Dividing a number by 2 and flooring the values essentially removes the last bit of the binary value. Therefore, a recursive relationship can be build using this relationship.
 
-For all values less than the power of two, set the value to 0. 
+If n is a odd number, it essentially is the binary number of n//2 left shifted by 1 and adding a 1 bit. Likewise, if n is a even number, it is essentially the binary number of n//2 left shifted by 1 without addint the 1 bit. We can figure out if the current number if odd by performing a logical and with a 1 bit, which will return a 1 if odd and 0 if even. 
 
+Together, we can create a dp table to build the values: dp[i] = dp[i//2] + dp[i & 1]
 
+Time: O(n)
+Space: O(n)
 
+Code
+```
+def countBits(self, n: int) -> List[int]:
+    dp = [0 for i in range(n + 1)]
+    for i in range(n + 1):
+        dp[i] = dp[int(i//2)] + (i & 1)
+    return dp
+```
+
+Example
+```
 - n = 8 
     - [0, 0, 0, 0, 0, 0, 0, 0] Start
     - [0, 1, 0, 0, 0, 0, 0, 0] Power of Two = 1
     - [0, 1, 1, 2, 0, 0, 0, 0] Power of Two = 2
     - Power of Two = 4 
-
-```
-def countBits(self, n: int) -> List[int]:
-        dp = [0 for _ in range(n + 1)]
-        index = 0
-        powerOfTwo = 1
-        while powerOfTwo <= n: 
-            while index < powerOfTwo and index + powerOfTwo <= n: 
-                dp[index + powerOfTwo] = dp[index] + 1 
-                index += 1 
-            index = 0 
-            powerOfTwo *= 2 
-        return dp 
 ```
 
 # 339. Nested List Weight Sum
