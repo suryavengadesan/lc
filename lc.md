@@ -7712,22 +7712,6 @@ Follow up:
     If all integer numbers from the stream are in the range [0, 100], how would you optimize your solution?
     If 99% of all integer numbers from the stream are in the range [0, 100], how would you optimize your solution?
 
-## Sorting
-
-Sort the list and if the length of the list is odd return the middle value of the list. If the length of the list is even return the average of the middle two values.
-
-Perform this sorting operation for each call to find median. 
-
-Time: O(nlogn)
-Space: O(n) because new array is being created
-
-## Store in heap
-
-Add all the elements into a heap. Then remove the first n/2 elements. 
-
-Time: O(nlogn)
-Space: O(n) because store elements in heap
-
 ## Insertion Sort
 
 Add the numbers in the proper order in a list. This will allow the list to remain sorted as more numbers are added.
@@ -7751,33 +7735,6 @@ Heapq in python is a minheap. Therefore, always negate the elements for the maxH
 
 Time: O(logn)
 Space: O(n)
-
-```
-import heapq
-
-def solutionInit(self):
-    self.minHeap = []
-    self.maxHeap = []
-
-def solutionAddNum(self, num):
-    heapq.heappush(self.maxHeap, -num)
-    
-    swap = heapq.heappop(self.maxHeap)
-    heapq.heappush(self.minHeap, -swap)
-
-
-    if len(self.maxHeap) < len(self.minHeap):
-        swap = heapq.heappop(self.minHeap)
-        heapq.heappush(self.maxHeap, -swap)
-
-
-def findMedian(self):
-    if len(self.maxHeap) > len(self.minHeap): 
-            return -self.maxHeap[0]
-    else:
-        return (-self.maxHeap[0] + self.minHeap[0])/2
-```
-
 
 ```
 import heapq
