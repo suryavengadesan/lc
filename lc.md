@@ -7308,69 +7308,6 @@ Time: O(E + V)
 Space: O(E + V)
 
 ```
-def compare(word1, word2):
-    nonlocal letters
-    nonlocal invalid
-    for index in range(min(len(word1), len(word2))):
-        letter1 = word1[index]
-        letter2 = word2[index]
-
-        if letter1 != letter2: 
-            letters[letter1].append(letter2)
-            return 
-    
-    if len(word1) > len(word2):
-        invalid = True
-
-invalid = False
-
-letters = ""
-for word in words:
-    letters += word
-
-letters = Counter(letters)
-
-for letter in letters:
-    letters[letter] = []
-
-prev = ""
-for word in words: 
-    compare(prev, word)
-    prev = word
-    if invalid: 
-        return ""
-
-noTopo = False
-ordering = ""
-
-def search(letter):
-    nonlocal ordering
-    nonlocal noTopo
-    if visited[letter] == 1:
-        noTopo = True
-        return 
-    if visited[letter] == 0: 
-        visited[letter] = 1
-        neighbors = letters[letter]
-        for neighbor in neighbors:
-            search(neighbor)
-        visited[letter] = 2
-        ordering = letter + ordering
-    pass
-
-visited = {}
-for letter in letters:
-    visited[letter] = 0
-
-for letter in letters: 
-    search(letter)
-    if noTopo:
-        return ""
-
-return ordering
-```
-
-```
 from collections import Counter
 def solution(words):
     def compare(word1, word2):
