@@ -5080,22 +5080,18 @@ Space: O(n)
 Time: O(n) 
 
 ```
-from math import inf
-
 def maxProduct(self, nums: List[int]) -> int:
-    if not nums: 
-        return 0 
+        currMax = currMin = totalMax = nums[0]
 
-    minSoFar, maxSoFar, result = nums[0], nums[0], nums[0]
+        for i in range(1, len(nums)):
+            curr = nums[i]
+            maxProduct = currMax * nums[i]
+            minProduct = currMin * nums[i]
+            currMin = min(curr, maxProduct, minProduct)
+            currMax = max(curr, maxProduct, minProduct)
+            totalMax = max(currMax, totalMax)
 
-    for index in range(1, len(nums)):
-        curr = nums[index]
-        maxSoFarTmp = max(curr, curr * minSoFar, curr * maxSoFar)
-        minSoFar = min(curr, curr * minSoFar, curr * maxSoFar)
-        maxSoFar = maxSoFarTmp
-        result = max(result, maxSoFar)
-
-    return result
+        return totalMax
 ```
 
 # 153. Find Minimum in Rotated Sorted Array
