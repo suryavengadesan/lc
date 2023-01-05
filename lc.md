@@ -2477,49 +2477,6 @@ Same as hashmap, but use the first row and first column as in-place replacement 
 Iterate through the first row, and for each 0, set the entire column to 0. Iterate through the first column, and for each 0, set the entire row to 0. 
 
 ```
-rows = len(matrix)
-cols = len(matrix[0])
-
-zeroFirstRow = False
-zeroFirstCol = False
-
-for row in range(rows):
-    if matrix[row][0] == 0:
-        zeroFirstCol = True
-
-for col in range(cols):
-    if matrix[0][col] == 0:
-        zeroFirstRow = True
-
-
-for row in range(rows): 
-    for col in range(cols): 
-        if matrix[row][col] == 0:
-            matrix[0][col] = 0
-            matrix[row][0] = 0
-
-for row in range(1, rows):
-    if matrix[row][0] == 0: 
-        for col in range(cols): 
-            matrix[row][col] = 0
-    
-for col in range(1, cols): 
-    if matrix[0][col] == 0:
-        for row in range(rows): 
-            matrix[row][col] = 0
-
-if zeroFirstRow: 
-    for col in range(cols): 
-        matrix[0][col] = 0
-
-if zeroFirstCol: 
-    for row in range(rows): 
-        matrix[row][0] = 0
-
-return matrix
-```
-
-```
 def solution(matrix):
     rows = len(matrix)
     cols = len(matrix[0])
@@ -6023,68 +5980,9 @@ Make sure to perform the optimization of removing letters that have already been
 
 First add all the words to the trie, and if a word is matched, include a special character "$" to mark the end of word, and set the child of the last letter to "$" : word. 
 
-Perform on each node on the word grid. Search all neighbors and tracked visited grid areas by directly modifying the grid and replacing it back to the value it previously was in. 
+Perform dfs on each cell on the word grid. Search all neighbors and tracked visited grid areas by directly modifying the grid and replacing it back to the value it previously was in. 
 
 Also make sure to pop the "$" key is visited. After all the neighbors of the parent of the "$" is visited, pop the parent letter as well. 
-
-```
-trie = {}
-
-def addWords(words):
-    nonlocal trie
-    for word in words:
-        currTrie = trie
-        for index in range(len(word)):
-            letter = word[index]
-            if letter not in currTrie:
-                currTrie[letter] = {}            
-            currTrie = currTrie[letter]
-        currTrie['$'] = word
-
-addWords(words)
-
-directions = {(1, 0), (0, 1), (-1, 0), (0, -1)}
-
-def search(row, col, trie, wordSoFar):
-    nonlocal ans
-    nonlocal board
-    if not (0 <= row < len(board)) or not (0 <= col < len(board[0])):
-        return 
-    pos = (row, col)
-    letter = board[row][col]
-    
-    if not trie or letter not in trie:
-        return 
-    elif letter in trie and board[row][col] != '.':
-        wordSoFar += letter
-        if '$' in trie[letter]:
-            if wordSoFar in trie[letter]['$']:
-                ans.add(wordSoFar)
-
-                trie[letter].pop('$')
-
-        tmp = board[row][col]
-        board[row][col] = '.'
-        for direction in directions:
-            search(row + direction[0], col + direction[1], trie[letter], wordSoFar)
-
-        
-        board[row][col] = tmp  
-        
-        if not trie[letter]:
-            trie.pop(letter)
-
-ans = set()
-
-for row in range(len(board)):
-    for col in range(len(board[0])):
-        letter = board[row][col]
-        if letter in trie: 
-            search(row, col, trie, "")
-
-print(trie)
-return list(ans)
-```
 
 ```
 def solution(board, words):
