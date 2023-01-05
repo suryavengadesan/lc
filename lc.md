@@ -5068,19 +5068,13 @@ Input: nums = [-2,0,-1]
 Output: 0
 Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
 
-
 ## Dynamic Programming
 
-Keep track of the maxmimum product and minimum product so far. 
+We compute three products at each step: current minimum, a current maximum, and a historic maximum. By updating these values when iterating through the array, they will allow us to handle negative products and the zero product. 
 
+We initialize all the values to the first element, and update them after reading each new value. We compute the current element value, the product of the current element with the previous mininum, and the product of the current element and the previous maximum at each step. The assign the minimum of the three to the currenent minimum and the maximum of the three to the current maximum. 
 
-Base Case: Set all negative and positive max arrays to -inf
-Recursive step: new max = previous max's (both positive and negative) * new element 
-if any previous value is -inf or 0, then set new value to the current value 
-If new element < 0, set curr neg max to new element
-If new element > 0, set curr pos max to new element
-If new element = 0, set curr neg and pos to new element
-Get max value from negative and positive arrays
+To get the largest maximum throughout the array, we update the historic maximum with the current maximum at each time step. 
 
 Space: O(n)
 Time: O(n) 
@@ -5088,7 +5082,7 @@ Time: O(n)
 ```
 from math import inf
 
-def solution(nums):
+def maxProduct(self, nums: List[int]) -> int:
     if not nums: 
         return 0 
 
@@ -5103,10 +5097,6 @@ def solution(nums):
 
     return result
 ```
-
-## Kadane's Algorithm
-
-Compute the maximum prefix product and maximum suffix product. 
 
 # 153. Find Minimum in Rotated Sorted Array
 Medium
@@ -8298,7 +8288,7 @@ Return the fewest number of coins that you need to make up that amount. If that 
 
 You may assume that you have an infinite number of each kind of coin.
 
- 
+
 
 Example 1:
 
