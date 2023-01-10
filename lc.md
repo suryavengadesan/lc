@@ -3782,14 +3782,6 @@ return tree
 
 # 108. Convert Sorted Array to Binary Search Tree
 Easy
-8.9K
-449
-company
-Amazon
-company
-Microsoft
-company
-Apple
 
 Given an integer array nums where the elements are sorted in ascending order, convert it to a
 height-balanced
@@ -3837,6 +3829,76 @@ def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
         return tree 
     return build(0, len(nums) - 1)
 ```
+
+# 110. Balanced Binary Tree
+Easy
+
+Given a binary tree, determine if it is
+height-balanced.
+
+ 
+
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+Output: true
+
+Example 2:
+
+Input: root = [1,2,2,3,3,null,null,4,4]
+Output: false
+
+Example 3:
+
+Input: root = []
+Output: true
+
+ 
+
+Constraints:
+
+    The number of nodes in the tree is in the range [0, 5000].
+    -104 <= Node.val <= 104
+
+## DFS w/ Global Tracker
+recursively count up the max depths of right and left children
+if left and right child depths differ by more than 1, return false 
+
+```
+def isBalanced(self, root: Optional[TreeNode]) -> bool:
+    self.balanced = True
+    def traverse(node):
+        if not node: 
+            return 0
+        else: 
+            leftDepth = traverse(node.left) + 1
+            rightDepth = traverse(node.right) + 1
+            if not -1 <= leftDepth - rightDepth <= 1: 
+                self.balanced = False 
+            return max(leftDepth, rightDepth)
+    traverse(root)
+    return self.balanced
+```
+
+## DFS w/o Global Tracker
+
+```
+def isBalanced(self, root: Optional[TreeNode]) -> bool:
+    def traverse(node):
+        if not node: 
+            return 0
+        else: 
+            leftDepth = traverse(node.left)
+            rightDepth = traverse(node.right)
+            if leftDepth == -1 or rightDepth == -1 or not -1 <= leftDepth - rightDepth <= 1: 
+                return -1
+            return max(leftDepth, rightDepth) + 1
+    return traverse(root) != -1  
+```
+
+## DFS with Stack
+
+TBD
 
 # 111. Minimum Depth of Binary Tree
 Easy
@@ -9292,6 +9354,61 @@ def solution(nums, target):
     
     return dp[-1]
 ```
+# 383. Ransom Note
+Easy
+
+Given two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.
+
+Each letter in magazine can only be used once in ransomNote.
+
+ 
+
+Example 1:
+
+Input: ransomNote = "a", magazine = "b"
+Output: false
+
+Example 2:
+
+Input: ransomNote = "aa", magazine = "ab"
+Output: false
+
+Example 3:
+
+Input: ransomNote = "aa", magazine = "aab"
+Output: true
+
+ 
+
+Constraints:
+
+    1 <= ransomNote.length, magazine.length <= 105
+    ransomNote and magazine consist of lowercase English letters.
+
+## Hashtable
+
+Use a single counter to figure out if random note needs any letters not found in magazine. Start by creating a hashtable that stores the counts for each letter in magaize. Decrement the counts of letters in the magazine counter while iterating through letters of ransomNote that match. If any value becomes negative, that means that ransom requires additional letters. If a letter in ransom isn't found in the magazine counter, that means ransom also needs an addition letter. In either cases return false.
+
+```
+def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+    count = {}
+
+    for letter in magazine: 
+        if letter not in count: 
+            count[letter] = 1
+        else: 
+            count[letter] += 1
+        
+    for letter in ransomNote: 
+        if letter in count:
+            count[letter] -= 1
+            if count[letter] < 0: 
+                return False 
+        else: 
+            return False 
+    
+    return True 
+```
 
 # 387. First Unique Character in a String
 Easy
@@ -11777,6 +11894,7 @@ def solution(seats):
 			
 	return maxLength
 ```
+
 # 876. Middle of the Linked List
 Easy
 
