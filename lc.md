@@ -3547,7 +3547,8 @@ Follow up: Could you solve it both recursively and iteratively?
 
 ## DFS
 
-## DFS with Stack
+Time: O(N)
+Space: O(N)
 
 ```
 def solution(root):
@@ -3559,6 +3560,9 @@ def solution(root):
         return leftRoot.val == rightRoot.val and mirror(leftRoot.right, rightRoot.left) and mirror(leftRoot.left, rightRoot.right)
     return mirror(root, root)
 ```
+
+## DFS with Stack
+
 
 # 102. Binary Tree Level Order Traversal
 Medium
@@ -3774,6 +3778,64 @@ def traverse(preorder, inorder):
         
 tree = traverse(preorder, inorder)
 return tree
+```
+
+# 108. Convert Sorted Array to Binary Search Tree
+Easy
+8.9K
+449
+company
+Amazon
+company
+Microsoft
+company
+Apple
+
+Given an integer array nums where the elements are sorted in ascending order, convert it to a
+height-balanced
+binary search tree.
+
+ 
+
+Example 1:
+
+Input: nums = [-10,-3,0,5,9]
+Output: [0,-3,9,-10,null,5]
+Explanation: [0,-10,5,null,-3,null,9] is also accepted:
+
+Example 2:
+
+Input: nums = [1,3]
+Output: [3,1]
+Explanation: [1,null,3] and [3,1] are both height-balanced BSTs.
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 104
+    -104 <= nums[i] <= 104
+    nums is sorted in a strictly increasing order.
+
+## DFS 
+
+Use two pointer instead of using splices of the array
+
+Time: O(n)
+Space: O(logN)
+
+```
+def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+    def build(left, right):
+        if left > right: 
+            return None 
+        mid = (left + right) // 2
+        tree = TreeNode(nums[mid])
+        tree.left = build(left, mid - 1)
+        tree.right = build(mid + 1, right)
+
+        return tree 
+    return build(0, len(nums) - 1)
 ```
 
 # 111. Minimum Depth of Binary Tree
@@ -5069,6 +5131,41 @@ class LRUCache:
                 self.cache.pop(tail.key)
                 self.currcap -= 1
 ```
+
+# 148. Sort List
+Medium
+
+Given the head of a linked list, return the list after sorting it in ascending order.
+
+ 
+
+Example 1:
+
+Input: head = [4,2,1,3]
+Output: [1,2,3,4]
+
+Example 2:
+
+Input: head = [-1,5,3,4,0]
+Output: [-1,0,3,4,5]
+
+Example 3:
+
+Input: head = []
+Output: []
+
+ 
+
+Constraints:
+
+    The number of nodes in the list is in the range [0, 5 * 104].
+    -105 <= Node.val <= 105
+
+ 
+
+Follow up: Can you sort the linked list in O(n logn) time and O(1) memory (i.e. constant space)?
+
+## Merge Sort 
 
 # 152. Maximum Product Subarray
 Medium
@@ -10577,9 +10674,7 @@ Constraints:
     1 <= content.length <= 50
     At most 300 calls will be made to ls, mkdir, addContentToFile, and readContentFromFile.
 
-
-
-## Tree with Hashmap
+## Trie using Hashmap
 
 A filesystem is a hash map.
 
@@ -10661,10 +10756,6 @@ class FileSystem:
             return ""
         else: 
             return currNode[file]
-        
-
-        
-
 
 # Your FileSystem object will be instantiated and called as such:
 # obj = FileSystem()
@@ -11287,6 +11378,70 @@ def solution(accounts):
     return ans
 ```
 
+# 733. Flood Fill
+Easy
+
+An image is represented by an m x n integer grid image where image[i][j] represents the pixel value of the image.
+
+You are also given three integers sr, sc, and color. You should perform a flood fill on the image starting from the pixel image[sr][sc].
+
+To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with color.
+
+Return the modified image after performing the flood fill.
+
+ 
+
+Example 1:
+
+Input: image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2
+Output: [[2,2,2],[2,2,0],[2,0,1]]
+Explanation: From the center of the image with position (sr, sc) = (1, 1) (i.e., the red pixel), all pixels connected by a path of the same color as the starting pixel (i.e., the blue pixels) are colored with the new color.
+Note the bottom corner is not colored 2, because it is not 4-directionally connected to the starting pixel.
+
+Example 2:
+
+Input: image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, color = 0
+Output: [[0,0,0],[0,0,0]]
+Explanation: The starting pixel is already colored 0, so no changes are made to the image.
+
+ 
+
+Constraints:
+
+    m == image.length
+    n == image[i].length
+    1 <= m, n <= 50
+    0 <= image[i][j], color < 216
+    0 <= sr < m
+    0 <= sc < n
+
+## DFS 
+
+Perform a standard DFS traversal using the target color. 
+
+```
+def floodFill(self, image: List[List[int]], sr: int, sc: int, color: int) -> List[List[int]]:
+    target = image[sr][sc]
+    visited = [[0 for i in range(len(image[0]))] for j in range(len(image))]
+
+    def traverse(i, j):
+        currColor = image[i][j]
+        if currColor == target and visited[i][j] != -1:
+            visited[i][j] = -1 
+            image[i][j] = color 
+            neighbors = {(0, 1), (0, -1), (1, 0), (-1, 0)}
+            for n in neighbors: 
+                di = n[0]
+                dj = n[1]
+                i1 = i + di
+                j1 = j + dj 
+                if 0 <= i1 < len(image) and 0 <= j1 < len(image[0]):
+                    traverse(i1, j1)
+
+    traverse(sr, sc)
+    return image 
+```
+
 # 735. Asteroid Collision
 Medium
 
@@ -11622,6 +11777,46 @@ def solution(seats):
 			
 	return maxLength
 ```
+# 876. Middle of the Linked List
+Easy
+
+Given the head of a singly linked list, return the middle node of the linked list.
+
+If there are two middle nodes, return the second middle node.
+
+ 
+
+Example 1:
+
+Input: head = [1,2,3,4,5]
+Output: [3,4,5]
+Explanation: The middle node of the list is node 3.
+
+Example 2:
+
+Input: head = [1,2,3,4,5,6]
+Output: [4,5,6]
+Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one.
+
+ 
+
+Constraints:
+
+    The number of nodes in the list is in the range [1, 100].
+    1 <= Node.val <= 100
+
+## Fast and Slow Pointer 
+
+```
+def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    slow = fast = head 
+
+    while fast and fast.next: 
+        slow = slow.next 
+        fast = fast.next.next 
+    return slow
+```
+
 
 # 904. Fruit Into Baskets
 Medium
@@ -13681,6 +13876,8 @@ Application: [TODO]
 	- Bubble Sort
 	- Quick Sort
     - Quick Sort (Quick Select)
+    - Merge Sort
+        - (148) Sort List
 - Memorization Tips
     - Understand and memorize all common sorting algos
     - Memorize common heap operation in python
