@@ -1210,6 +1210,59 @@ def solution1(lists):
         
     return div(lists)
 ```
+# 26. Remove Duplicates from Sorted Array
+Easy
+
+Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. The relative order of the elements should be kept the same.
+
+Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
+
+Return k after placing the final result in the first k slots of nums.
+
+Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
+
+Custom Judge:
+
+The judge will test your solution with the following code:
+
+int[] nums = [...]; // Input array
+int[] expectedNums = [...]; // The expected answer with correct length
+
+int k = removeDuplicates(nums); // Calls your implementation
+
+assert k == expectedNums.length;
+for (int i = 0; i < k; i++) {
+    assert nums[i] == expectedNums[i];
+}
+If all assertions pass, then your solution will be accepted.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,2]
+Output: 2, nums = [1,2,_]
+Explanation: Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+Example 2:
+
+Input: nums = [0,0,1,1,1,2,2,3,3,4]
+Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]
+Explanation: Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and 4 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+ 
+
+Constraints:
+
+1 <= nums.length <= 3 * 104
+-100 <= nums[i] <= 100
+nums is sorted in non-decreasing order.
+
+
+# Two Pointer
+
+```
+```
 
 # 31. Next Permutation
 Medium
@@ -3951,6 +4004,45 @@ def solution(root):
 
 ```
 
+# 113. Path Sum II
+Medium
+
+Given the root of a binary tree and an integer targetSum, return all root-to-leaf paths where the sum of the node values in the path equals targetSum. Each path should be returned as a list of the node values, not node references.
+
+A root-to-leaf path is a path starting from the root and ending at any leaf node. A leaf is a node with no children.
+
+ 
+
+Example 1:
+
+
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: [[5,4,11,2],[5,8,4,5]]
+Explanation: There are two paths whose sum equals targetSum:
+5 + 4 + 11 + 2 = 22
+5 + 8 + 4 + 5 = 22
+Example 2:
+
+
+Input: root = [1,2,3], targetSum = 5
+Output: []
+Example 3:
+
+Input: root = [1,2], targetSum = 0
+Output: []
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 5000].
+-1000 <= Node.val <= 1000
+-1000 <= targetSum <= 1000
+
+# DFS
+
+```
+```
+
 # 116. Populating Next Right Pointers in Each Node
 Medium
 
@@ -5356,6 +5448,76 @@ c = (3 + 2)/2 = 2
 r = 2
 ```
 
+# 155. Min Stack
+Medium
+
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the MinStack class:
+
+MinStack() initializes the stack object.
+void push(int val) pushes the element val onto the stack.
+void pop() removes the element on the top of the stack.
+int top() gets the top element of the stack.
+int getMin() retrieves the minimum element in the stack.
+You must implement a solution with O(1) time complexity for each function.
+
+ 
+
+Example 1:
+
+Input
+["MinStack","push","push","push","getMin","pop","top","getMin"]
+[[],[-2],[0],[-3],[],[],[],[]]
+
+Output
+[null,null,null,null,-3,null,0,-2]
+
+Explanation
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin(); // return -3
+minStack.pop();
+minStack.top();    // return 0
+minStack.getMin(); // return -2
+ 
+
+Constraints:
+
+-231 <= val <= 231 - 1
+Methods pop, top and getMin operations will always be called on non-empty stacks.
+At most 3 * 104 calls will be made to push, pop, top, and getMin.
+
+## Stack 
+
+Keep a stack that keeps track of the minimum value so far in addition to the inputted values. This allows for one to access the minimum value so far at the end of the stack, in addition to the current value last processed by the stack. 
+
+Time: O(1)
+Space: O(n)
+
+```
+class MinStack:
+    def __init__(self):
+        self.stack = []
+        
+    def push(self, val: int) -> None:
+        if self.stack: 
+            self.stack.append((val, min(val, self.stack[-1][1])))
+        else: 
+            self.stack.append((val, val))
+        
+    def pop(self) -> None:
+        self.stack.pop()
+
+    def top(self) -> int:
+        return self.stack[-1][0]
+
+    def getMin(self) -> int:
+        return self.stack[-1][1]
+```
+
 # 162. Find Peak Element
 Medium
 
@@ -5511,6 +5673,35 @@ class BSTIterator:
     def hasNext(self) -> bool:
         return len(self.st) > 0
         
+```
+
+# 179. Largest Number
+Medium
+
+Given a list of non-negative integers nums, arrange them such that they form the largest number and return it.
+
+Since the result may be very large, so you need to return a string instead of an integer.
+
+ 
+
+Example 1:
+
+Input: nums = [10,2]
+Output: "210"
+Example 2:
+
+Input: nums = [3,30,34,5,9]
+Output: "9534330"
+ 
+
+Constraints:
+
+1 <= nums.length <= 100
+0 <= nums[i] <= 109
+
+## Comparator
+
+```
 ```
 
 # 190. Reverse Bits
@@ -9044,6 +9235,79 @@ def solution(nums1, nums2):
             o.append(i)
     return o
 ```
+# 362. Design Hit Counter
+Medium
+
+Design a hit counter which counts the number of hits received in the past 5 minutes (i.e., the past 300 seconds).
+
+Your system should accept a timestamp parameter (in seconds granularity), and you may assume that calls are being made to the system in chronological order (i.e., timestamp is monotonically increasing). Several hits may arrive roughly at the same time.
+
+Implement the HitCounter class:
+
+HitCounter() Initializes the object of the hit counter system.
+void hit(int timestamp) Records a hit that happened at timestamp (in seconds). Several hits may happen at the same timestamp.
+int getHits(int timestamp) Returns the number of hits in the past 5 minutes from timestamp (i.e., the past 300 seconds).
+ 
+
+Example 1:
+
+Input
+["HitCounter", "hit", "hit", "hit", "getHits", "hit", "getHits", "getHits"]
+[[], [1], [2], [3], [4], [300], [300], [301]]
+Output
+[null, null, null, null, 3, null, 4, 3]
+
+Explanation
+HitCounter hitCounter = new HitCounter();
+hitCounter.hit(1);       // hit at timestamp 1.
+hitCounter.hit(2);       // hit at timestamp 2.
+hitCounter.hit(3);       // hit at timestamp 3.
+hitCounter.getHits(4);   // get hits at timestamp 4, return 3.
+hitCounter.hit(300);     // hit at timestamp 300.
+hitCounter.getHits(300); // get hits at timestamp 300, return 4.
+hitCounter.getHits(301); // get hits at timestamp 301, return 3.
+ 
+
+Constraints:
+
+1 <= timestamp <= 2 * 109
+All the calls are being made to the system in chronological order (i.e., timestamp is monotonically increasing).
+At most 300 calls will be made to hit and getHits.
+ 
+
+Follow up: What if the number of hits per second could be huge? Does your design scale?
+
+## Queue 
+
+It is important to note that all function calls have input timestamps that are strictly increasing. Each getHits(timestamp) call has a timestamp value greater than all previous getHits() and hit() call. The same applies for each hit(timestamp) call.
+
+Therefore, we can prune the saved hits each time, removing any hits that are older than 300 seconds old without causing problems to future function calls. 
+
+```
+class HitCounter:
+    def __init__(self):
+        self.hits = []
+        
+
+    def hit(self, timestamp: int) -> None:
+        self.hits.append(timestamp)
+        
+
+    def getHits(self, timestamp: int) -> int:
+        while(self.hits != []):
+            if self.hits[0] <= timestamp - 300:
+                self.hits.pop(0)
+            else: 
+                break 
+        return len(self.hits)
+
+```
+
+## Deque of Pairs
+
+Duplicate consequtive timestamps can be handled, by storing timestamp values as a pair with its count. 
+
+
 
 # 370. Range Addition
 Medium
@@ -10100,6 +10364,70 @@ def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
         else:
             removals += 1
     return removals
+```
+
+# 437. Path Sum III
+Medium
+
+Given the root of a binary tree and an integer targetSum, return the number of paths where the sum of the values along the path equals targetSum.
+
+The path does not need to start or end at the root or a leaf, but it must go downwards (i.e., traveling only from parent nodes to child nodes).
+
+ 
+
+Example 1:
+
+
+Input: root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+Output: 3
+Explanation: The paths that sum to 8 are shown.
+Example 2:
+
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: 3
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 1000].
+-109 <= Node.val <= 109
+-1000 <= targetSum <= 1000
+
+## DFS + Prefix Sum
+
+Use hashmap that store the prefix sum's compute sofar, similar to continuous subarray sum. This allows to check if the current sum - target sum exists in the previously computed prefix sums, in O(1) time. If the current sum - target sum exists in the set of prefix sums, this means there exists two nodes where the start node is (curr sum - target sum) and the end node is (curr sum), therefore the difference between the nodes is target sum, which is a valid path. 
+
+Perform dfs, while keeping track of this hashmap and the current prefix sum, by popping and removing elements from the hashmap and summing values to the prefix sum, while recursing through the tree. 
+
+Time: O(n)
+Space: O(n)
+
+```
+def pathSum(self, root: Optional[TreeNode], targetSum: int) -> int:
+    self.count = 0 
+    def search(node, hashmap, currSum):
+        if not node: 
+            return 
+        else:
+            currSum += node.val
+            if currSum - targetSum in hashmap:
+                self.count += hashmap[currSum - targetSum]
+            
+            if currSum not in hashmap: 
+                hashmap[currSum] = 1
+            else: 
+                hashmap[currSum] += 1
+            
+            search(node.left, hashmap, currSum)
+            search(node.right, hashmap, currSum)
+            
+            if hashmap[currSum] == 1: 
+                hashmap.pop(currSum)
+            else: 
+                hashmap[currSum] -= 1
+
+    search(root, {0:1}, 0)
+    return self.count 
 ```
 
 # 496. Next Greater Element I
@@ -11637,6 +11965,55 @@ def solution(asteroids):
     return stack
 ```
 
+# 739. Daily Temperatures
+Medium
+Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0 instead.
+
+ 
+
+Example 1:
+
+Input: temperatures = [73,74,75,71,69,72,76,73]
+Output: [1,1,4,2,1,1,0,0]
+Example 2:
+
+Input: temperatures = [30,40,50,60]
+Output: [1,1,1,0]
+Example 3:
+
+Input: temperatures = [30,60,90]
+Output: [1,1,0]
+ 
+
+Constraints:
+
+1 <= temperatures.length <= 105
+30 <= temperatures[i] <= 100
+
+## Monostack
+
+A monostack is stack where the values in the stack follow a strict ordering. 
+
+Keep a stack of tuples with the temperate of each day, along with the day number. While the stack hash values, if the temperature of the current day is greater than the last element on the stack, then set the distance between days of the last element of the stack to be equal to the difference between the current say and that specific day. Keep popping values off the stack while the condition holds. After the stack has been modified, add the current day and temperature to the stack. Keep going to the end of the array. 
+
+```
+def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+    output = [0 for i in range(len(temperatures))]
+    stack = []
+
+    for i in range(len(temperatures)): 
+        t = temperatures[i]
+        while stack and stack[-1][0] < t:
+            output[stack[-1][1]] = i - stack[-1][1]
+            stack.pop()
+        stack.append((t, i))
+
+    return output
+```
+
+## Iteration
+`
+
 # 743. Network Delay Time
 Medium
 
@@ -11935,6 +12312,49 @@ def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
     return slow
 ```
 
+# 844. Backspace String Compare
+Easy
+
+Given two strings s and t, return true if they are equal when both are typed into empty text editors. '#' means a backspace character.
+
+Note that after backspacing an empty text, the text will continue empty.
+
+ 
+
+Example 1:
+
+Input: s = "ab#c", t = "ad#c"
+Output: true
+Explanation: Both s and t become "ac".
+
+Example 2:
+
+Input: s = "ab##", t = "c#d#"
+Output: true
+Explanation: Both s and t become "".
+
+Example 3:
+
+Input: s = "a#c", t = "b"
+Output: false
+Explanation: s becomes "c" while t becomes "b".
+
+ 
+
+Constraints:
+
+    1 <= s.length, t.length <= 200
+    s and t only contain lowercase letters and '#' characters.
+
+## Stack 
+
+Time: O(N)
+Space: O(N)
+
+## Two Pointer
+
+Time: O(N)
+Space: O(1)
 
 # 904. Fruit Into Baskets
 Medium
@@ -12165,6 +12585,109 @@ def numUniqueEmails(self, emails: List[str]) -> int:
     return len(validEmails)
 ```
 
+# 981. Time Based Key-Value Store
+Medium
+
+Design a time-based key-value data structure that can store multiple values for the same key at different time stamps and retrieve the key's value at a certain timestamp.
+
+Implement the TimeMap class:
+
+TimeMap() Initializes the object of the data structure.
+void set(String key, String value, int timestamp) Stores the key key with the value value at the given time timestamp.
+String get(String key, int timestamp) Returns a value such that set was called previously, with timestamp_prev <= timestamp. If there are multiple such values, it returns the value associated with the largest timestamp_prev. If there are no values, it returns "".
+ 
+
+Example 1:
+
+Input
+["TimeMap", "set", "get", "get", "set", "get", "get"]
+[[], ["foo", "bar", 1], ["foo", 1], ["foo", 3], ["foo", "bar2", 4], ["foo", 4], ["foo", 5]]
+Output
+[null, null, "bar", "bar", null, "bar2", "bar2"]
+
+Explanation
+TimeMap timeMap = new TimeMap();
+timeMap.set("foo", "bar", 1);  // store the key "foo" and value "bar" along with timestamp = 1.
+timeMap.get("foo", 1);         // return "bar"
+timeMap.get("foo", 3);         // return "bar", since there is no value corresponding to foo at timestamp 3 and timestamp 2, then the only value is at timestamp 1 is "bar".
+timeMap.set("foo", "bar2", 4); // store the key "foo" and value "bar2" along with timestamp = 4.
+timeMap.get("foo", 4);         // return "bar2"
+timeMap.get("foo", 5);         // return "bar2"
+ 
+
+Constraints:
+
+1 <= key.length, value.length <= 100
+key and value consist of lowercase English letters and digits.
+1 <= timestamp <= 107
+All the timestamps timestamp of set are strictly increasing.
+At most 2 * 105 calls will be made to set and get.
+
+## Linear Search 
+
+Perform a linear search through the array of timestamp-value pairs for a given key value. Start the the end of the array, with the largest timestamps, and iterate backward. 
+
+```
+class TimeMap:
+    def __init__(self):
+        self.map = {}
+        
+
+    def set(self, key: str, value: str, timestamp: int) -> None:
+        if key in self.map: 
+            self.map[key].append((timestamp, value))
+        else: 
+            self.map[key] = [(timestamp, value)]
+        
+
+    def get(self, key: str, timestamp: int) -> str:
+        if key not in self.map: 
+            return ""
+        values = self.map[key]
+        for v in reversed(values):
+            if v[0] <= timestamp: 
+                return v[1] 
+        return ""
+```
+
+## Binary Search 
+
+Perform a binary search through the array of timestamp-value pairs for a given key value. Set the proper midpoint, and keep halfing the search space. 
+
+```
+class TimeMap:
+    def __init__(self):
+        self.map = {}
+        
+
+    def set(self, key: str, value: str, timestamp: int) -> None:
+        if key in self.map: 
+            self.map[key].append((timestamp, value))
+        else: 
+            self.map[key] = [(timestamp, value)]
+        
+
+    def get(self, key: str, timestamp: int) -> str:
+        if key not in self.map: 
+            return ""
+        
+        if timestamp < self.map[key][0][0]:
+            return ""
+
+        values = self.map[key]
+        l = 0
+        r = len(values)
+        while l < r: 
+            mid = (l + r)//2
+            if values[mid][0] <= timestamp: 
+                l = mid + 1
+            else: 
+                r = mid
+        
+        if r == 0: return ""
+        return values[r-1][1]
+```
+
 # 1025. Divisor Game
 Easy
 
@@ -12279,6 +12802,51 @@ c 1 1 1 0
 d 1 1 1 0 
 a 1 1 0 0 
 + 0 0 0 0
+```
+
+# 1197. Minimum Knight Moves
+Medium
+
+In an infinite chess board with coordinates from -infinity to +infinity, you have a knight at square [0, 0].
+
+A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.
+
+
+Return the minimum number of steps needed to move the knight to the square [x, y]. It is guaranteed the answer exists.
+
+ 
+
+Example 1:
+
+Input: x = 2, y = 1
+Output: 1
+Explanation: [0, 0] → [2, 1]
+Example 2:
+
+Input: x = 5, y = 5
+Output: 4
+Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
+ 
+
+Constraints:
+
+-300 <= x, y <= 300
+0 <= |x| + |y| <= 300
+
+# DFS 
+
+```
+def minKnightMoves(self, x: int, y: int) -> int:
+    @lru_cache
+    def search(x, y): 
+        if x + y == 0: 
+            return 0
+        elif x + y == 2: 
+            return 2
+        else:
+            return min(search(abs(x-1), abs(y-2)), search(abs(x-2), abs(y-1))) + 1
+    
+    return search(abs(x), abs(y))
 ```
 
 # 1213. Intersection of Three Sorted Arrays
@@ -14212,6 +14780,7 @@ https://www.geeksforgeeks.org/treemap-in-java/
 
 - Phone Screen 
 	- Coder Pad 
+    - Collabedit - https://collabedit.com/ 
 
 - Onsite 
 	- Coder Pad 
