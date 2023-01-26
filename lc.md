@@ -2640,6 +2640,64 @@ def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
     return False 
 ```
 
+# 75. Sort Colors
+Medium
+
+Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
+
+We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+
+You must solve this problem without using the library's sort function.
+
+ 
+
+Example 1:
+
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+Example 2:
+
+Input: nums = [2,0,1]
+Output: [0,1,2]
+ 
+
+Constraints:
+
+n == nums.length
+1 <= n <= 300
+nums[i] is either 0, 1, or 2.
+ 
+
+Follow up: Could you come up with a one-pass algorithm using only constant extra space?
+
+## Two Pointer
+
+This problem actually uses three pointers in theory. 
+
+The crux of the problem is to move all 0's to the left end, and all the 2's to the right end. This can be possibly by keeping two pointers that signify the left boundary, where all values before that index are 0, and a right boundary where all value after that index are 1. Also keep track of a current index pointer, which is used to track which value is currently being considered. 
+
+Swap the current value being considered, with the value at the left and right boundaries, depending on the current value. Increment and decrement all three pointers, until the current index pointer hits the right boundary. When this happens, in theory all the 0's should be at the left, the 1's in the center, and the 2's to the right. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def sortColors(self, nums: List[int]) -> None:
+    l = 0 
+    r = len(nums) - 1
+    curr = 0 
+    while curr <= r: 
+        if nums[curr] == 0: 
+            nums[curr], nums[l] = nums[l], nums[curr]
+            l += 1 
+            curr += 1
+        elif nums[curr] == 2: 
+            nums[curr], nums[r] = nums[r], nums[curr]
+            r -= 1 
+        else: 
+            curr += 1
+    return nums 
+```
 
 # 76. Minimum Window Substring
 Hard
@@ -3599,6 +3657,8 @@ Constraints:
 Follow up: Could you solve it both recursively and iteratively?
 
 ## DFS
+
+Check the left and right children, but instead of children,  
 
 Time: O(N)
 Space: O(N)
@@ -8308,6 +8368,55 @@ def solution(s):
     
 ```
 
+# 310. Minimum Height Trees
+Medium
+
+A tree is an undirected graph in which any two vertices are connected by exactly one path. In other words, any connected graph without simple cycles is a tree.
+
+Given a tree of n nodes labelled from 0 to n - 1, and an array of n - 1 edges where edges[i] = [ai, bi] indicates that there is an undirected edge between the two nodes ai and bi in the tree, you can choose any node of the tree as the root. When you select a node x as the root, the result tree has height h. Among all possible rooted trees, those with minimum height (i.e. min(h))  are called minimum height trees (MHTs).
+
+Return a list of all MHTs' root labels. You can return the answer in any order.
+
+The height of a rooted tree is the number of edges on the longest downward path between the root and a leaf.
+
+ 
+
+Example 1:
+
+
+Input: n = 4, edges = [[1,0],[1,2],[1,3]]
+Output: [1]
+Explanation: As shown, the height of the tree is 1 when the root is the node with label 1 which is the only MHT.
+Example 2:
+
+
+Input: n = 6, edges = [[3,0],[3,1],[3,2],[3,4],[5,4]]
+Output: [3,4]
+ 
+
+Constraints:
+
+1 <= n <= 2 * 104
+edges.length == n - 1
+0 <= ai, bi < n
+ai != bi
+All the pairs (ai, bi) are distinct.
+The given input is guaranteed to be a tree and there will be no repeated edges.
+
+## Topological Sort ~ BFS
+
+Remove all the remaining leaf nodes, until the number of nodes remianing is <= 2.
+
+```
+```
+
+## DFS Twice 
+
+Perform DFS from any two leaves similar to two pointers on a graph. When the two pointer are on the same node or are two nodes away from each other, then return the node(s).
+
+```
+```
+
 # 314. Binary Tree Vertical Order Traversal
 Medium
 
@@ -11209,6 +11318,61 @@ class FileSystem:
 # obj.addContentToFile(filePath,content)
 # param_4 = obj.readContentFromFile(filePath)
 ```
+
+# 621. Task Scheduler
+Medium
+
+Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle.
+
+However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same letter in the array), that is that there must be at least n units of time between any two same tasks.
+
+Return the least number of units of times that the CPU will take to finish all the given tasks.
+
+ 
+
+Example 1:
+
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: 
+A -> B -> idle -> A -> B -> idle -> A -> B
+There is at least 2 units of time between any two same tasks.
+Example 2:
+
+Input: tasks = ["A","A","A","B","B","B"], n = 0
+Output: 6
+Explanation: On this case any permutation of size 6 would work since n = 0.
+["A","A","A","B","B","B"]
+["A","B","A","B","A","B"]
+["B","B","B","A","A","A"]
+...
+And so on.
+Example 3:
+
+Input: tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+Output: 16
+Explanation: 
+One possible solution is
+A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> idle -> idle -> A -> idle -> idle -> A
+ 
+
+Constraints:
+
+1 <= task.length <= 104
+tasks[i] is upper-case English letter.
+The integer n is in the range [0, 100].
+
+## Heap
+
+Start by adding the most frequent tasks, and add the remaining most frequent elements until no elements left.
+
+## Greedy
+
+Note that the maximum frequency element will determine the total time length. In particular, the most frequent eleement along with the required idle time will space out the tasks. The remaining tasks will greedily fill the remaining time. 
+
+## Math
+
+Perform modular arithmetic. 
 
 # 629. K Inverse Pairs Array
 Hard
@@ -14865,3 +15029,20 @@ https://www.geeksforgeeks.org/treemap-in-java/
         - Award 1 point if question can be solved in 15 minutes
         - Award 0 points if question can not be solved in 15 minutes
     - Reach 95% in Blind 75 ~ Solve more than 70 questions in less than 15 minutes each
+
+- Failed OAs
+    - Quant
+       - Akuna Capital [2022]
+       - DRW [2022]
+       - Peak6 [2022]
+       - Optiver [2022]
+    - Tech 
+        - Tesla [2022]
+        - Samsara [2023]
+        - Databricks [2021]
+
+- Failed Interviews
+    - Quant
+        - Citadel [2021]
+    - Tech 
+        - Meta [2022]
