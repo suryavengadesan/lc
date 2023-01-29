@@ -865,9 +865,89 @@ Example 2:
 Input: nums = [0,0,0], target = 1
 Output: 0
 
+## Two Pointer
 
+This approach reuses the two sum solution that uses sorting and two pointers, instead of the two sum solution that uses a hashmap.
 
 ```
+def threeSumClosest(self, nums: List[int], target: int) -> int:
+    import math 
+    minDiff = math.inf
+    nums.sort()
+    for i in range(len(nums)):
+        n = nums[i]
+        l = i + 1
+        r = len(nums) - 1
+        while l < r:
+            currSum = n + nums[l] + nums[r]
+            diff = target - currSum
+            if abs(diff) < abs(minDiff): 
+                minDiff = diff 
+            if currSum < target: 
+                l += 1 
+            else: 
+                r -= 1  
+    return target - minDiff  
+```
+
+## Binary Search
+
+# 17. 17. Letter Combinations of a Phone Number
+Medium
+
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+
+ 
+
+Example 1:
+
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+Example 2:
+
+Input: digits = ""
+Output: []
+Example 3:
+
+Input: digits = "2"
+Output: ["a","b","c"]
+ 
+
+Constraints:
+
+0 <= digits.length <= 4
+digits[i] is a digit in the range ['2', '9'].
+
+## Backtracking
+
+Search all valid mappings from digits to letters through a DFS search. 
+
+```
+def letterCombinations(self, digits: str) -> List[str]:
+    mapping = {
+        '2': "abc",
+        '3': "def",
+        '4': "ghi",
+        '5': "jkl",
+        '6': "mno",
+        '7': "pqrs", 
+        '8': "tuv",
+        '9': "wxyz"}
+    
+    self.words = []
+    def search(number, word): 
+        if not number:
+            if word: 
+                self.words.append(word)
+            return
+        else:
+            for letter in mapping[number[0]]: 
+                search(number[1:], word + letter)
+    search(digits, "")
+    return self.words
 
 ```
 
@@ -1573,6 +1653,109 @@ def searchInsert(self, nums: List[int], target: int) -> int:
     return l
 ```
 
+# 36. Valid Sudoku
+Medium
+
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+Note:
+
+A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+Only the filled cells need to be validated according to the mentioned rules.
+ 
+
+Example 1:
+
+
+Input: board = 
+[["5","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: true
+Example 2:
+
+Input: board = 
+[["8","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: false
+Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
+ 
+
+Constraints:
+
+board.length == 9
+board[i].length == 9
+board[i][j] is a digit 1-9 or '.'.
+
+## Hashmap or Set
+
+O(n^2)
+O(n^2)
+
+```
+def isValidSudoku(self, board: List[List[str]]) -> bool:
+    duplicate = set()
+
+    for i in range(9):
+        duplicate.clear()
+        #print(duplicate)
+        for j in range(9):
+            n = board[i][j]
+            if n != '.': 
+                if n in duplicate: 
+                    return False 
+                else: 
+                    duplicate.add(n)
+
+    
+    for i in range(9):
+        duplicate.clear()
+        for j in range(9):
+            n = board[j][i]
+            if n != '.': 
+                if n in duplicate: 
+                    return False 
+                else: 
+                    duplicate.add(n)
+    
+    for i in range(9):
+        duplicate.clear()
+        for j in range(9):
+            di = ((i % 3) * 3) + (j % 3)
+            dj = ((i // 3) * 3) + (j//3)
+            n = board[di][dj]
+            if n != '.': 
+                if n in duplicate: 
+                    return False 
+                else: 
+                    duplicate.add(n)
+    
+    return True 
+```
+
+## Bit Manipulation
+
+O(n^2)
+O(n)
+
+
+
 # 42. Trapping Rain Water
 Hard
 
@@ -2107,6 +2290,12 @@ def merge(self, intervals: List[List[int]]) -> List[List[int]]:
             stack.append(intervals[i])
     return stack
 ```
+
+## Follow-up Question
+
+How do you add intervals and merge them for a large stream of intervals?
+
+If you get an unsorted stream of intervals, you save it into a binary search tree, and modify the interval ends in O(logN) time during each update step. 
 
 # 57. Insert Interval
 Medium
@@ -4831,6 +5020,54 @@ def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
         return startLocation
 ```
 
+# 136. Single Number
+Easy
+12.8K
+490
+company
+Amazon
+company
+Apple
+company
+Google
+Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.
+
+You must implement a solution with a linear runtime complexity and use only constant extra space.
+
+ 
+
+Example 1:
+
+Input: nums = [2,2,1]
+Output: 1
+Example 2:
+
+Input: nums = [4,1,2,1,2]
+Output: 4
+Example 3:
+
+Input: nums = [1]
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 3 * 104
+-3 * 104 <= nums[i] <= 3 * 104
+Each element in the array appears twice except for one element which appears only once.
+
+## Bit Manipulation 
+
+Time: O(n)
+Space: O(1)
+
+```
+def singleNumber(self, nums: List[int]) -> int:
+    single = 0 
+    for n in nums: 
+        single ^= n 
+    return single 
+```
 
 # 138. Copy List with Random Pointer
 Medium
@@ -5381,6 +5618,83 @@ Follow up: Can you sort the linked list in O(n logn) time and O(1) memory (i.e. 
 
 ## Merge Sort 
 
+# 150. Evaluate Reverse Polish Notation
+Medium
+5.4K
+844
+company
+Amazon
+company
+Google
+company
+LinkedIn
+You are given an array of strings tokens that represents an arithmetic expression in a Reverse Polish Notation.
+
+Evaluate the expression. Return an integer that represents the value of the expression.
+
+Note that:
+
+The valid operators are '+', '-', '*', and '/'.
+Each operand may be an integer or another expression.
+The division between two integers always truncates toward zero.
+There will not be any division by zero.
+The input represents a valid arithmetic expression in a reverse polish notation.
+The answer and all the intermediate calculations can be represented in a 32-bit integer.
+ 
+
+Example 1:
+
+Input: tokens = ["2","1","+","3","*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+Example 2:
+
+Input: tokens = ["4","13","5","/","+"]
+Output: 6
+Explanation: (4 + (13 / 5)) = 6
+Example 3:
+
+Input: tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
+Output: 22
+Explanation: ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
+ 
+
+Constraints:
+
+1 <= tokens.length <= 104
+tokens[i] is either an operator: "+", "-", "*", or "/", or an integer in the range [-200, 200].
+
+## Stack 
+
+The relationhip of the integers and operations array, the position of the 1st and 2nd operand with the associated operation, is key to the solution. Iterating over the elements from the front the front to the back, allows to store the elements in a stack. Iterating over the element form the back to the front, allows one to recursively search subarrays. 
+
+```
+def evalRPN(self, tokens: List[str]) -> int:
+    stack = []
+    for n in tokens: 
+        if n in {'+', '-', '*', '/'}:
+            operand1 = int(stack.pop())
+            operand2 = int(stack.pop())
+            if n == '+':
+                x = operand1 + operand2
+            elif n == '-':
+                x = operand2 - operand1
+            elif n == '*':
+                x = operand1 * operand2
+            elif n == '/':
+                x = operand2 / operand1
+            stack.append(int(x))
+        else: 
+            stack.append(int(n))
+    return stack[0]
+```
+
 # 152. Maximum Product Subarray
 Medium
 
@@ -5644,6 +5958,66 @@ def solution(nums):
     return l
     
         
+```
+
+# 169. Majority Element
+Easy
+
+Given an array nums of size n, return the majority element.
+
+The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+
+ 
+
+Example 1:
+
+Input: nums = [3,2,3]
+Output: 3
+Example 2:
+
+Input: nums = [2,2,1,1,1,2,2]
+Output: 2
+ 
+
+Constraints:
+
+n == nums.length
+1 <= n <= 5 * 104
+-109 <= nums[i] <= 109
+ 
+
+Follow-up: Could you solve the problem in linear time and in O(1) space?
+
+## Hashmap 
+
+## Sorting
+
+## Bit Manipulation
+
+## Boyer-Moore Voting Algorithm
+
+Consider array as a stream of data. Find the majority element within chunks, which are terminated as they are processed. 
+
+This only method only works when a majority element exists, but it does not detect if a majority element exists, but just return what should be the majority element if one were to exist. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def majorityElement(self, nums: List[int]) -> int:
+    count = 0 
+    majority = None 
+
+    for n in nums: 
+        if count == 0: 
+            majority = n 
+        
+        if n == majority: 
+            count += 1
+        else: 
+            count -= 1 
+    
+    return majority
 ```
 
 # 173. Binary Search Tree Iterator
@@ -7887,6 +8261,62 @@ def soutionDecode(s):
     return decoding
 ```
 
+# 278. First Bad Version
+Easy
+
+You are a product manager and currently leading a team to develop a new product. Unfortunately, the latest version of your product fails the quality check. Since each version is developed based on the previous version, all the versions after a bad version are also bad.
+
+Suppose you have n versions [1, 2, ..., n] and you want to find out the first bad one, which causes all the following ones to be bad.
+
+You are given an API bool isBadVersion(version) which returns whether version is bad. Implement a function to find the first bad version. You should minimize the number of calls to the API.
+
+ 
+
+Example 1:
+
+Input: n = 5, bad = 4
+Output: 4
+Explanation:
+call isBadVersion(3) -> false
+call isBadVersion(5) -> true
+call isBadVersion(4) -> true
+Then 4 is the first bad version.
+Example 2:
+
+Input: n = 1, bad = 1
+Output: 1
+ 
+
+Constraints:
+
+1 <= bad <= n <= 231 - 1
+
+## Binary Search 
+
+Since the array of products are in sorted order, with all good products before the bad products, this problem can be though of performing binary search on an array of 0's followed by 1's, then finding the first 1. 
+
+If the midpoint of the search is a 1, this means the first '1' is to the left of the midpoint. If the midpoint of the search is 0, this means the first '1' is to the right of the midpoint. 
+
+Time: O(logN)
+Space: O(1)
+
+```
+def firstBadVersion(self, n: int) -> int:
+    l = 1
+    r = n 
+
+    while l < r: 
+        mid = (l + r)//2
+        midVal = isBadVersion(mid)
+        if midVal == True:
+            r = mid 
+        else: 
+            l = mid + 1
+    
+    return l 
+```
+
+
 # 282. Expression Add Operators
 Hard
 
@@ -7983,6 +8413,84 @@ def solution(num, target):
                 
 ```
 
+# 285. Inorder Successor in BST
+Medium
+
+Given the root of a binary search tree and a node p in it, return the in-order successor of that node in the BST. If the given node has no in-order successor in the tree, return null.
+
+The successor of a node p is the node with the smallest key greater than p.val.
+
+ 
+
+Example 1:
+
+
+Input: root = [2,1,3], p = 1
+Output: 2
+Explanation: 1's in-order successor node is 2. Note that both p and the return value is of TreeNode type.
+Example 2:
+
+
+Input: root = [5,3,6,2,4,null,null,1], p = 6
+Output: null
+Explanation: There is no in-order successor of the current node, so the answer is null.
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 104].
+-105 <= Node.val <= 105
+All Nodes will have unique values.
+
+## Recursion 
+
+Utilize that an in-order search on an BST, iterates over the values of the tree in sorted order. Therefore, in each step of iteration, the previous node is a predcessors (next smallest element) and the next node is the success (next greatest element). When searching the tree, return the current node, when the previous tracked node is the target node, which implied the current node is the success of the target node. 
+
+Time: O(n)
+Space: O(n)
+
+```
+def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> Optional[TreeNode]:
+    self.prev = None
+    self.ans = None 
+
+    def search(root):
+        if not root: 
+            return 
+        else:
+            search(root.left)
+            if self.prev == p: 
+                self.ans = root
+            self.prev = root
+            search(root.right)
+
+    search(root)
+    return self.ans
+```
+
+## Iteration 
+
+If the node is less or equal than the target node, both that node and all the nodes to it's left are also less than of equal to the target node, so we can prune those values out of the solution. 
+
+If the current node is greater than the target node, it could be a possible succesor node. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> Optional[TreeNode]:
+    curr = root
+    succ = None 
+    while curr:  
+        if curr.val <= p.val: 
+            curr = curr.right 
+        elif curr.val > p.val: 
+            succ = curr
+            curr = curr.left 
+    
+    return succ
+```
+
 # 286. Walls and Gates
 Medium
 
@@ -8049,6 +8557,93 @@ def solution(rooms):
         for j in range(len(rooms[0])):
             if rooms[i][j] == 0:
                 bfs((i, j))
+```
+
+# 287. Find the Duplicate Number
+Medium
+17.9K
+2.5K
+company
+Amazon
+company
+Adobe
+company
+Apple
+Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+
+There is only one repeated number in nums, return this repeated number.
+
+You must solve the problem without modifying the array nums and uses only constant extra space.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3,4,2,2]
+Output: 2
+Example 2:
+
+Input: nums = [3,1,3,4,2]
+Output: 3
+ 
+
+Constraints:
+
+1 <= n <= 105
+nums.length == n + 1
+1 <= nums[i] <= n
+All the integers in nums appear only once except for precisely one integer which appears two or more times.
+ 
+
+Follow up:
+
+How can we prove that at least one duplicate number must exist in nums?
+Can you solve the problem in linear runtime complexity?
+
+
+
+## Hashmap 
+
+Time: O(n)
+Space: O(n)
+
+## Sorting 
+
+Time: O(nlogn)
+Space: O(1)
+
+## Fast and Slow Pointer
+
+Understanding the reduction from multiple duplicates to the linked list cycle start point detction problem is key. 
+
+Understanding why the two phase process of determining the linked list cycle start point is also important. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def findDuplicate(self, nums: List[int]) -> int:
+    fast = nums[0]
+    slow = nums[0] 
+
+    while True: #fast != slow: 
+        fast = nums[fast]
+        fast = nums[fast]
+        slow = nums[slow]
+        if slow == fast: 
+            break 
+
+    intersection = slow 
+    
+    slow = intersection 
+    fast = nums[0]
+
+    while True: 
+        if fast == slow: 
+            break 
+        fast = nums[fast]
+        slow = nums[slow]
+    return slow
 ```
 
 # 295. Find Median from Data Stream
@@ -13533,6 +14128,80 @@ def solution():
     return
 ```
 
+# 1730. Shortest Path to Get Food
+Medium
+
+You are starving and you want to eat food as quickly as possible. You want to find the shortest path to arrive at any food cell.
+
+You are given an m x n character matrix, grid, of these different types of cells:
+
+'*' is your location. There is exactly one '*' cell.
+'#' is a food cell. There may be multiple food cells.
+'O' is free space, and you can travel through these cells.
+'X' is an obstacle, and you cannot travel through these cells.
+You can travel to any adjacent cell north, east, south, or west of your current location if there is not an obstacle.
+
+Return the length of the shortest path for you to reach any food cell. If there is no path for you to reach food, return -1.
+
+ 
+
+Example 1:
+
+
+Input: grid = [["X","X","X","X","X","X"],["X","*","O","O","O","X"],["X","O","O","#","O","X"],["X","X","X","X","X","X"]]
+Output: 3
+Explanation: It takes 3 steps to reach the food.
+Example 2:
+
+
+Input: grid = [["X","X","X","X","X"],["X","*","X","O","X"],["X","O","X","#","X"],["X","X","X","X","X"]]
+Output: -1
+Explanation: It is not possible to reach the food.
+Example 3:
+
+
+Input: grid = [["X","X","X","X","X","X","X","X"],["X","*","O","X","O","#","O","X"],["X","O","O","X","O","O","X","X"],["X","O","O","O","O","#","O","X"],["X","X","X","X","X","X","X","X"]]
+Output: 6
+Explanation: There can be multiple food cells. It only takes 6 steps to reach the bottom food.
+ 
+
+Constraints:
+
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 200
+grid[row][col] is '*', 'X', 'O', or '#'.
+The grid contains exactly one '*'.
+
+## BFS
+
+```
+def getFood(self, grid: List[List[str]]) -> int:
+    queue = []
+    for i in range(len(grid)):
+        for j in range(len(grid[0])): 
+            if grid[i][j] == "*": 
+                queue.insert(0, (i, j, 0))
+                grid[i][j] = "X"
+
+    
+    while queue: 
+        i, j, d = queue.pop()
+        
+        neighbors = {(0, 1), (1, 0), (-1, 0), (0, -1)}
+        for n in neighbors: 
+            di = i + n[0]
+            dj = j + n[1]
+            if 0 <= di < len(grid) and 0 <= dj < len(grid[0]) and grid[di][dj] in {"O", "#"}: 
+                if grid[di][dj] == "O": 
+                    queue.insert(0, (di, dj, d + 1))
+                if grid[di][dj] == "#":
+                    return d + 1
+                grid[di][dj] = "X"
+                    
+    return -1 
+```
+
 # 1881. Maximum Value after Insertion
 Medium
 
@@ -14862,6 +15531,10 @@ https://medium.com/techtofreedom/abstract-classes-in-python-f49cf4efdb3d
 
 # Python Tricks
 
+- Mutability and Immutability 
+    - Hashmaps can only store immutable types 
+        - Strings are immutable types 
+
 - Variable Swapping
     - Trade values saved in variables a and b 
     - Can also apply to values within python arrays
@@ -15046,3 +15719,15 @@ https://www.geeksforgeeks.org/treemap-in-java/
         - Citadel [2021]
     - Tech 
         - Meta [2022]
+
+## Mock Interview
+
+- 1/27/23
+    - my interview 
+        - glossed over space complexity 
+            - didn't detail it out when first explaining
+            - it may be good or bad to use more variables
+        - practice explaining the details of complexity
+    - evan interview
+        - null case 
+        - killed time on floyd proof 
