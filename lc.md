@@ -6704,6 +6704,101 @@ def minSubArrayLen(self, target: int, nums: List[int]) -> int:
     
     return minLength
 ```
+# 210. Course Schedule II
+Medium
+8.6K
+287
+company
+Amazon
+company
+TikTok
+company
+Google
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+
+For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.
+
+ 
+
+Example 1:
+
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: [0,1]
+Explanation: There are a total of 2 courses to take. To take course 1 you should have finished course 0. So the correct course order is [0,1].
+Example 2:
+
+Input: numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+Output: [0,2,1,3]
+Explanation: There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
+So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3].
+Example 3:
+
+Input: numCourses = 1, prerequisites = []
+Output: [0]
+ 
+
+Constraints:
+
+1 <= numCourses <= 2000
+0 <= prerequisites.length <= numCourses * (numCourses - 1)
+prerequisites[i].length == 2
+0 <= ai, bi < numCourses
+ai != bi
+All the pairs [ai, bi] are distinct.
+
+## BFS 
+
+Perform bfs iteratively on the nodes in the graph that have an indegree of 0. Remove outgoing edges for each new node searched. The next node that has an indegree of 0, is gauranteed to at the end of an edge previously removed. 
+
+Reduce the time to compete the indegree of each node, but keeping a hashmap counter, and updating it as you iterate through the algorithm. 
+
+If the final output sequence of the orders of node visited isn't the length of the total number of courses, this means not all nodes could successfuly be visted, hence there doesn't exist a valid topo sort. 
+
+Time: O(V + E)
+Space: O(V + E)
+
+```
+def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+    output = []
+    queue = []
+    graph = {}
+    indegree = {}
+    for p in prerequisites: 
+        start = p[1]
+        end = p[0]
+        if start not in graph: 
+            graph[start] = [end]
+        else: 
+            graph[start].append(end)
+
+        if end not in indegree: 
+            indegree[end] = 1
+        else: 
+            indegree[end] += 1
+
+    for n in range(numCourses): 
+        if n not in graph: 
+            graph[n] = []
+        if n not in indegree: 
+            indegree[n] = 0 
+    
+    for n in range(numCourses): 
+        if indegree[n] == 0: 
+            queue.append(n)
+
+    while queue:
+        e = queue.pop()
+        output.append(e)
+        for e2 in graph[e]:
+            indegree[e2] -= 1
+            if indegree[e2] == 0: 
+                queue.insert(0, e2)
+
+    if len(output) != numCourses: 
+        return []
+    return output
+```
 
 # 211. Design Add and Search Words Data Structure
 Medium
@@ -7363,6 +7458,85 @@ def solution(root, k):
             inOrder(root.right)
     inOrder(root)
     return elements[k - 1]
+```
+# 232. Implement Queue using Stacks
+Easy
+
+Implement a first in first out (FIFO) queue using only two stacks. The implemented queue should support all the functions of a normal queue (push, peek, pop, and empty).
+
+Implement the MyQueue class:
+
+void push(int x) Pushes element x to the back of the queue.
+int pop() Removes the element from the front of the queue and returns it.
+int peek() Returns the element at the front of the queue.
+boolean empty() Returns true if the queue is empty, false otherwise.
+Notes:
+
+You must use only standard operations of a stack, which means only push to top, peek/pop from top, size, and is empty operations are valid.
+Depending on your language, the stack may not be supported natively. You may simulate a stack using a list or deque (double-ended queue) as long as you use only a stack's standard operations.
+ 
+
+Example 1:
+
+Input
+["MyQueue", "push", "push", "peek", "pop", "empty"]
+[[], [1], [2], [], [], []]
+Output
+[null, null, null, 1, 1, false]
+
+Explanation
+MyQueue myQueue = new MyQueue();
+myQueue.push(1); // queue is: [1]
+myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
+myQueue.peek(); // return 1
+myQueue.pop(); // return 1, queue is [2]
+myQueue.empty(); // return false
+ 
+
+Constraints:
+
+1 <= x <= 9
+At most 100 calls will be made to push, pop, peek, and empty.
+All the calls to pop and peek are valid.
+ 
+
+Follow-up: Can you implement the queue such that each operation is amortized O(1) time complexity? In other words, performing n operations will take overall O(n) time even if one of those operations may take longer.
+
+## Lazy Iterator Evaluation
+
+Use second stack to keep hold of queue values in reverse order from last `pop()` operation. The queue pop operation, pops off all the values of the first stack and appends them to the second stack one at a time. Therefore, the top element of the second stack is the first element.
+
+Every push operation adds elements to the first stack, and updates a global front variable if the first stack is empty to allow for easy access of `peek()`.
+
+Time: O(1)
+Space: O(1)
+
+```
+class MyQueue:
+    def __init__(self):
+        self.stack1 = []
+        self.stack2 = []
+        self.front = None 
+
+    def push(self, x: int) -> None:
+        if not self.stack1: 
+            self.front = x 
+        self.stack1.append(x)
+        
+    def pop(self) -> int:
+        if not self.stack2: 
+            while self.stack1:
+                e = self.stack1.pop()
+                self.stack2.append(e)
+        return self.stack2.pop()
+
+    def peek(self) -> int:
+        if self.stack2: 
+            return self.stack2[-1]
+        return self.front 
+        
+    def empty(self) -> bool:
+        return not self.stack1 and not self.stack2
 ```
 
 # 235. Lowest Common Ancestor of a Binary Search Tree
@@ -8413,6 +8587,61 @@ def solution(num, target):
                 
 ```
 
+# 283. Move Zeroes
+Easy
+12.5K
+317
+company
+Facebook
+company
+Yandex
+company
+Bloomberg
+Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+
+Note that you must do this in-place without making a copy of the array.
+
+ 
+
+Example 1:
+
+Input: nums = [0,1,0,3,12]
+Output: [1,3,12,0,0]
+Example 2:
+
+Input: nums = [0]
+Output: [0]
+ 
+
+Constraints:
+
+1 <= nums.length <= 104
+-231 <= nums[i] <= 231 - 1
+ 
+
+Follow up: Could you minimize the total number of operations done?
+
+## Two Pointer 
+
+Sinking the non-zero values to the front requires O(1) swap per non-zero value, when taking a two pointer approach. Keep a left pointer, that keeps track of the index of the last non-zero value swapped to the left of the array. The right index is used to iterate through the array, and is used to detect a non-zero value to swap with the left pointer. By ensuring all non-zero values are swapped in order to the left, the remaining values will only be 0's to the right. 
+
+Sinking the zeros to the back, requires O(n) swap per 0 to push them to the back, to ensure the order of the non-zero values are preserved.
+
+Time: O(n)
+Space: O(1)
+
+```
+def moveZeroes(self, nums: List[int]) -> None:
+    l = 0 
+    r = 0 
+    while r < len(nums): 
+        if nums[r] != 0: 
+            nums[r], nums[l] = nums[l], nums[r]
+            l += 1
+        r += 1
+    return nums
+```
+
 # 285. Inorder Successor in BST
 Medium
 
@@ -8561,14 +8790,7 @@ def solution(rooms):
 
 # 287. Find the Duplicate Number
 Medium
-17.9K
-2.5K
-company
-Amazon
-company
-Adobe
-company
-Apple
+
 Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
 
 There is only one repeated number in nums, return this repeated number.
@@ -9406,6 +9628,65 @@ def solution(nums, k):
     if maxsize == -inf:
         return 0
     return maxsize
+```
+
+# 328. Odd Even Linked List
+Medium
+
+Given the head of a singly linked list, group all the nodes with odd indices together followed by the nodes with even indices, and return the reordered list.
+
+The first node is considered odd, and the second node is even, and so on.
+
+Note that the relative order inside both the even and odd groups should remain as it was in the input.
+
+You must solve the problem in O(1) extra space complexity and O(n) time complexity.
+
+ 
+
+Example 1:
+
+
+Input: head = [1,2,3,4,5]
+Output: [1,3,5,2,4]
+Example 2:
+
+
+Input: head = [2,1,3,5,6,4,7]
+Output: [2,3,6,7,1,5,4]
+ 
+
+Constraints:
+
+The number of nodes in the linked list is in the range [0, 104].
+-106 <= Node.val <= 106
+
+## Two Pointer 
+
+Update odd next first, then update even next afterwards. 
+
+Odd next is the next of the first even next. The even next is the next of the updated odd next. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    if not head: 
+        return head 
+
+    oddHead = head 
+    odd = head 
+    even = odd.next 
+    evenHead = even 
+
+    while even and even.next: 
+        odd.next = even.next 
+        odd = odd.next 
+        even.next = odd.next 
+        even = even.next 
+    
+    odd.next = evenHead 
+    return oddHead 
 ```
 
 # 377. Combination Sum IV
