@@ -892,7 +892,7 @@ def threeSumClosest(self, nums: List[int], target: int) -> int:
 
 ## Binary Search
 
-# 17. 17. Letter Combinations of a Phone Number
+# 17. Letter Combinations of a Phone Number
 Medium
 
 Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
@@ -6136,6 +6136,85 @@ Constraints:
 ## Comparator
 
 ```
+```
+
+# 189. Rotate Array
+Medium
+
+Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+Example 2:
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+0 <= k <= 105
+ 
+
+Follow up:
+
+Try to come up with as many solutions as you can. There are at least three different ways to solve this problem.
+Could you do it in-place with O(1) extra space?
+
+## Brute Force Sinking Values 
+
+Sink the k values at the end of the array for the front of array one at a time. Each sink operation involves swapping adjacent values until a value from the end of the array is set to a value in the beginning of the array without changing the order of the remaining elements.  
+
+Time: O(k*n)
+Space: O(1)
+
+```
+def rotate(self, nums: List[int], k: int) -> None:
+    n = len(nums)
+    k = k % n 
+    for i in range(k):
+        l = n - k - 1 + i
+        for j in range(n - k):
+            nums[l], nums[l-1] = nums[l-1], nums[l]
+            l -= 1
+    return nums   
+```
+
+## Array Cycles 
+
+## Array Reverse
+
+Perform three reverse operations. First, reverse the entire array. Then, reverse the first k elements, then the last n-k elements. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def rotate(self, nums: List[int], k: int) -> None:
+    k = k % len(nums) 
+    def reverse(l, r): 
+        while l <= r: 
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1 
+            r -= 1
+
+    reverse(0, len(nums) - 1)
+    reverse(0, k - 1)
+    reverse(k, len(nums) - 1)
+    return nums  
 ```
 
 # 190. Reverse Bits
