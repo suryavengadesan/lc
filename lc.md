@@ -12773,6 +12773,105 @@ def solution(s):
     return cnt
 ```
 
+# 704. Binary Search
+Easy
+
+Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+ 
+
+Example 1:
+
+Input: nums = [-1,0,3,5,9,12], target = 9
+Output: 4
+Explanation: 9 exists in nums and its index is 4
+Example 2:
+
+Input: nums = [-1,0,3,5,9,12], target = 2
+Output: -1
+Explanation: 2 does not exist in nums so return -1
+ 
+
+Constraints:
+
+1 <= nums.length <= 104
+-104 < nums[i], target < 104
+All the integers in nums are unique.
+nums is sorted in ascending order.
+
+## Binary Search (Find Lower Bound)
+
+Consider all valid lower bound insert index positions. In this case from 0 to len(nums) - 1. If you reach the target value, update the right pointer, a lower bound won't need to consider those value, and duplicate target values to the right of the current target value are not required. 
+
+Since the left pointer represents the lower bound, target exists in the array if the lower bound index + 1 equal to target. 
+
+Time: O(logn)
+Space: O(1)
+
+## Binary Search (Find Upper Bound)
+
+Consider all valid index insert positions for an upper bound value, ranging from 1 to len(nums). If the current index value is equal to target, then update left pointer, since previous values will only be lower than the target value, and duplicate target values to the right of the current target value will only be considered. 
+
+The final left index will represent the upper bound value, so the target will exist in the array if the upper bound index - 1 equals to target. 
+
+Time: O(logn)
+Space: O(1)
+
+## Binary Search (Find Exact Value)
+
+Determine if the current midpoint is the target value. Else, check indices strictly to the right or left of the midpoint, by moving the left or right pointer respectively. 
+
+Time: O(logn)
+Space: O(1)
+
+```
+def search(self, nums: List[int], target: int) -> int:
+    l = 0
+    r = len(nums) - 1 # exact math and lower bound
+    #r = len(nums) # upper bound 
+
+    while l <= r: # exact match 
+    # while l < r: # upper bound and lower bound 
+        mid = (l + r)//2
+        midVal = nums[mid]
+        if midVal == target:
+            return mid # exact
+            #r = mid # lower bound
+            #l = mid + 1 # upper bound 
+            
+        elif midVal < target:
+            l = mid + 1 # exact
+            #l = mid + 1 # lower bound 
+            #l = mid + 1 # upper bound 
+            
+        elif midVal > target:
+            r = mid - 1 # exact
+            #r = mid # lower bound
+            #r = mid # upper bound 
+
+    # exact match 
+    return -1  
+
+    # lower bound 
+    '''
+    if l < len(nums) and nums[l] == target:
+        return l 
+    else: 
+        return -1 
+    '''
+
+    
+    # upper bound 
+    '''
+    if l > 0 and nums[l - 1] == target: 
+        return l - 1
+    else: 
+        return -1
+    '''
+```
+
 # 708. Insert into a Sorted Circular Linked List
 Medium
 
