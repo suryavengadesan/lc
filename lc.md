@@ -1427,6 +1427,107 @@ def solution(nums):
     return nums.reverse()
 ```
 
+# 32. Longest Valid Parentheses
+Hard
+
+Given a string containing just the characters '(' and ')', return the length of the longest valid (well-formed) parentheses 
+substring.
+
+ 
+
+Example 1:
+
+Input: s = "(()"
+Output: 2
+Explanation: The longest valid parentheses substring is "()".
+Example 2:
+
+Input: s = ")()())"
+Output: 4
+Explanation: The longest valid parentheses substring is "()()".
+Example 3:
+
+Input: s = ""
+Output: 0
+ 
+
+Constraints:
+
+0 <= s.length <= 3 * 104
+s[i] is '(', or ')'.
+
+## Dynamic Programming 
+
+Time: O(n)
+Space: O(n)
+
+## Stack 
+
+Time: O(n)
+Space: O(n)
+ 
+```
+def longestValidParentheses(self, s: str) -> int:        
+    maxDist = 0
+
+    stack = []
+    stack.append(-1)
+    for i in range(len(s)):
+        c = s[i] 
+        if c == '(':
+            stack.append(i)
+        elif c == ')':
+            stack.pop()
+            if not stack: 
+                stack.append(i)
+            maxDist = max(maxDist, i - stack[-1])
+    return maxDist
+```
+
+## Counters + Iteration 
+
+Perform valid parenthesis using left and right counters twice. Once in a left to right pass, then from a right to left pass. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def longestValidParentheses(self, s: str) -> int:
+    l = 0 
+    r = 0 
+    maxLength = 0 
+
+    for i in range(len(s)):
+        c = s[i]
+        if c == '(': 
+            l += 1
+        else: 
+            r += 1 
+
+        if l == r: 
+            maxLength = max(maxLength, l + r)
+        elif r > l: 
+            l = 0 
+            r = 0 
+    
+    l = 0 
+    r = 0 
+    for i in reversed(range(len(s))):
+        c = s[i]
+        if c == ')': 
+            l += 1
+        else: 
+            r += 1 
+
+        if l == r: 
+            maxLength = max(maxLength, l + r)
+        elif r > l: 
+            l = 0 
+            r = 0 
+        
+    return maxLength 
+```
+
 # 33. Search in Rotated Sorted Array
 Medium
 
@@ -1754,7 +1855,73 @@ def isValidSudoku(self, board: List[List[str]]) -> bool:
 O(n^2)
 O(n)
 
+# 41. First Missing Positive
+Hard
 
+Given an unsorted integer array nums, return the smallest missing positive integer.
+
+You must implement an algorithm that runs in O(n) time and uses constant extra space.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,0]
+Output: 3
+Explanation: The numbers in the range [1,2] are all in the array.
+Example 2:
+
+Input: nums = [3,4,-1,1]
+Output: 2
+Explanation: 1 is in the array but 2 is missing.
+Example 3:
+
+Input: nums = [7,8,9,11,12]
+Output: 1
+Explanation: The smallest positive integer 1 is missing.
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+
+## Hash Map Key 
+
+The first missing positive missing number will be in the range [1, n + 1] where n is the length of the input array nums. This property holds true, because best case all the numbers are sorted from 1 to n in order, or worst case, some of the numbers are not in this range, which means that the first missing positive number would fill in this spot. 
+
+Therefore, remove all numbers out side of the range [1, n], setting the values to 1. Use the array as a hashmap that keeps track of if some number i within the range [1, n] exists in the array. This is done by setting the number stored at the corresponding index for a value in the ranage [1, n] to a negative value. Finally, the index of the first non-negative value corresponds with the first missing positive number. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def firstMissingPositive(self, nums: List[int]) -> int:
+    n = len(nums)
+
+    if 1 not in nums:
+        return 1
+
+    for i in range(n):
+        if nums[i] <= 0 or nums[i] > n:
+            nums[i] = 1
+
+    for i in range(n): 
+        a = abs(nums[i])
+        if a == n:
+            nums[0] = - abs(nums[0])
+        else:
+            nums[a] = - abs(nums[a])
+        
+    for i in range(1, n):
+        if nums[i] > 0:
+            return i
+
+    if nums[0] > 0:
+        return n
+        
+    return n + 1
+```
 
 # 42. Trapping Rain Water
 Hard
@@ -13349,6 +13516,75 @@ Constraints:
 
 ```
 
+```
+
+# 759. Employee Free Time
+Hard
+
+We are given a list schedule of employees, which represents the working time for each employee.
+
+Each employee has a list of non-overlapping Intervals, and these intervals are in sorted order.
+
+Return the list of finite intervals representing common, positive-length free time for all employees, also in sorted order.
+
+(Even though we are representing Intervals in the form [x, y], the objects inside are Intervals, not lists or arrays. For example, schedule[0][0].start = 1, schedule[0][0].end = 2, and schedule[0][0][0] is not defined).  Also, we wouldn't include intervals like [5, 5] in our answer, as they have zero length.
+
+ 
+
+Example 1:
+
+Input: schedule = [[[1,2],[5,6]],[[1,3]],[[4,10]]]
+Output: [[3,4]]
+Explanation: There are a total of three employees, and all common
+free time intervals would be [-inf, 1], [3, 4], [10, inf].
+We discard any intervals that contain inf as they aren't finite.
+Example 2:
+
+Input: schedule = [[[1,3],[6,7]],[[2,4]],[[2,5],[9,12]]]
+Output: [[5,6],[7,9]]
+ 
+
+Constraints:
+
+1 <= schedule.length , schedule[i].length <= 50
+0 <= schedule[i].start < schedule[i].end <= 10^8
+
+## Stack
+
+The free time for all employees is equal to the compliment of all times for all employees merged together. Therefore, we can flatten all n employee's intervals into one array, and perform merge intervals on that array. Finally, the solution would be the set of intervals between the non-overlapping intervals. 
+
+Merging the intervals requires us to sort the array by start time, then appending values to a new stack of merged intervals while performing a comparision between each new interval and the last element on the stack.  
+
+Time: O(nlogn)
+Space: O(n) 
+
+```
+def employeeFreeTime(self, schedule: '[[Interval]]') -> '[Interval]':
+        schedule = [interval for intervals in schedule for interval in intervals]
+
+        schedule = sorted(schedule, key=lambda x: x.start)
+
+        stack = []
+
+        for i in schedule: 
+            if not stack: 
+                stack.append(i)
+            else: 
+                prevEndTime = stack[-1].end
+                currStartTime = i.start 
+                if currStartTime <= prevEndTime: 
+                    stack[-1].end = max(i.end, stack[-1].end)
+                else: 
+                    stack.append(i)
+
+        interval = []
+        prevEnd = None
+        for i in stack: 
+            if prevEnd: 
+                interval.append(Interval(prevEnd, i.start))
+            prevEnd = i.end
+
+        return interval 
 ```
 
 # 766. Toeplitz Matrix
