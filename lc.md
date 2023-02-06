@@ -3431,6 +3431,58 @@ def exist(self, board: List[List[str]], word: str) -> bool:
     return False 
 ```
 
+# 84. Largest Rectangle in Histogram
+Hard
+
+Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+
+ 
+
+Example 1:
+
+
+Input: heights = [2,1,5,6,2,3]
+Output: 10
+Explanation: The above is a histogram where width of each bar is 1.
+The largest rectangle is shown in the red area, which has an area = 10 units.
+Example 2:
+
+
+Input: heights = [2,4]
+Output: 4
+ 
+
+Constraints:
+
+1 <= heights.length <= 105
+0 <= heights[i] <= 104
+
+## Monostack
+
+Keep a monostack that corresponds to increasing height values. Specifically, store the indices of the heights, since the index information is used to compute the width of the maximum rectangle, while the corresponding height value from the index is used to compute the height. Finally compute the maximum area, of all width * height products. 
+
+Time: O(n)
+Space: O(n)
+
+```
+def largestRectangleArea(self, heights: List[int]) -> int:
+        maxHeight = 0 
+        heights.append(0)
+        stack = []
+        stack.append(-1)
+        
+        for i in range(len(heights)): 
+            h = heights[i]
+
+            while len(stack) > 1 and heights[stack[-1]] >= h: 
+                    e = stack.pop()
+                    currHeight = (i - stack[-1] - 1) * heights[e]
+                    maxHeight = max(maxHeight, currHeight)
+
+            stack.append(i)
+        return maxHeight 
+```
+
 # 88. Merge Sorted Array
 Easy
 
@@ -7412,14 +7464,6 @@ def solution(nums):
 
 # 221. Maximal Square
 Medium
-8.4K
-180
-company
-Amazon
-company
-Apple
-company
-TikTok
 
 Given an m x n binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
 
@@ -7481,6 +7525,75 @@ def maximalSquare(self, matrix: List[List[str]]) -> int:
     return maxSide ** 2
 ```
 
+# 224. Basic Calculator
+Hard
+
+Given a string s representing a valid expression, implement a basic calculator to evaluate it, and return the result of the evaluation.
+
+Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as eval().
+
+Example 1:
+
+Input: s = "1 + 1"
+Output: 2
+Example 2:
+
+Input: s = " 2-1 + 2 "
+Output: 3
+Example 3:
+
+Input: s = "(1+(4+5+2)-3)+(6+8)"
+Output: 23
+ 
+
+Constraints:
+
+1 <= s.length <= 3 * 105
+s consists of digits, '+', '-', '(', ')', and ' '.
+s represents a valid expression.
+'+' is not used as a unary operation (i.e., "+1" and "+(2 + 3)" is invalid).
+'-' could be used as a unary operation (i.e., "-1" and "-(2 + 3)" is valid).
+There will be no two consecutive operators in the input.
+Every number and running calculation will fit in a signed 32-bit integer.
+
+# Stack 
+
+To account for addition and subtraction, which occurs in between two operands, keep track of a variable sign and a variable operand, which will add the right operand * 1, or add the right operand * -1, after it has been computed. This allows for us to traverse the input argument from left to right, while also accounting for arithmetic operations. 
+
+Parentheses are handled, by reseting the operand, and holding the result computed thus far into a stack, which will be popped of after reaching the corresponding end parentheses. 
+
+```
+def calculate(self, s: str) -> int:
+        stack = []
+        operand = 0
+        sign = 1
+        val = 0 
+
+        for c in s:
+            if c.isdigit(): 
+                operand = operand * 10 + int(c)
+            elif c == '-': 
+                val += sign * operand 
+                sign = -1
+                operand = 0 
+            elif c == '+':
+                val += sign * operand 
+                sign = 1
+                operand = 0 
+            elif c == '(': 
+                stack.append(val)
+                stack.append(sign)
+                sign = 1
+                val = 0 
+            elif c == ')': 
+                val += sign * operand
+                currSign = stack.pop()
+                val *= currSign 
+                currOperand = stack.pop()
+                val += currOperand
+                operand = 0 
+        return val + (sign * operand)
+```
 
 # 226. Invert Binary Tree
 Easy
@@ -13882,6 +13995,84 @@ Space: O(N)
 
 Time: O(N)
 Space: O(1)
+
+# 895. Maximum Frequency Stack
+Hard
+
+Design a stack-like data structure to push elements to the stack and pop the most frequent element from the stack.
+
+Implement the FreqStack class:
+
+FreqStack() constructs an empty frequency stack.
+void push(int val) pushes an integer val onto the top of the stack.
+int pop() removes and returns the most frequent element in the stack.
+If there is a tie for the most frequent element, the element closest to the stack's top is removed and returned.
+ 
+
+Example 1:
+
+Input
+["FreqStack", "push", "push", "push", "push", "push", "push", "pop", "pop", "pop", "pop"]
+[[], [5], [7], [5], [7], [4], [5], [], [], [], []]
+Output
+[null, null, null, null, null, null, null, 5, 7, 5, 4]
+
+Explanation
+FreqStack freqStack = new FreqStack();
+freqStack.push(5); // The stack is [5]
+freqStack.push(7); // The stack is [5,7]
+freqStack.push(5); // The stack is [5,7,5]
+freqStack.push(7); // The stack is [5,7,5,7]
+freqStack.push(4); // The stack is [5,7,5,7,4]
+freqStack.push(5); // The stack is [5,7,5,7,4,5]
+freqStack.pop();   // return 5, as 5 is the most frequent. The stack becomes [5,7,5,7,4].
+freqStack.pop();   // return 7, as 5 and 7 is the most frequent, but 7 is closest to the top. The stack becomes [5,7,5,4].
+freqStack.pop();   // return 5, as 5 is the most frequent. The stack becomes [5,7,4].
+freqStack.pop();   // return 4, as 4, 5 and 7 is the most frequent, but 4 is closest to the top. The stack becomes [5,7].
+ 
+
+Constraints:
+
+0 <= val <= 109
+At most 2 * 104 calls will be made to push and pop.
+It is guaranteed that there will be at least one element in the stack before calling pop.
+
+## Map of Stacks 
+
+```
+class FreqStack:
+    def __init__(self):
+        self.freq = {}
+        self.stacks = {}
+        self.maxFreq = 1
+        
+
+    def push(self, val: int) -> None:
+        if val not in self.freq: 
+            self.freq[val] = 1
+        else: 
+            self.freq[val] += 1 
+
+        f = self.freq[val]
+
+        if f > self.maxFreq: 
+            self.maxFreq = f 
+        
+        if f in self.stacks: 
+            self.stacks[f].append(val)
+        else: 
+            self.stacks[f] = [val]
+        
+    def pop(self) -> int:
+        val = self.stacks[self.maxFreq].pop()
+        self.freq[val] -= 1 
+
+        if not self.stacks[self.maxFreq]: 
+            self.maxFreq -= 1
+
+
+        return val 
+```
 
 # 904. Fruit Into Baskets
 Medium
