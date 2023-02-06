@@ -1987,6 +1987,65 @@ def solution(height):
     return totalWater
 ```
 
+# 46. Permutations
+Medium
+14.6K
+250
+company
+Amazon
+company
+Microsoft
+company
+Google
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3]
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+Example 2:
+
+Input: nums = [0,1]
+Output: [[0,1],[1,0]]
+Example 3:
+
+Input: nums = [1]
+Output: [[1]]
+ 
+
+Constraints:
+
+1 <= nums.length <= 6
+-10 <= nums[i] <= 10
+All the integers of nums are unique.
+
+## Backtracking 
+
+Check all permuations that start with specific number at index i. Recursively permuate the remaining letters and backtrack, by swapping the elements in the input array nums. 
+
+Time: O(Sum_k=1 to N (P(N,k))) ~> O(N!) < O(x) < O(N * N!)
+Space: O(1)
+
+```
+def permute(self, nums: List[int]) -> List[List[int]]:
+    n = len(nums)
+    self.output = []
+    def search(start): 
+        if start == n:
+            self.output.append(list(nums))
+            return 
+        else: 
+            for i in range(start, n): 
+                nums[i], nums[start] = nums[start], nums[i]
+                search(start + 1)
+                nums[i], nums[start] = nums[start], nums[i]
+    
+    search(0)
+    return self.output
+```
+
 # 48. Rotate Image
 Medium
 
