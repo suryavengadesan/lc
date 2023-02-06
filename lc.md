@@ -12599,15 +12599,66 @@ The integer n is in the range [0, 100].
 
 ## Heap
 
-Start by adding the most frequent tasks, and add the remaining most frequent elements until no elements left.
+Fill out the schedule by adding the most frequent tasks's element until no elements left. Use a maxHeap to sort the values based on frequency. 
 
-## Greedy
+Time: O(N) b/c T is constant ~ O(NlogT) s.t. T is types of tasks
+Space: O(1)
 
-Note that the maximum frequency element will determine the total time length. In particular, the most frequent eleement along with the required idle time will space out the tasks. The remaining tasks will greedily fill the remaining time. 
+```
+def leastInterval(self, tasks: List[str], n: int) -> int:
+    from collections import Counter 
+    frequency = Counter(tasks)
+
+    heap = []
+
+    for f in frequency: 
+        heapq.heappush(heap, (-1 * frequency[f], f))
+
+    schedule = 0 
+
+    while heap: 
+        intervalLen = n + 1
+        interval = []
+        while intervalLen > 0 and heap: 
+            e = heapq.heappop(heap)
+            interval.append(e)
+            intervalLen -= 1 
+            schedule += 1
+        
+        for i in interval:
+            if i[0] + 1 < 0: 
+                heapq.heappush(heap, (i[0] + 1, i[1]))
+            
+        if not heap: 
+            break 
+
+        schedule += intervalLen
+
+    return schedule 
+```
 
 ## Math
 
-Perform modular arithmetic. 
+Note that the maximum frequency element will determine the total time length. In particular, the most frequent eleement along with the required idle time will space out the tasks. The remaining tasks will greedily fill the remaining time. 
+
+
+Time: O(n)
+Space: O(1)
+
+```
+def leastInterval(self, tasks: List[str], n: int) -> int:
+    from collections import Counter 
+    frequency = Counter(tasks)
+
+    maxFreq = max(frequency.values())
+
+    maxFreqCount = 0 
+    for f in frequency:
+        if frequency[f] == maxFreq:
+            maxFreqCount += 1
+    
+    return max(((maxFreq - 1) * (n + 1)) + maxFreqCount, len(tasks))
+```
 
 # 629. K Inverse Pairs Array
 Hard
