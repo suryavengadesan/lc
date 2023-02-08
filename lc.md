@@ -14428,6 +14428,58 @@ def numUniqueEmails(self, emails: List[str]) -> int:
     return len(validEmails)
 ```
 
+# 977. Squares of a Sorted Array
+Easy
+
+Given an integer array nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.
+
+ 
+
+Example 1:
+
+Input: nums = [-4,-1,0,3,10]
+Output: [0,1,9,16,100]
+Explanation: After squaring, the array becomes [16,1,0,9,100].
+After sorting, it becomes [0,1,9,16,100].
+Example 2:
+
+Input: nums = [-7,-3,2,3,11]
+Output: [4,9,9,49,121]
+ 
+
+Constraints:
+
+1 <= nums.length <= 104
+-104 <= nums[i] <= 104
+nums is sorted in non-decreasing order.
+ 
+
+Follow up: Squaring each element and sorting the new array is very trivial, could you find an O(n) solution using a different approach?
+
+## Two Pointer 
+
+Since initial arry of positive and negative values is sorted, if we squared the values, we could retreive the largest to smallest numbers in the array by peeling off the larger number from the left or right ends. To avoid reversing the final array which would store the largest to smallest values, we initialize the output array and back fill the value from right to left to skip this step. 
+
+Time: O(n)
+Space: O(1)
+
+```
+def sortedSquares(self, nums: List[int]) -> List[int]:
+    output = [0 for i in range(len(nums))]
+    i = len(nums) - 1
+    l = 0 
+    r = len(nums) - 1
+    while l <= r: 
+        if abs(nums[l]) < nums[r]:
+            output[i] = nums[r] ** 2
+            r -=1 
+        else:
+            output[i] = nums[l] ** 2
+            l += 1
+        i -= 1
+    return output
+```
+
 # 981. Time Based Key-Value Store
 Medium
 
