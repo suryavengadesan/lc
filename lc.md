@@ -693,12 +693,27 @@ Constraints:
     s contains only the characters ('I', 'V', 'X', 'L', 'C', 'D', 'M').
     It is guaranteed that s is a valid roman numeral in the range [1, 3999].
 
+# Hashmap 
+
+We map the values of the roman numerals to their equivalent decimal form and interate through the string to iteratively keep track of the sum. We can either iterative from left to right or right to left. We can also either keep track of all valid pairs in a hashmap or manually recompute the values based on the values in the hashmap of just single roman numerals.
 
 
-
+Time: O(1)
+Space: O(1)
 
 ```
+def romanToInt(self, s: str) -> int:
+    val = {"I": 1, "V":5, "X": 10, "L": 50, "C": 100, "D": 500, "M":1000}
 
+    num = val[s[-1]]
+
+    for i in reversed(range(len(s) - 1)): 
+        if val[s[i]] < val[s[i + 1]]: 
+            num -= val[s[i]]
+        else: 
+            num += val[s[i]]
+
+    return num 
 ```
 
 # 15. 3Sum
